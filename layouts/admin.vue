@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex bg-gray-100">
     <!-- Sidebar -->
-    <aside class="bg-white border-r border-gray-200 flex-shrink-0 w-14 sm:w-64">
+    <aside class="bg-white border-r border-gray-200 w-14 sm:w-64 fixed top-0 left-0 h-screen flex flex-col">
       <div class="h-full flex flex-col">
           <div class="border-b py-4 flex justify-center sm:justify-start sm:px-6">
                 <span class="hidden sm:block font-semibold text-lg">Admin Panel</span>
@@ -47,7 +47,7 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 p-6 overflow-y-auto">
+    <main class="flex-1 p-6 ml-14 sm:ml-64">
       <slot />
     </main>
   </div>
