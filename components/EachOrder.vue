@@ -6,6 +6,7 @@
     order: {
         customerName: string
         totalItems: number
+        totalAmount: number
         location: string
         order: {
         itemName: string
@@ -46,14 +47,14 @@
             <div class="flex flex-col">
                 <span class="font-semibold text-gray-800">{{ order.customerName }}</span>
                 <span class="text-gray-600 text-sm">
-                    {{ order.totalItems }} items  •  {{ order.location }}
+                    {{ order.totalItems }} items • Rs. {{order.totalAmount}} •  {{ order.location }}
                 </span>
             </div>
 
-            <div>
+            <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                 <button
                     @click.stop="()=>handleButtonClick(order.orderProgress)"
-                    class="py-2 px-6 mr-6 rounded-xl font-semibold transition-colors duration-300"
+                    class="rounded-md font-semibold transition-colors duration-300 px-3 py-3 text-xs sm:px-4 sm:py-2 sm:text-sm md:px-6 md:text-base"
                     :class="{
                         'bg-red-500 text-white': order.orderProgress === 'notStarted',
                         'bg-blue-500 text-white': order.orderProgress === 'inProgress',
@@ -63,7 +64,7 @@
                         order.orderProgress === 'inProgress' ? 'In Progress' :
                         'Completed' }}
                     </button>
-                <span class="material-symbols-outlined text-gray-700 transition-transform duration-300"
+                <span class="material-symbols-outlined transition-transform duration-300 text-xl sm:text-2xl text-gray-600"
                 :class="{'rotate-180': isOpen}">
                 expand_more
                 </span>
@@ -75,11 +76,11 @@
             <ul class="divide-y divide-gray-200">
                 <li v-for="(item, index) in order.order" :key="index"
                     class="py-2 flex justify-between items-center">
-                    <div>
+                    <div class="sm:pl-4">
                         <span class="font-medium">{{ item.itemName }}</span>
                         <span class="text-gray-500 text-sm ml-6">{{ item.itemCategory }}</span>
                     </div>
-                    <div class="text-right">
+                    <div class="text-right sm:pr-4">
                         <span class="font-medium">{{ item.itemQuantity }} x Rs. {{ item.eachItemPrice }}</span>
                         <p class="text-gray-500 text-sm">
                             Total: Rs. {{ item.itemQuantity * item.eachItemPrice }}

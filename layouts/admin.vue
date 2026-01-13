@@ -1,11 +1,11 @@
 <template>
   <div class="min-h-screen flex bg-gray-100">
     <!-- Sidebar -->
-    <aside class="bg-white border-r border-gray-200 w-14 sm:w-64 fixed top-0 left-0 h-screen flex flex-col">
+    <aside class="bg-white border-r border-gray-200 w-14 lg:w-64 fixed top-0 left-0 h-screen flex flex-col">
       <div class="h-full flex flex-col">
-          <div class="border-b py-4 flex justify-center sm:justify-start sm:px-6">
-                <span class="hidden sm:block font-semibold text-lg">Admin Panel</span>
-                <span class="material-symbols-outlined sm:hidden">
+          <div class="border-b py-4 flex justify-center lg:justify-start lg:px-6">
+                <span class="hidden lg:block font-semibold text-lg">Admin Panel</span>
+                <span class="material-symbols-outlined lg:hidden">
                     admin_panel_settings
                 </span>
             </div>
@@ -47,7 +47,7 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 p-6 ml-14 sm:ml-64">
+    <main class="flex-1 p-2 ml-14 lg:ml-64 lg:p-6">
       <slot />
     </main>
   </div>
@@ -56,12 +56,12 @@
 <style scoped>
 .nav-link {
   @apply flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900
-        justify-center sm:justify-start;
+        justify-center lg:justify-start;
 }
 
 .logout-btn {
   @apply w-full flex items-center gap-3 px-3 rounded-md py-2 text-red-600 hover:bg-red-50 hover:text-red-700
-         justify-center sm:justify-start font-medium;
+         justify-center lg:justify-start font-medium;
 }
 
 .icon {
@@ -70,7 +70,7 @@
 }
 
 .label {
-  @apply hidden sm:inline;
+  @apply hidden lg:inline;
 }
 
 .router-link-active {

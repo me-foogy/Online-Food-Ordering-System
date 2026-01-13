@@ -12,13 +12,14 @@
     const completedOrders = computed(() =>
     orders.value.filter(order => order.orderProgress === 'completed').length
     )
-    
+
     //static data
     const orders = ref([
         {
             customerName: 'sworup',
             totalItems: 4,
-            location: 'somewhere',
+            totalAmount: 760,
+            location: 'Kalimati, Kathmandu',
             order: [
                 {
                     itemName: 'chicken Momo',
@@ -39,7 +40,8 @@
         {
             customerName: 'sworup',
             totalItems: 4,
-            location: 'somewhere',
+            totalAmount: 760,
+            location: 'Pepsicola 13, Bhaktapur',
             order: [
                 {
                     itemName: 'chicken Momo',
@@ -66,30 +68,30 @@
 </script>
 
 <template>
-        <div class="grid grid-cols-1 h-1/3 gap-5 sm:grid-cols-3"> 
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-3"> 
             <!--each card-->
-            <div class="h-full w-full border rounded-xl p-4 bg-white ">
-                <div class="flex flex-row justify-between align-middle">
-                    <span class="card-text">Total Orders</span>
-                    <span class="material-symbols-outlined card-icon">Fastfood</span>
+            <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
+                <div class="flex flex-row justify-between items-center">
+                    <span class="text-sm sm:text-base font-medium text-gray-600">Total Orders</span>
+                    <span class="material-symbols-outlined text-3xl sm:text-6xl">Fastfood</span>
                 </div>
-                <p class="text-8xl">{{totalOrders}}</p>
+                <p class="text-5xl sm:text-6xl lg:text-7xl font-bold">{{totalOrders}}</p>
             </div>
 
-            <div class="h-full w-full border rounded-xl p-4 bg-white">
-                <div class="flex flex-row justify-between align-middle">
-                    <span class="card-text">Orders In Progress</span>
-                    <span class="material-symbols-outlined card-icon">Cached</span>
+            <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
+                <div class="flex flex-row justify-between items-center">
+                    <span class="text-sm sm:text-base font-medium text-gray-600">Orders In Progress</span>
+                    <span class="material-symbols-outlined text-3xl sm:text-6xl">Cached</span>
                 </div>
-                <p class="text-8xl">{{orderInProgress}}</p>
+                <p class="text-5xl sm:text-6xl lg:text-7xl font-bold">{{orderInProgress}}</p>
             </div>
 
-            <div class="h-full w-full border rounded-xl p-4 bg-white">
-                <div class="flex flex-row justify-between align-middle">
-                    <span class="card-text">Completed Orders</span>
-                    <span class="material-symbols-outlined card-icon">Beenhere</span>
+            <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
+                <div class="flex flex-row justify-between items-center">
+                    <span class="ctext-sm sm:text-base font-medium text-gray-600">Completed Orders</span>
+                    <span class="material-symbols-outlined text-3xl sm:text-6xl">Beenhere</span>
                 </div>
-                <p class="text-8xl">{{completedOrders}}</p>
+                <p class="text-5xl sm:text-6xl lg:text-7xl font-bold">{{completedOrders}}</p>
             </div>
         </div>
 
@@ -103,10 +105,4 @@
 </template>
 
 <style scoped>
-    .card-text{
-        @apply  text-2xl;
-    }
-    .card-icon{
-        @apply border text-4xl p-4 rounded-lg text-black bg-white;
-    }
 </style>
