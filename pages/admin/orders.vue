@@ -69,27 +69,30 @@
 
 <template>
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-3"> 
+
             <!--each card-->
             <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
                 <div class="flex flex-row justify-between items-center">
                     <span class="text-sm sm:text-base font-medium text-gray-600">Total Orders</span>
-                    <span class="material-symbols-outlined text-3xl sm:text-6xl">Fastfood</span>
+                    <span class="material-symbols-outlined text-5xl sm:text-7xl">Fastfood</span>
                 </div>
                 <p class="text-5xl sm:text-6xl lg:text-7xl font-bold">{{totalOrders}}</p>
             </div>
 
+            <!--each card-->
             <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
                 <div class="flex flex-row justify-between items-center">
                     <span class="text-sm sm:text-base font-medium text-gray-600">Orders In Progress</span>
-                    <span class="material-symbols-outlined text-3xl sm:text-6xl">Cached</span>
+                    <span class="material-symbols-outlined text-5xl sm:text-7xl">Cached</span>
                 </div>
                 <p class="text-5xl sm:text-6xl lg:text-7xl font-bold">{{orderInProgress}}</p>
             </div>
 
+            <!--each card-->
             <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
                 <div class="flex flex-row justify-between items-center">
                     <span class="ctext-sm sm:text-base font-medium text-gray-600">Completed Orders</span>
-                    <span class="material-symbols-outlined text-3xl sm:text-6xl">Beenhere</span>
+                    <span class="material-symbols-outlined text-5xl sm:text-7xl">Beenhere</span>
                 </div>
                 <p class="text-5xl sm:text-6xl lg:text-7xl font-bold">{{completedOrders}}</p>
             </div>
