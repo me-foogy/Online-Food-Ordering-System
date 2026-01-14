@@ -13,8 +13,14 @@
     }
 
     const selectedItem = ref<menuType|null>(null)
-    const foodOptions:string[] = ['All', 'Breakfast', 'Fast Food', 'Sea Food', 'Dinner', 'Desert', 'Drinks'];
+    const foodOptions:string[] = ['All', 'Breakfast', 'Fast Food', 'Sea Food', 'Dinner', 'Dessert', 'Drinks'];
     const activeType = ref('All');
+
+    const filteredMenuData = computed(()=>{
+        if(activeType.value==='All') return menuData;
+        return menuData.filter(item=> item.category===activeType.value);
+    })
+
     const showDialog = ref(false);
     const date = new Date();
     const formatedDate = `${date.getFullYear()} - ${date.getMonth()+1} - ${date.getDate()}`;
@@ -96,6 +102,6 @@
 
     <!--Each Menu Item-->
     <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 overflow-y-auto">
-        <MenuItem v-for="item in menuData" :key="item.id" :item="item" @edit="openDialog"/>
+        <MenuItem v-for="item in filteredMenuData" :key="item.id" :item="item" @edit="openDialog"/>
     </div>
 </template>

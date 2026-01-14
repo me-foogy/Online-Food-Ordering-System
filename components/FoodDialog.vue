@@ -74,7 +74,7 @@
                         <option value="Fast Food">Fast Food</option>
                         <option value="Sea Food">Sea Food</option>
                         <option value="Dinner">Dinner</option>
-                        <option value="Desert">Desert</option>
+                        <option value="Dessert">Dessert</option>
                         <option value="Drinks">Drinks</option>
                     </select>
 
