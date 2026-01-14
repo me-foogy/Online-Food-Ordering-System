@@ -1,20 +1,29 @@
 <script setup lang="ts">
-    defineProps<{
-        item: {
-            id: number
-            name: string
-            category: string
-            price: number
-            description: string
-            image: string
-            inStock: boolean
-        }
+
+    interface menuType {
+        id?: number
+        name?: string,
+        category?: string,
+        price?: number,
+        description?: string
+        image?: string
+        inStock?: boolean
+    }
+
+    const props = defineProps<{
+        item: menuType
     }>()
-    const inStock = ref(true)
+
+    const inStock = ref(true);
+
+    const emit = defineEmits<{
+        (e: 'edit', item:menuType): void
+    }>()
     
 </script>
 
 <template>
+
     <div class="w-full bg-white border rounded-xl overflow-hidden shadow-sm flex flex-col">
         <!--Menu Image-->
         <img
@@ -55,7 +64,8 @@
                 </div>
 
 
-                <button class="flex items-center gap-1 px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:bg-gray-100 transition">
+                <button class="flex items-center gap-1 px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:bg-gray-100 transition"
+                @click="emit('edit', item)">
                     <span class="material-symbols-outlined text-base">edit</span>
                     Edit
                 </button>
