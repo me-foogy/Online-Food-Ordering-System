@@ -58,7 +58,8 @@
                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                 hover:border-blue-400 transition min-w-0"/>
                 <button type="submit"
-                    class="h-11 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition flex-shrink-0">
+                    class="h-11 px-4 bg-blue-600 text-white rounded-md 
+                    hover:bg-blue-700 hover:translate-y-[1px] transition flex-shrink-0">
                     <span class="material-symbols-outlined text-xl">search</span>
                 </button>
             </form>
@@ -88,7 +89,7 @@
         <div class="flex gap-3 flex-wrap">
             <button v-for="type in foodOptions":key="type" @click="activeType = type"
             class="px-2 py-2 min-w-[5rem] rounded-xl text-sm font-normal border transition
-            hover:border-blue-500
+            hover:border-blue-500 hover:translate-y-[1px]
             sm:px-4 sm:min-w-[10rem] sm:font-medium"
             :class="
                 activeType === type

@@ -85,7 +85,7 @@
                     <span class="text-sm sm:text-base font-medium text-gray-600">Orders In Progress</span>
                     <span class="material-symbols-outlined text-5xl sm:text-7xl">Cached</span>
                 </div>
-                <p class="text-5xl sm:text-6xl lg:text-7xl font-bold">{{orderInProgress}}</p>
+                <p class="text-5xl sm:text-6xl lg:text-7xl font-bold text-blue-500">{{orderInProgress}}</p>
             </div>
 
             <!--each card-->
@@ -94,7 +94,7 @@
                     <span class="ctext-sm sm:text-base font-medium text-gray-600">Completed Orders</span>
                     <span class="material-symbols-outlined text-5xl sm:text-7xl">Beenhere</span>
                 </div>
-                <p class="text-5xl sm:text-6xl lg:text-7xl font-bold">{{completedOrders}}</p>
+                <p class="text-5xl sm:text-6xl lg:text-7xl font-bold text-green-500">{{completedOrders}}</p>
             </div>
         </div>
 
