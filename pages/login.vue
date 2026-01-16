@@ -22,10 +22,9 @@
         return;
     })
 
-    const handleLoginSubmit = ()=>{
+    const handleLoginSubmit = async ()=>{
         rememberMeHandler();
-        console.log(formData.value);
-        alert('The info was submitted');
+        await navigateTo('/admin/orders');
     }
 
     const visibility = ref<boolean>(false);
@@ -78,7 +77,7 @@
             </div>
 
             <!--Input Form-->
-            <form class="pt-8" @submit="handleLoginSubmit">
+            <form class="pt-8" @submit.prevent="handleLoginSubmit">
 
                 <!--Email-->
                 <div class="mb-4">
@@ -88,7 +87,7 @@
                                 focus:outline-none focus:border-blue-500
                                 transition"
                     />
-                    <P class="text-red-500" v-show="emailError">Enter email in correct format</P>
+                    <P class="text-red-500" v-show="emailError">Email must be in the in correct format</P>
                 </div>
 
                 <!--password-->
@@ -96,15 +95,15 @@
                 <div class="flex flex-row space-x-2 mb-2">
                     <input :type="visibility?`text`:`password`" id="password" v-model="formData.password" required
                         class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border
-                                focus:outline-none focus:border-blue-500
+                                focus:outline-none focus:border-blue-500 
                                 transition"
                     />
                     <button type="button" @click="()=>visibility=!visibility" 
-                        class="bg-white border border-gray-300 rounded-md px-2
-                                hover:border-blue-500"
+                        class="bg-white border border-gray-300 rounded-md px-2 flex items-center justify-center
+                                hover:border-blue-500" 
                         >
-                        <span class="material-symbols-outlined" v-if="visibility">visibility</span>
-                        <span class="material-symbols-outlined" v-else>visibility_off</span>
+                        <span class="material-symbols-outlined my-auto" v-if="visibility">visibility</span>
+                        <span class="material-symbols-outlined my-auto" v-else>visibility_off</span>
                     </button>
                 </div>
                 <P class="text-red-500" v-show="passwordError">Password must include a capital letter and a special character</P>
@@ -128,7 +127,10 @@
 
             <!--Sign Up info-->
             <div class="mt-10 space-x-2 w-full flex flex-row justify-center">
-                <span>Don't have an account?</span><button class="text-blue-600">Sign Up</button>
+                <span>Don't have an account?</span>
+                <button class="text-blue-600">
+                    <NuxtLink to="/signup">Sign Up</NuxtLink>
+                </button>
             </div>
         </div>
     </div>
