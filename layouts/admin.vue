@@ -76,5 +76,9 @@
 .router-link-active {
   @apply bg-gray-200 font-semibold text-gray-900;
 }
+
+.router-link-active > .icon{
+  @apply text-blue-500
+}
 </style>
 
