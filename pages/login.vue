@@ -1,5 +1,8 @@
 <script setup lang="ts">
 
+    import { useAuthStore } from '@/stores/auth';
+    const auth = useAuthStore();
+
     interface FormData {
         email: string
         password: string
@@ -24,6 +27,13 @@
 
     const handleLoginSubmit = async ()=>{
         rememberMeHandler();
+        //TODO: Call the api to check for the user
+        //data will be fetched from the api to check the user
+        //for now let user = sworup which will be fetched from the dabase after authentication
+
+        //pinia state change for user
+        auth.login('Sworup Karki');
+
         await navigateTo('/admin/orders');
     }
 

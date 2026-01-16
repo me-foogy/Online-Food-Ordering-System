@@ -1,7 +1,9 @@
 <script setup lang="ts">
 
     // Total number of orders
-    const totalOrders = computed(() => orders.value.length)
+    const totalOrders = computed(() => 
+    orders.value.filter(order => order.orderProgress === 'notStarted').length
+    )
 
     // Orders In Progress
     const orderInProgress = computed(() =>
@@ -73,10 +75,10 @@
             <!--each card-->
             <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
                 <div class="flex flex-row justify-between items-center">
-                    <span class="text-sm sm:text-base font-medium text-gray-600">Total Orders</span>
+                    <span class="text-sm sm:text-base font-medium text-gray-600">Remaining Orders</span>
                     <span class="material-symbols-outlined text-5xl sm:text-7xl">Fastfood</span>
                 </div>
-                <p class="text-5xl sm:text-6xl lg:text-7xl font-bold">{{totalOrders}}</p>
+                <p class="text-5xl sm:text-6xl lg:text-7xl font-bold text-red-500">{{totalOrders}}</p>
             </div>
 
             <!--each card-->
