@@ -1,5 +1,26 @@
 <script setup lang="ts">
 
+    import {orderData} from './orderData'
+
+    type orderProgressType = 'notStarted' | 'inProgress' | 'completed';
+    interface orderDataType {
+        customerName: string,
+        totalItems: number,
+        totalAmount: number,
+        location: string,
+        order: Array<orderItem>
+        customerNotes: string,
+        //<TODO>: Fix
+        orderProgress: any // orderProgess must have orderProgressType but when fetching it is fetched as string which is creating problems 
+    }
+
+    interface orderItem{
+        itemName: string,
+        itemCategory: string,
+        itemQuantity: number,
+        eachItemPrice: number
+    }
+
     // Total number of orders
     const totalOrders = computed(() => 
     orders.value.filter(order => order.orderProgress === 'notStarted').length
@@ -16,54 +37,8 @@
     )
 
     //static data
-    const orders = ref([
-        {
-            customerName: 'sworup',
-            totalItems: 4,
-            totalAmount: 760,
-            location: 'Kalimati, Kathmandu',
-            order: [
-                {
-                    itemName: 'chicken Momo',
-                    itemCategory: 'lunch',
-                    itemQuantity: 2,
-                    eachItemPrice: 200
-                },
-                {
-                    itemName: 'chicken Chowmein',
-                    itemCategory: 'lunch',
-                    itemQuantity: 2,
-                    eachItemPrice: 180
-                }
-            ],
-            customerNotes: `nothing of note`,
-            orderProgress: 'notStarted' as orderProgressType
-        },
-        {
-            customerName: 'sworup',
-            totalItems: 4,
-            totalAmount: 760,
-            location: 'Pepsicola 13, Bhaktapur',
-            order: [
-                {
-                    itemName: 'chicken Momo',
-                    itemCategory: 'lunch',
-                    itemQuantity: 2,
-                    eachItemPrice: 200
-                },
-                {
-                    itemName: 'chicken Chowmein',
-                    itemCategory: 'lunch',
-                    itemQuantity: 2,
-                    eachItemPrice: 180
-                }
-            ],
-            customerNotes: 'nothing of note',
-            orderProgress: 'inProgress' as orderProgressType
-        }
-    ])
+    const orders = ref<orderDataType[]>(orderData);
 
-    type orderProgressType = 'notStarted' | 'inProgress' | 'completed';
     definePageMeta({
         layout: 'admin' 
     })

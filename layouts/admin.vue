@@ -1,56 +1,57 @@
 <template>
-  <div class="min-h-screen flex bg-gray-100">
-    <!-- Sidebar -->
-    <aside class="bg-white border-r border-gray-200 w-14 lg:w-64 fixed top-0 left-0 h-screen flex flex-col">
-      <div class="h-full flex flex-col">
-          <div class="border-b py-4 flex justify-center lg:justify-start lg:px-6">
-                <span class="hidden lg:block font-semibold text-lg">Admin Panel</span>
-                <span class="material-symbols-outlined lg:hidden">
-                    admin_panel_settings
-                </span>
-            </div>
-            <!-- Navigation -->
-            <nav class="flex-1 px-2 py-4 space-y-1">
-                <NuxtLink to="/admin" class="nav-link">
-                    <span class="material-symbols-outlined icon">
-                    dashboard
-                    </span>
-                    <span class="label">Dashboard</span>
-                </NuxtLink>
-                <NuxtLink to="/admin/orders" class="nav-link">
-                    <span class="material-symbols-outlined icon">
-                    receipt_long
-                    </span>
-                    <span class="label">Orders</span>
-                </NuxtLink>
-                <NuxtLink to="/admin/menu" class="nav-link">
-                    <span class="material-symbols-outlined icon">
-                    restaurant_menu
-                    </span>
-                    <span class="label">Menu Items</span>
-                </NuxtLink>
-                <NuxtLink to="/admin/sales" class="nav-link">
-                    <span class="material-symbols-outlined icon">
-                    bar_chart
-                    </span>
-                    <span class="label">Sales</span>
-                </NuxtLink>
-            </nav>
-            <!-- Logout -->
-            <div class="p-4 border-t">
-              <button class="logout-btn">
-                <span class="material-symbols-outlined icon">logout</span>
-                <span class="label">Logout</span>
-              </button>
-            </div>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="flex-1 p-2 ml-14 lg:ml-64 lg:p-6">
-      <slot />
-    </main>
-  </div>
+  <UApp> //Nuxt UI element
+    <div class="min-h-screen flex bg-gray-100">
+      <!-- Sidebar -->
+      <aside class="bg-white border-r border-gray-200 w-14 lg:w-64 fixed top-0 left-0 h-screen flex flex-col">
+        <div class="h-full flex flex-col">
+            <div class="border-b py-4 flex justify-center lg:justify-start lg:px-6">
+                  <span class="hidden lg:block font-semibold text-lg">Admin Panel</span>
+                  <span class="material-symbols-outlined lg:hidden">
+                      admin_panel_settings
+                  </span>
+              </div>
+              <!-- Navigation -->
+              <nav class="flex-1 px-2 py-4 space-y-1">
+                  <NuxtLink to="/admin" class="nav-link">
+                      <span class="material-symbols-outlined icon">
+                      dashboard
+                      </span>
+                      <span class="label">Dashboard</span>
+                  </NuxtLink>
+                  <NuxtLink to="/admin/orders" class="nav-link">
+                      <span class="material-symbols-outlined icon">
+                      receipt_long
+                      </span>
+                      <span class="label">Orders</span>
+                  </NuxtLink>
+                  <NuxtLink to="/admin/menu" class="nav-link">
+                      <span class="material-symbols-outlined icon">
+                      restaurant_menu
+                      </span>
+                      <span class="label">Menu Items</span>
+                  </NuxtLink>
+                  <NuxtLink to="/admin/sales" class="nav-link">
+                      <span class="material-symbols-outlined icon">
+                      bar_chart
+                      </span>
+                      <span class="label">Sales</span>
+                  </NuxtLink>
+              </nav>
+              <!-- Logout -->
+              <div class="p-4 border-t">
+                <button class="logout-btn">
+                  <span class="material-symbols-outlined icon">logout</span>
+                  <span class="label">Logout</span>
+                </button>
+              </div>
+        </div>
+      </aside>
+      <!-- Main Content -->
+      <main class="flex-1 p-2 ml-14 lg:ml-64 lg:p-6">
+        <slot />
+      </main>
+    </div>
+  </UApp>
 </template>
 
 <style scoped>

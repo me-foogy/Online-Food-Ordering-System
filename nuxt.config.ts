@@ -2,8 +2,8 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-   tailwindcss: { exposeConfig: true },
-  modules: ['@nuxtjs/tailwindcss', "nuxt-charts",'@pinia/nuxt'],
+  // tailwindcss: { exposeConfig: true },
+  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt'],
   app:{
     head:{
       link: [
