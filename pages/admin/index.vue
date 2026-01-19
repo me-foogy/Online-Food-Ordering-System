@@ -1,9 +1,14 @@
-<template>
-    <h1>This is the admin page</h1>
-</template>
-
 <script setup>
+
+    import { useAuthStore } from '@/stores/auth';
+    const auth = useAuthStore();
+
     definePageMeta({
         layout: 'admin' 
     })
 </script>
+
+<template>
+    <h1 class="">Welcome <br> {{auth.userName}}</h1>
+</template>
+

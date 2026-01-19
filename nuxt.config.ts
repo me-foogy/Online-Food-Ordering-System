@@ -2,8 +2,11 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-   tailwindcss: { exposeConfig: true },
-  modules: ['@nuxtjs/tailwindcss'],
+  tailwindcss: { exposeConfig: true },
+  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt'],
+   build: {
+    transpile: ['@vuepic/vue-datepicker'] //datepicker component
+  },
   app:{
     head:{
       link: [

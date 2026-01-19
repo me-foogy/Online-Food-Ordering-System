@@ -2,6 +2,9 @@
     import {ref} from 'vue';
 
     import { menuData } from './menudata';
+    import MenuItem from '@/components/admin/MenuItem.vue'
+    import FoodDialog from '@/components/admin/FoodDialog.vue'
+
     interface menuType {
         id?: number
         name?: string,
@@ -11,20 +14,21 @@
         image?: string
         inStock?: boolean
     }
-
-    const selectedItem = ref<menuType|null>(null)
+    
+    const searchBarInput = ref<string>('');
+    const selectedItem = ref<menuType|null>(null);
     const foodOptions:string[] = ['All', 'Breakfast', 'Fast Food', 'Sea Food', 'Dinner', 'Dessert', 'Drinks'];
     const activeType = ref('All');
 
     const filteredMenuData = computed(()=>{
-        if(activeType.value==='All') return menuData;
-        return menuData.filter(item=> item.category===activeType.value);
+        if(activeType.value==='All') return menuData.filter(item=>item.name.toLowerCase().includes(searchBarInput.value.toLowerCase()));
+        return menuData.filter(item=> item.category===activeType.value && item.name.toLowerCase().includes(searchBarInput.value.toLowerCase()));
     })
 
     const showDialog = ref(false);
     const date = new Date();
     const formatedDate = `${date.getFullYear()} - ${date.getMonth()+1} - ${date.getDate()}`;
-
+    
     function openDialog(item: menuType){
         selectedItem.value=item;
         showDialog.value=true;
@@ -53,15 +57,15 @@
         <!-- Center: Search -->
         <div class="flex md:justify-center flex-1 min-w-0">
             <form class="flex w-full max-w-md gap-2 flex-1 min-w-0">
-                <input type="text" placeholder="Search food"
-                class="flex-1 h-11 px-4 border border-gray-300 rounded-md text-sm sm:text-sm md:text-base text-gray-800 placeholder-gray-400
+                <input type="text" placeholder="Search food" v-model="searchBarInput"
+                class="flex-1 h-11 w-full px-4 border border-gray-300 rounded-md text-sm sm:text-sm md:text-base text-gray-800 placeholder-gray-400
                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                 hover:border-blue-400 transition min-w-0"/>
-                <button type="submit"
+                <!-- <button type="submit"
                     class="h-11 px-4 bg-blue-600 text-white rounded-md 
                     hover:bg-blue-700 hover:translate-y-[1px] transition flex-shrink-0">
                     <span class="material-symbols-outlined text-xl">search</span>
-                </button>
+                </button> -->
             </form>
         </div>
 
