@@ -1,4 +1,8 @@
 <script setup lang="ts">
+
+    import { useCartStore } from '@/stores/cart'
+    const cart = useCartStore();
+
     interface cartDataType {
         id: number,
         name: string,
@@ -11,13 +15,17 @@
     const props = defineProps<{
         item: cartDataType
     }>();
-      
-    const quantity = ref<number>(props.item.quantity);
 
-    const emit = defineEmits<{
-        (e: 'removeFromCart', id: number): void
-        (e: 'updateQuantity', quantityAndId: {quantity: number, id: number}):void
-    }>()
+    const increaseQuantity = () => {
+        cart.updateQuantity({ id: props.item.id, quantity: props.item.quantity + 1 });
+    }
+
+    const decreaseQuantity = () => {
+        if (props.item.quantity > 1) {
+            cart.updateQuantity({ id: props.item.id, quantity: props.item.quantity - 1 });
+        }
+    }
+
 </script>
 
 <template>
@@ -38,7 +46,7 @@
                     {{ item.name }}
                 </h2>
                 <span class="material-symbols-outlined text-gray-400 hover:text-red-500 cursor-pointer transition"
-                @click="emit('removeFromCart', item.id)">
+                @click="cart.removeFromCart(item.id)">
                     delete
                 </span>
             </div>
@@ -56,21 +64,12 @@
                 <div class="flex items-center gap-1">
 
                     <button class="material-symbols-outlined text-gray-400 hover:text-blue-600 cursor-pointer transition"
-                    @click="()=>{
-                        if(quantity>1){quantity--; emit('updateQuantity', {quantity: quantity, id:item.id})}
-                    }">
-                        remove_circle
-                    </button>
+                    @click="decreaseQuantity">remove_circle </button>
 
-                    <span class="font-medium text-blue-600 min-w-[20px] text-center">{{quantity}}</span>
+                    <span class="font-medium text-blue-600 min-w-[20px] text-center">{{item.quantity}}</span>
 
                     <button class="material-symbols-outlined text-gray-400 hover:text-blue-600 cursor-pointer transition"
-                    @click="()=>{
-                        quantity++;
-                        emit('updateQuantity', {quantity: quantity, id:item.id});
-                        }">   
-                        add_circle
-                    </button>
+                    @click="increaseQuantity">add_circle</button>
 
                 </div>
             </div>
