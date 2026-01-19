@@ -7,12 +7,14 @@ export const orderData = [
             location: 'Kalimati, Kathmandu',
             order: [
                 {
+                    id: 1,
                     itemName: 'chicken Momo',
                     itemCategory: 'lunch',
                     itemQuantity: 2,
                     eachItemPrice: 200
                 },
                 {
+                    id: 2,
                     itemName: 'chicken Chowmein',
                     itemCategory: 'lunch',
                     itemQuantity: 2,
@@ -30,12 +32,14 @@ export const orderData = [
             location: 'Pepsicola 13, Bhaktapur',
             order: [
                 {
+                    id: 1,
                     itemName: 'chicken Momo',
                     itemCategory: 'lunch',
                     itemQuantity: 2,
                     eachItemPrice: 200
                 },
                 {
+                    id:2,
                     itemName: 'chicken Chowmein',
                     itemCategory: 'lunch',
                     itemQuantity: 2,
