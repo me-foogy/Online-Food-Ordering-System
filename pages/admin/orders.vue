@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
     import {orderData} from './orderData'
+    import EachOrder from '@/components/admin/EachOrder.vue'
 
     type orderProgressType = 'notStarted' | 'inProgress' | 'completed';
     interface orderDataType {

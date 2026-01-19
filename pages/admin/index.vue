@@ -9,6 +9,6 @@
 </script>
 
 <template>
-    <h1>Welcome {{auth.userName}}</h1>
+    <h1 class="">Welcome <br> {{auth.userName}}</h1>
 </template>
 

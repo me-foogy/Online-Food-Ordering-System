@@ -1,0 +1,55 @@
+<script setup lang="ts">
+
+    interface menuType {
+        id?: number
+        name?: string,
+        category?: string,
+        price?: number,
+        description?: string
+        image?: string
+        inStock?: boolean
+    }
+
+    const props = defineProps<{
+        item: menuType
+    }>()
+
+    const emit = defineEmits<{
+        (e: 'addToCart', item:menuType): void
+    }>()
+    
+</script>
+
+<template>
+
+    <div class="w-full bg-white border rounded-xl overflow-hidden shadow-sm flex flex-col">
+        <!--Menu Image-->
+        <img
+            :src="item.image"
+            alt="Food item"
+            class="w-full h-44 object-cover"
+        />
+
+        <div class="p-6 flex flex-col h-full flex-1">
+            <!--Name and Price-->
+            <div>
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">{{item.name}}</h3>
+                    <span class="text-blue-600 font-semibold">Rs. {{item.price}}</span>
+                </div>
+                <!--Description-->
+                <p class="text-sm text-gray-600 line-clamp-2">{{item.description}}</p>
+            </div>
+
+            <div class="flex items-center justify-between pt-3 mt-auto">
+                <button class="material-symbols-outlined">favorite</button>
+                <button class="flex items-center gap-1 px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:bg-gray-100 transition"
+                @click="emit('addToCart', item)">
+                    <span class="material-symbols-outlined text-base">add</span>
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+    </div>
+</template>
+

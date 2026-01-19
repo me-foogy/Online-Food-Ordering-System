@@ -2,6 +2,9 @@
     import {ref} from 'vue';
 
     import { menuData } from './menudata';
+    import MenuItem from '@/components/admin/MenuItem.vue'
+    import FoodDialog from '@/components/admin/FoodDialog.vue'
+
     interface menuType {
         id?: number
         name?: string,
