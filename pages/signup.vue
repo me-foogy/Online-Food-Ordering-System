@@ -1,28 +1,49 @@
 <script setup lang="ts">
 
-    interface signUpFormData {
-        email: string
-        password: string
+    import {signupSchema} from '@/shared/schemas/signup'
+    import {z} from 'zod';
+    type basesignUpData = z.infer<typeof signupSchema>
+    type signUpData= Omit<basesignUpData, 'phoneNo'>&{
+        phoneNo: string //converted to number by zod in validation declared string for binding
         confirmPassword: string
-        name: string
-        phoneNo: number | null
-        address: string
         termsAndCond: boolean
     }
 
-    const signUpFormData=ref<signUpFormData>({
+    const signUpFormData=ref<signUpData>({
         email: '',
         password: '',
         confirmPassword: '',
         name: '',
-        phoneNo: null,
+        phoneNo: "",
         address: '',
         termsAndCond: false
     })
 
     const handleSignUpSubmit = async ()=>{
         console.log(signUpFormData);
-        await navigateTo('/login');
+        //api call for signup
+        try{
+            const {data, error, status} = await useFetch('/api/auth/signup',{
+                method: 'POST',
+                body: signUpFormData.value
+            });
+            
+            if(error.value){
+                console.error('SERVER ERROR');
+                return
+            }
+
+            if(data.value?.success){
+                console.log('USER:', data.value);
+                await navigateTo('/login');
+            }else{
+                console.error('LOGIN FAILED');
+            }
+            
+        }
+        catch(err){
+            console.error('An error occured;', err);
+        }
     }
 
     const passwordError = ref<boolean>(false);
@@ -168,7 +189,7 @@
                     disabled:bg-blue-400
                     ">Next</button>
 
-                    <button type="submit" :disabled="passwordError||emailError||confirmPasswordError||!signUpFormData.termsAndCond" v-if="displaySection==='secondPart'"
+                    <button type="submit" :disabled="passwordError||emailError||confirmPasswordError||phoneNoError||!signUpFormData.termsAndCond" v-if="displaySection==='secondPart'"
                     class="border bg-blue-600 text-white px-12 py-2 block rounded-md
                     hover:bg-blue-700 hover:shadow-sm
                     disabled:bg-blue-400

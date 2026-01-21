@@ -3,9 +3,15 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   tailwindcss: { exposeConfig: true },
-  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt'],
+  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', 'nuxt-toast'],
    build: {
     transpile: ['@vuepic/vue-datepicker'] //datepicker component
+  },
+  toast: {
+    settings: {
+      position: 'topCenter',
+      timeout: 3000,
+    }
   },
   app:{
     head:{
