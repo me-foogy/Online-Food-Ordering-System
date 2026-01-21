@@ -3,9 +3,12 @@ import { signupSchema } from '@/shared/schemas/signup';
 import { userArray } from '~/server/db';
 import { setResponseStatus } from 'h3';
 import {z} from 'zod';
- 
+import {db} from "@/drizzle/index"
+import { usersTable } from '~/drizzle/schema';
+import {eq} from 'drizzle-orm'
+
 type baseLoginResponse = z.infer<typeof signupSchema> & {role: 'user'|'admin'}
-type loginResponse = {success: true; message:baseLoginResponse } | {success: false; message: string}
+type loginResponse = {success: true; message:Omit<baseLoginResponse,'password'> } | {success: false; message: string}
 
 export default defineEventHandler(async(event)=>{
     const body = await readBody(event);
@@ -15,23 +18,28 @@ export default defineEventHandler(async(event)=>{
     if(!validated.success){
         setResponseStatus(event, 400);
         return {success: false, message: 'Form validation error'}
-    }
+    }  
 
-    const checkUser = userArray.find(user=>user.email===body.email);
+    const {email, password} = validated.data;
+    
+    //fetch user
+    const [user]= await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
 
-    if(checkUser)
-    {
-        if(checkUser.password===body.password){
-            setResponseStatus(event, 200);
-            return {success: true, message:checkUser}
-        }
-        else{
-            setResponseStatus(event, 400);
-            return {success: false, message:'username and password do not match'}
-        }
-    }
-    else{
+    if (!user) {
         setResponseStatus(event, 400);
-        return {success: false, message:'user not found'}
+        return { success: false, message: "User not found" };
     }
+
+    if (user.password !== password) {
+        setResponseStatus(event, 400);
+        return { success: false, message: "Username and password do not match" };
+    }
+
+    setResponseStatus(event, 200);
+    return {
+        success: true,
+        message: user,
+    };
+
+    
 })

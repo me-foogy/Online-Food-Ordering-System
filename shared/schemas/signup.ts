@@ -10,10 +10,8 @@ export const signupSchema = z.object({
     name: z.string()
         .min(1, 'Name Cannot be Empty'),
 
-    phoneNo: z.coerce.number()
-            .refine(val => Number.isInteger(val) && val.toString().length === 10, {
-                message: "Phone number must be exactly 10 digits"
-            }),
+    phoneNo: z.string()
+            .min(10, 'Number must have 10 digits'),
 
     address:z.string()
             .min(5, 'Address Too Short'),
