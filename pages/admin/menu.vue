@@ -1,36 +1,64 @@
 <script setup lang="ts">
     import {ref} from 'vue';
-
-    import { menuData } from './menudata';
     import MenuItem from '@/components/admin/MenuItem.vue'
     import FoodDialog from '@/components/admin/FoodDialog.vue'
+    import { useToast } from '#imports';
+    const toast = useToast();
 
     interface menuType {
-        id?: number
-        name?: string,
-        category?: string,
-        price?: number,
-        description?: string
-        image?: string
-        inStock?: boolean
+        id: number
+        name: string,
+        category: string,
+        price: number,
+        description: string
+        image: string
+        inStock: boolean
     }
-    
+
+    interface menuResponse{
+        success: boolean
+        message: Required<menuType>[] | string
+    }
+
     const searchBarInput = ref<string>('');
     const selectedItem = ref<menuType|null>(null);
     const foodOptions:string[] = ['All', 'Breakfast', 'Fast Food', 'Sea Food', 'Dinner', 'Dessert', 'Drinks'];
     const activeType = ref('All');
-
-    const filteredMenuData = computed(()=>{
-        if(activeType.value==='All') return menuData.filter(item=>item.name.toLowerCase().includes(searchBarInput.value.toLowerCase()));
-        return menuData.filter(item=> item.category===activeType.value && item.name.toLowerCase().includes(searchBarInput.value.toLowerCase()));
-    })
-
     const showDialog = ref(false);
+    const dialogAction = ref<'Add'|'Edit'>('Add');
     const date = new Date();
     const formatedDate = `${date.getFullYear()} - ${date.getMonth()+1} - ${date.getDate()}`;
+
+    //----------------API CALL----------------//
+
+    const menuData = ref<menuType[]>([]);
+    const {data, error} = await useFetch<menuResponse>('/api/menu/all')
+
+    if(error.value){
+        menuData.value=[];
+        console.error('SERVER ERROR');
+        toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+    }
+    else{
+        if(data.value?.success && typeof(data.value.message) !== 'string'){
+            menuData.value=data.value.message
+            toast.success({title: 'Success', message:`Menu Items fetched successfully`});
+        }else{
+            menuData.value=[];
+            toast.error({title: 'ERROR', message:data.value?.message as string});
+        }
+    }
+
+    //--------------------------------------------//
+
+    const filteredMenuData = computed(()=>{    
+            if(activeType.value==='All') return menuData.value.filter(item=>item.name.toLowerCase().includes(searchBarInput.value.toLowerCase()));
+            return menuData.value.filter(item=> item.category===activeType.value && item.name.toLowerCase().includes(searchBarInput.value.toLowerCase()));
+    })
     
-    function openDialog(item: menuType){
+    function openDialog(item: menuType | null){
         selectedItem.value=item;
+        dialogAction.value='Edit'
         showDialog.value=true;
     }
 
@@ -74,14 +102,14 @@
             <button
             class="flex items-center gap-2 h-11 px-5 bg-blue-600 text-white rounded-md font-medium whitespace-nowrap
             hover:bg-blue-700 transition"
-             @click="showDialog = true">
+             @click="dialogAction='Add'; showDialog = true">
                 <span class="material-symbols-outlined text-base sm:text-xl md:text-xl">add</span>
                 <span class="text-sm sm:text-base md:text-lg truncate">Add Item</span>
             </button>
         </div>
     </div>
 
-    <FoodDialog v-if="showDialog" :isOpen="showDialog" :onClose="()=>{showDialog=false; selectedItem=null}" :menuInfo="selectedItem"></FoodDialog>
+    <FoodDialog v-if="showDialog" :isOpen="showDialog" :dialogAction="dialogAction" :menuInfo="selectedItem" :onClose="()=>{showDialog=false; selectedItem=null}" ></FoodDialog>
 
 
 

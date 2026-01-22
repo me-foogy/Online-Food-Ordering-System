@@ -16,7 +16,7 @@ export default defineNuxtRouteMiddleware((to)=>{
         }
     return
   }
-
+ 
   if (to.path.startsWith('/admin') && !auth.isAdmin) {
     return navigateTo('/user')
   }

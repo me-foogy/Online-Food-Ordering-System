@@ -1,5 +1,8 @@
 <script setup lang="ts">
 
+    import { useToast } from '#imports';
+    const toast = useToast();
+
     interface menuType {
         id?: number
         name?: string,
@@ -10,9 +13,15 @@
         inStock?: boolean
     }
 
+    interface AddMenuResponse{
+        success: boolean
+        message: Required<menuType>[] | string
+    }
+
     const props = defineProps<{
     isOpen: boolean
-    onClose?: () => void
+    dialogAction: 'Add'|'Edit'
+    onClose: () => void
     menuInfo?: menuType | null
     }>()
 
@@ -45,6 +54,39 @@
     { immediate: true }
     )
 
+    const handleSubmit = async () =>{
+        if (props.dialogAction==='Add'||'Edit'){
+           //handle Add Action to api
+           try{
+                const {data, error} = await useFetch<AddMenuResponse>(`/api/menu/${props.dialogAction.toLowerCase()}`, {
+                    method: 'POST',
+                    body: (props.dialogAction=='Add')?{...form}:{...form, id: props.menuInfo?.id}
+                })
+                
+                if(error.value){
+                console.error('SERVER ERROR');
+                toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+                return
+                }
+
+                if(data.value?.success && typeof(data.value.message) !== 'string'){
+                    
+                    const name = data.value.message[0]?.name;
+                    //api always returns at least one object in the array but the if is assurance for ts
+                    if(name) toast.success({title: 'Success', message:`${name} ${props.dialogAction.toLowerCase()}ed successfully`});
+
+                }else{
+                    toast.error({title: 'ERROR', message:data.value?.message as string});
+                }
+            
+            }
+            catch(err){
+                toast.error({title: 'ERROR', message:'Unexpected error occured'});
+            }
+        }
+        props.onClose();
+    }
+
 </script>
 
 <template>
@@ -52,10 +94,10 @@
         <div v-if="props.isOpen" class="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
             <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">
-                    Add / Edit Menu Item
+                    {{dialogAction}} Menu Item
                 </h2>
 
-                <form class="space-y-4" @submit.prevent="">
+                <form class="space-y-4" @submit.prevent="handleSubmit">
                     <!-- Name -->
                     <input v-model="form.name" type="text" placeholder="Item name" maxlength="40"
                         class="w-full h-11 px-4 border rounded-md focus:border-blue-500 focus:outline-none"
