@@ -1,4 +1,4 @@
-import { integer, pgTable, varchar, boolean } from "drizzle-orm/pg-core";
+import { integer, pgTable, varchar, boolean, timestamp } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -18,4 +18,28 @@ export const menuTable = pgTable('menu', {
   description: varchar({length:255}).notNull(),
   image: varchar({length:255}).notNull(),
   inStock: boolean('in_stock').notNull().default(true)
+})
+
+export const ordersTable = pgTable('orders',{
+  orderId: integer('order_id').primaryKey().generatedAlwaysAsIdentity().notNull(),
+  userId: integer('user_id').references(()=>usersTable.id).notNull(),
+  customerName:varchar('customer_name',{length: 255}).notNull(),
+  createdAt: timestamp('created_at', {withTimezone: true}).defaultNow().notNull(),
+  address: varchar({length: 255}).notNull(),
+  customerNotes: varchar({length: 255}).default(''),
+  orderProgress: varchar({length:255}).notNull().default('notStarted')
+})
+
+export const eachOrderTable = pgTable('each_order',{
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  orderId: integer().references(()=>ordersTable.orderId).notNull(),
+  itemName: varchar('item_name', {length:255}).notNull(),
+  itemCategory: varchar('item_category', {length: 255}).notNull(),
+  itemQuantity: integer('item_quantity').notNull(),
+  itemPrice: integer('item_price').notNull()
+})
+
+export const categoryTable = pgTable('category', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar({length: 255}).notNull()
 })

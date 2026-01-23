@@ -1,7 +1,8 @@
 <script setup lang="ts">
 
-    import {orderData} from './orderData'
     import EachOrder from '@/components/admin/EachOrder.vue'
+    import { useToast } from '#imports';
+    const toast = useToast();
 
     type orderProgressType = 'notStarted' | 'inProgress' | 'completed';
     interface orderDataType {
@@ -21,6 +22,32 @@
         itemQuantity: number,
         eachItemPrice: number
     }
+    interface apiResponse{
+        success: boolean
+        message: orderDataType[] | string
+    }
+
+    //-------------------------API FETCH FOR api/order/fetch GET request ----------------------//
+
+    const orderData = ref<orderDataType[]>([]);
+    const {data, error} = await useFetch<apiResponse>('/api/orders/fetch')
+
+    if(error.value){
+        orderData.value=[];
+        console.error('SERVER ERROR');
+        toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+    }
+    else{
+        if(data.value?.success && typeof(data.value.message) !== 'string'){
+            orderData.value=data.value.message
+            toast.success({title: 'Success', message:`Orders fetched successfully`});
+        }else{
+            orderData.value=[];
+            toast.error({title: 'ERROR', message:data.value?.message as string});
+        }
+    }
+
+    //--------------------------------------------------------------------------------------//
 
     // Total number of orders
     const totalOrders = computed(() => 

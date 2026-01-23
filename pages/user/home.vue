@@ -8,7 +8,7 @@
 
     const cart = useCartStore();
 
-        interface menuType {
+    interface menuType {
         id: number
         name: string,
         category: string,
