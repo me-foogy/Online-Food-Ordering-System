@@ -1,18 +1,21 @@
 <script setup lang="ts">
     import {ref} from 'vue'
+    import { useToast } from '#imports';
+    const toast = useToast();
 
     type orderProgressType = 'notStarted' | 'inProgress' | 'completed';
     const props = defineProps<{
     order: {
+        orderId: number
         customerName: string
         totalItems: number
         totalAmount: number
         location: string
         order: {
-        itemName: string
-        itemCategory: string
-        itemQuantity: number
-        eachItemPrice: number
+            itemName: string
+            itemCategory: string
+            itemQuantity: number
+            eachItemPrice: number
         }[]
         customerNotes: string
         orderProgress: orderProgressType
@@ -23,13 +26,39 @@
         (e: 'updateProgress', newProgress: orderProgressType):void
     }>()
 
-    const handleButtonClick = (orderProgress: orderProgressType) => {
+    //-------------------API call for progress change----------------------//
+
+    const handleButtonClick = async(orderProgress: orderProgressType) => {
         let nextState: orderProgressType
         if (props.order.orderProgress === 'notStarted') nextState = 'inProgress'
         else if (props.order.orderProgress === 'inProgress') nextState = 'completed'
-        else nextState = 'completed'
-        emits('updateProgress', nextState)
+        else nextState = 'completed';
+
+        //----------------------------------//
+        const {data, error} = await useFetch('/api/orders/update_progress',{
+            method:'POST',
+            body: {
+                orderId: props.order.orderId,
+                orderProgress: nextState
+            }
+        })
+
+        if(error.value){
+            console.error('SERVER ERROR');
+            toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+        }
+        else{
+            if(data.value?.success && typeof(data.value.message) !== 'string'){
+                toast.success({title: 'Success', message:`Orders fetched successfully`});
+            }else{
+                toast.error({title: 'ERROR', message:data.value?.message as string});
+            }
+        }
+    //-------------------------------------------//
     }
+
+    //--------------------------------------------------------------------//
+
 
     const isOpen = ref(false)
 

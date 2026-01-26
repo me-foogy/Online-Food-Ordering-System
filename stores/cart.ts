@@ -90,7 +90,7 @@ export const useCartStore = defineStore('cart', {
         },
 
         orderAgain(item: cartDataType){
-            const index = this.cartItems.findIndex(cartItem => cartItem.id === item.id);
+            const index = this.cartItems.findIndex(cartItem => cartItem.name === item.name);
             if (index !== -1 && this.cartItems[index]) {
                 //add to quantity as items exist
                 // Replace the object to trigger reactivity

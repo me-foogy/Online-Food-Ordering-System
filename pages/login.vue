@@ -74,6 +74,10 @@
                 //This if function uses typeguard as the response can be a string or the user object
                 const {name, email, address, phoneNo, role} = data.value.message;
                 auth.login(name, role as 'admin'|'user');
+                
+                // Wait for next tick
+                await nextTick();
+                
                 navigateTo(role==='user'?'/user/home':'/admin');
                 toast.success({title: 'Success', message:`${role} logged in successfully`});
 

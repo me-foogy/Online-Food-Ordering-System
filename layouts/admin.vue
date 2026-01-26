@@ -1,3 +1,7 @@
+<script lang="ts" setup>
+import { handleLogout } from './logoutHandler';
+</script>
+
 <template>
     <div class="min-h-screen flex bg-gray-100">
       <!-- Sidebar -->
@@ -38,12 +42,10 @@
               </nav>
               <!-- Logout -->
               <div class="p-4 border-t">
-                <NuxtLink to="/login">
-                  <button class="logout-btn">
+                  <button class="logout-btn" @click="handleLogout">
                     <span class="material-symbols-outlined icon">logout</span>
                     <span class="label">Logout</span>
                   </button>
-                </NuxtLink>
               </div>
         </div>
       </aside>

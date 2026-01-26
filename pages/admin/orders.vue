@@ -6,6 +6,7 @@
 
     type orderProgressType = 'notStarted' | 'inProgress' | 'completed';
     interface orderDataType {
+        orderId: number,
         customerName: string,
         totalItems: number,
         totalAmount: number,
@@ -51,21 +52,18 @@
 
     // Total number of orders
     const totalOrders = computed(() => 
-    orders.value.filter(order => order.orderProgress === 'notStarted').length
+    orderData.value.filter(order => order.orderProgress === 'notStarted').length
     )
 
     // Orders In Progress
     const orderInProgress = computed(() =>
-    orders.value.filter(order => order.orderProgress === 'inProgress').length
+    orderData.value.filter(order => order.orderProgress === 'inProgress').length
     )
 
     // Completed Orders
     const completedOrders = computed(() =>
-    orders.value.filter(order => order.orderProgress === 'completed').length
+    orderData.value.filter(order => order.orderProgress === 'completed').length
     )
-
-    //static data
-    const orders = ref<orderDataType[]>(orderData);
 
     definePageMeta({
         layout: 'admin' 
@@ -73,7 +71,7 @@
 </script>
 
 <template>
-        <div class="grid grid-cols-1 gap-5 sm:grid-cols-3"> 
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2"> 
 
             <!--each card-->
             <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
@@ -94,21 +92,17 @@
             </div>
 
             <!--each card-->
-            <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
+            <!-- <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
                 <div class="flex flex-row justify-between items-center">
                     <span class="ctext-sm sm:text-base font-medium text-gray-600">Completed Orders</span>
                     <span class="material-symbols-outlined text-5xl sm:text-7xl">Beenhere</span>
                 </div>
                 <p class="text-5xl sm:text-6xl lg:text-7xl font-bold text-green-500">{{completedOrders}}</p>
-            </div>
+            </div> -->
         </div>
 
      <div class="pt-8">
-        <EachOrder v-for="(order, index) in orders" :key="index" :order="order" 
-        @updateProgress='(newProgress: orderProgressType)=>{
-            if(orders[index]) orders[index].orderProgress=newProgress as orderProgressType
-        }
-        '/>
+        <EachOrder v-for="(order, index) in orderData" :key="order.orderId" :order="order"/>
     </div>
 </template>
 

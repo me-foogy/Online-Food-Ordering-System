@@ -5,6 +5,7 @@
 
     const props = defineProps<{
     order: {
+        orderId: number,
         customerName: string
         totalItems: number
         totalAmount: number

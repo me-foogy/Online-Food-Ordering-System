@@ -1,8 +1,3 @@
-/*
-    Api for fetching all of the orders from database
-    Depends On : ordersTable and orderItemsTable
-    Purpose: for each order in ordersTable get items of that order from orderItemstable and send a combined response
-*/
 
 import { setResponseStatus } from 'h3';
 import {db} from "@/drizzle/index";
@@ -11,10 +6,20 @@ import {ordersTable, eachOrderTable} from '~/drizzle/schema';
 
 export default defineEventHandler(async(event)=>{
 
-    //fetch all orders from ordersTable
+    const query = getQuery(event);
+    console.log(query);
+
+    if(!query.user){
+        setResponseStatus(event, 400);
+        return {
+            success: false,
+            message: 'Parameter must include user'
+        }
+    }
+
+    //fetch all user orders from ordersTable
     try{
-            // const orders = await db.select().from(ordersTable).where(ne(ordersTable.orderProgress,'completed'));
-            const orders = await db.select().from(ordersTable)
+            const orders = await db.select().from(ordersTable).where(eq(ordersTable.customerName, query.user));
             //if no orders send no orders response
             if(orders.length===0){
                 setResponseStatus(event, 204);
