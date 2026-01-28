@@ -18,6 +18,15 @@
         message: Required<menuType>[] | string
     }
 
+    interface apiResponse{
+        success: boolean, 
+        message: {
+            id: number,
+            name: string
+        }[] | string
+
+    }
+
     const props = defineProps<{
     isOpen: boolean
     dialogAction: 'Add'|'Edit'
@@ -54,11 +63,32 @@
     { immediate: true }
     )
 
+    //API call to fetch all categories
+
+    const categories = ref<Array<{id: number, name: string}>>([]); 
+    const {data, error} = await useFetch<apiResponse>('/api/shared/categories', {
+        method: 'GET'
+    })
+
+    if(error.value){
+        categories.value=[];
+        console.error('SERVER ERROR');
+        toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+    }
+    else{
+        if(data.value?.success && typeof(data.value.message) !== 'string'){
+            categories.value=data.value.message;
+            toast.success({title: 'Success', message:`Categories fetched successfully`});
+        }else{
+            toast.error({title: 'ERROR', message:data.value?.message as string});
+        }
+    }
+
     const handleSubmit = async () =>{
         if (props.dialogAction==='Add'||'Edit'){
            //handle Add Action to api
            try{
-                const {data, error} = await useFetch<AddMenuResponse>(`/api/menu/${props.dialogAction.toLowerCase()}`, {
+                const {data, error} = await useFetch<AddMenuResponse>(`/api/admin/menu/${props.dialogAction.toLowerCase()}`, {
                     method: 'POST',
                     body: (props.dialogAction=='Add')?{...form}:{...form, id: props.menuInfo?.id}
                 })
@@ -112,12 +142,9 @@
                         required>
 
                         <option value="" disabled>Select Category</option>
-                        <option value="Breakfast">Breakfast</option>
-                        <option value="Fast Food">Fast Food</option>
-                        <option value="Sea Food">Sea Food</option>
-                        <option value="Dinner">Dinner</option>
-                        <option value="Dessert">Dessert</option>
-                        <option value="Drinks">Drinks</option>
+                         <option v-for="category in categories" :key="category.id" :value="category.name">
+                            {{ category.name }}
+                        </option>
                     </select>
 
                     <!-- Price -->

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 
+    const {cart, updateCart, loading, error, fetchCart, addToCart, removeFromCart, cartTotal} = useCart()
     interface menuType {
         id: number
         name: string,
@@ -14,10 +15,6 @@
         item: menuType
     }>()
 
-    const emit = defineEmits<{
-        (e: 'addToCart', item:menuType): void
-    }>()
-    
 </script>
 
 <template>
@@ -47,7 +44,7 @@
                 <button class="flex items-center gap-1 px-3 py-1.5 border rounded-md text-sm text-gray-700 "
                 :class="item.inStock?'hover:bg-gray-100 transition':'bg-red-500 text-white'"
                 :disabled="!item.inStock"
-                @click="emit('addToCart', item)">
+                @click="addToCart(item.id)">
 
                     <span class="material-symbols-outlined text-base">{{item.inStock?'add':'block'}}</span>
                     {{item.inStock?'Add to Cart':'Out of Stock'}}

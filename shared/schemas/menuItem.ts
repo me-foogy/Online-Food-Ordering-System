@@ -2,7 +2,7 @@ import {z} from 'zod';
 
 const category = ["Breakfast",  "Fast Food", "Sea Food", "Dinner", "Dessert", "Drinks"];
 
-export const menuItemSchema =  z.object({
+export const  menuItemSchema =  z.object({
 
     name: z.string(),
     category: z.enum(category),

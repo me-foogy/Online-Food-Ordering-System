@@ -34,7 +34,7 @@
     //API call to fetch all categories
 
     const categories = ref<Array<{id: number, name: string}>>([]); 
-    const {data, error} = await useFetch<apiResponse>('/api/admin/categories', {
+    const {data, error} = await useFetch<apiResponse>('/api/shared/categories', {
         method: 'GET'
     })
 
@@ -59,7 +59,7 @@
         if(!schema){
             toast.error({title: 'ERROR', message: 'The category must be a string'});
         }
-        const {data, error} = await useFetch<apiResponse>('/api/categories', 
+        const {data, error} = await useFetch<apiResponse>('/api/admin/categories', 
         {
             method: 'POST',
             body: {
@@ -73,7 +73,7 @@
         }
         else{
             if(data.value?.success && typeof(data.value.message) !== 'string'){
-                categories.value=data.value.message;
+                categories.value=[...categories.value, ...data.value.message]
                 toast.success({title: 'Success', message:`Category added successfully`});
             }else{
                 toast.error({title: 'ERROR', message:data.value?.message as string});

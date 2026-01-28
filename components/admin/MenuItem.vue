@@ -27,7 +27,7 @@
     const toggleStock = async() =>{
         inStock.value=!inStock.value;
         try{
-            const {data, error} = await useFetch<toggleMenuResponse>('/api/menu/stock', {
+            const {data, error} = await useFetch<toggleMenuResponse>('/api/admin/menu/stock', {
                 method: 'POST',
                 body: {
                     ...props.item,

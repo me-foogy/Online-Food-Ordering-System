@@ -143,7 +143,7 @@
 
             <!--Each Menu Item-->
             <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-2 overflow-y-auto">
-                <MenuItem v-for="item in filteredMenuData" :key="item.id" :item="item" @addToCart="cart.addToCart"/>
+                <MenuItem v-for="item in filteredMenuData" :key="item.id" :item="item"/>
             </div>
 </template>
 
