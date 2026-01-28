@@ -6,6 +6,10 @@
     
     const auth = useAuthStore();
     const toast = useToast();
+    const authUser = useCookie<loginReturnMessageType>('auth_user', {
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production'
+    })
 
     type baseFormData = z.infer<typeof loginSchema>
 
@@ -58,7 +62,7 @@
         
        //api call for login
         try{
-            const {data, error} = await useFetch('/api/auth/login',{
+            const {data, error} = await useFetch<loginReturnType>('/api/auth/login',{
                 method: 'POST',
                 body: formData.value,
                 ignoreResponseError:true
@@ -72,7 +76,10 @@
 
             if(data.value?.success && typeof(data.value.message) !== 'string'){
                 //This if function uses typeguard as the response can be a string or the user object
-                const {name, email, address, phoneNo, role} = data.value.message;
+
+                //set Frontend Cookie
+                authUser.value = data.value.message;
+                const {name, email, address, phoneNo, role} = authUser.value;
                 auth.login(name, role as 'admin'|'user');
                 
                 // Wait for next tick

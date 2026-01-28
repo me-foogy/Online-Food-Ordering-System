@@ -31,7 +31,7 @@
     //-------------------------API FETCH FOR api/order/fetch GET request ----------------------//
 
     const orderData = ref<orderDataType[]>([]);
-    const {data, error} = await useFetch<apiResponse>('/api/orders/fetch')
+    const {data, error} = await useFetch<apiResponse>('/api/admin/orders/fetch')
 
     if(error.value){
         orderData.value=[];

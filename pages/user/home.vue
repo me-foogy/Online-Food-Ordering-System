@@ -24,28 +24,64 @@
     }
 
     const searchBarInput = ref<string>('');
-    const foodOptions:string[] = ['All', 'Breakfast', 'Fast Food', 'Sea Food', 'Dinner', 'Dessert', 'Drinks'];
+    const foodOptions = ref<string[]>(['All']);
     const activeType = ref('All');
     const date = new Date();
     const formatedDate = `${date.getFullYear()} - ${date.getMonth()+1} - ${date.getDate()}`;
+    const menuData = ref<menuType[]>([]);
+
+    //----------------Category fetch API call-------------------//
+    export interface Category {
+        id: number
+        name: string
+    }
+
+    export interface CategoriesResponse {
+        success: boolean
+        message: Category[] | string
+    }
+
+    {
+        const {data, error} = await useFetch<CategoriesResponse>('/api/shared/categories', {
+            method: 'GET'
+        })
+
+        if(error.value){
+            foodOptions.value=['All'];
+            console.error('SERVER ERROR');
+            toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+        }
+        else{
+            if(data.value?.success && typeof(data.value.message) !== 'string'){
+                const names = data.value.message.map(category=>category.name);
+                foodOptions.value=['All', ...names];
+                toast.success({title: 'Success', message:`Categories fetched successfully`});
+            }else{
+                foodOptions.value=['All'];
+                toast.error({title: 'ERROR', message:data.value?.message as string});
+            }
+        }
+    }
+    //---------------------------------------------------------//
+
 
     //----------------API CALL----------------//
+    {
+        const {data, error} = await useFetch<menuResponse>('/api/shared/menu/all')
 
-    const menuData = ref<menuType[]>([]);
-    const {data, error} = await useFetch<menuResponse>('/api/menu/all')
-
-    if(error.value){
-        menuData.value=[];
-        console.error('SERVER ERROR');
-        toast.error({title: 'SERVER ERROR', message:error.value.data.message});
-    }
-    else{
-        if(data.value?.success && typeof(data.value.message) !== 'string'){
-            menuData.value=data.value.message
-            toast.success({title: 'Success', message:`Menu Items fetched successfully`});
-        }else{
+        if(error.value){
             menuData.value=[];
-            toast.error({title: 'ERROR', message:data.value?.message as string});
+            console.error('SERVER ERROR');
+            toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+        }
+        else{
+            if(data.value?.success && typeof(data.value.message) !== 'string'){
+                menuData.value=data.value.message
+                toast.success({title: 'Success', message:`Menu Items fetched successfully`});
+            }else{
+                menuData.value=[];
+                toast.error({title: 'ERROR', message:data.value?.message as string});
+            }
         }
     }
 

@@ -1,7 +1,10 @@
 <script setup lang="ts">
 
     import {signupSchema} from '@/shared/schemas/signup'
+    import { useToast } from '#imports';
     import {z} from 'zod';
+    const toast=useToast();
+
     type basesignUpData = z.infer<typeof signupSchema>
     type signUpData= Omit<basesignUpData, 'phoneNo'>&{
         phoneNo: string //converted to number by zod in validation declared string for binding
@@ -33,11 +36,12 @@
                 return
             }
 
-            if(data.value?.success){
+            if(data.value?.success && typeof(data.value.message)!=='string'){
                 console.log('USER:', data.value);
+                toast.success({title: 'Success', message:`Sign In successful`});
                 await navigateTo('/login');
             }else{
-                console.error('LOGIN FAILED');
+                toast.error({title: 'Error', message:data.value?.message as string});
             }
             
         }
@@ -159,7 +163,7 @@
                     <!--Phone No-->
                     <div class="mb-6">
                         <label for="confirmPassword" class="text-gray-500">Phone Number</label>
-                            <input type="number" id="confirmPassword" placeholder="98XXXXXXXX" v-model="signUpFormData.phoneNo" required
+                            <input type="text" id="confirmPassword" placeholder="98XXXXXXXX" v-model="signUpFormData.phoneNo" required
                                 class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
                                         focus:outline-none focus:border-blue-500
                                         transition"

@@ -3,6 +3,7 @@
     import MenuItem from '@/components/admin/MenuItem.vue'
     import FoodDialog from '@/components/admin/FoodDialog.vue'
     import { useToast } from '#imports';
+    import CategoryDialog from '~/components/admin/CategoryDialog.vue';
     const toast = useToast();
 
     interface menuType {
@@ -22,30 +23,56 @@
 
     const searchBarInput = ref<string>('');
     const selectedItem = ref<menuType|null>(null);
-    const foodOptions:string[] = ['All', 'Breakfast', 'Fast Food', 'Sea Food', 'Dinner', 'Dessert', 'Drinks'];
+    const foodOptions = ref<string[]>(['All']);
     const activeType = ref('All');
     const showDialog = ref(false);
+    const showCategoryDialog = ref(false);
     const dialogAction = ref<'Add'|'Edit'>('Add');
     const date = new Date();
     const formatedDate = `${date.getFullYear()} - ${date.getMonth()+1} - ${date.getDate()}`;
+    const menuData = ref<menuType[]>([]);
+
+    //----------------Category fetch API call-------------------//
+    {
+        const {data, error} = await useFetch<menuResponse>('/api/shared/categories', {
+            method: 'GET'
+        })
+
+        if(error.value){
+            foodOptions.value=['All'];
+            console.error('SERVER ERROR');
+            toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+        }
+        else{
+            if(data.value?.success && typeof(data.value.message) !== 'string'){
+                const names = data.value.message.map(category=>category.name);
+                foodOptions.value=['All', ...names];
+                toast.success({title: 'Success', message:`Categories fetched successfully`});
+            }else{
+                foodOptions.value=['All'];
+                toast.error({title: 'ERROR', message:data.value?.message as string});
+            }
+        }
+    }
+    //---------------------------------------------------------//
 
     //----------------API CALL----------------//
+    {
+        const {data, error} = await useFetch<menuResponse>('/api/shared/menu/all')
 
-    const menuData = ref<menuType[]>([]);
-    const {data, error} = await useFetch<menuResponse>('/api/menu/all')
-
-    if(error.value){
-        menuData.value=[];
-        console.error('SERVER ERROR');
-        toast.error({title: 'SERVER ERROR', message:error.value.data.message});
-    }
-    else{
-        if(data.value?.success && typeof(data.value.message) !== 'string'){
-            menuData.value=data.value.message
-            toast.success({title: 'Success', message:`Menu Items fetched successfully`});
-        }else{
+        if(error.value){
             menuData.value=[];
-            toast.error({title: 'ERROR', message:data.value?.message as string});
+            console.error('SERVER ERROR');
+            toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+        }
+        else{
+            if(data.value?.success && typeof(data.value.message) !== 'string'){
+                menuData.value=data.value.message
+                toast.success({title: 'Success', message:`Menu Items fetched successfully`});
+            }else{
+                menuData.value=[];
+                toast.error({title: 'ERROR', message:data.value?.message as string});
+            }
         }
     }
 
@@ -98,25 +125,36 @@
         </div>
 
         <!-- Right: Add Item -->
-        <div class="flex-shrink-0">
+        <div class="flex-shrink-0 flex flex-row space-x-2">
+
             <button
             class="flex items-center gap-2 h-11 px-5 bg-blue-600 text-white rounded-md font-medium whitespace-nowrap
             hover:bg-blue-700 transition"
              @click="dialogAction='Add'; showDialog = true">
-                <span class="material-symbols-outlined text-base sm:text-xl md:text-xl">add</span>
-                <span class="text-sm sm:text-base md:text-lg truncate">Add Item</span>
+                <span class="material-symbols-outlined text-base sm:text-md md:text-md">add</span>
+                <span class="text-sm sm:text-base md:text-sm truncate">Add Item</span>
             </button>
         </div>
     </div>
 
     <FoodDialog v-if="showDialog" :isOpen="showDialog" :dialogAction="dialogAction" :menuInfo="selectedItem" :onClose="()=>{showDialog=false; selectedItem=null}" ></FoodDialog>
+    <CategoryDialog v-if="showCategoryDialog" :isOpen="showCategoryDialog" :onClose="()=>{showCategoryDialog=false;}" ></CategoryDialog>
 
 
 
     <!--The Filter By Category Section-->
     <div class="space-y-4 mt-6">
 
-        <h2 class="text-xl font-semibold text-gray-800">Manage Your Menu Items</h2>
+        <div class="flex flex-row justify-between items-center my-6">
+            <h2 class="text-xl font-semibold text-gray-800">Manage Your Menu Items</h2>
+            <button
+            class="flex items-center gap-2 h-11 px-5 rounded-md font-medium whitespace-nowrap border bg-white
+            text-blue-600 hover:bg-gray-100  hover:border-blue-600 transition"
+            @click="showCategoryDialog = true">
+                <span class="material-symbols-outlined text-base sm:text-md md:text-md">edit</span>
+                <span class="text-sm sm:text-base md:text-sm truncate">Edit Categories</span>
+            </button>
+        </div>
 
         <div class="flex gap-3 flex-wrap">
             <button v-for="type in foodOptions":key="type" @click="activeType = type"

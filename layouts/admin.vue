@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { handleLogout } from './logoutHandler';
+  const { handleLogout } = useLogout();
 </script>
 
 <template>

@@ -41,5 +41,12 @@ export const eachOrderTable = pgTable('each_order',{
 
 export const categoryTable = pgTable('category', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: varchar({length: 255}).notNull()
+  name: varchar({length: 255}).notNull().unique()
+})
+
+export const cartTable =  pgTable('cart',{
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  userId: integer().notNull().references(()=>usersTable.id, {onDelete: 'cascade'}),
+  menuId: integer().notNull().references(()=>menuTable.id, {onDelete: 'cascade'}),
+  quantity: integer().notNull()
 })

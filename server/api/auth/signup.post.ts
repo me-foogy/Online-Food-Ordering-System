@@ -3,7 +3,9 @@ import {db} from "@/drizzle/index"
 import { usersTable } from '~/drizzle/schema';
 import {eq} from 'drizzle-orm'
 import { setResponseStatus } from 'h3';
+import bcrypt from 'bcrypt';
 
+const SALT_ROUNDS = 12;
 
 export default defineEventHandler(async(event)=>{
     let body = await readBody(event);
@@ -17,6 +19,11 @@ export default defineEventHandler(async(event)=>{
     const validatedWithRole =  {...validated.data, role: 'user'} // manually set and added to database
 
     const {email, password, name, phoneNo, address, role} = validatedWithRole;
+
+    //password hashing
+
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    console.log(hashedPassword)
 
     //duplicate email check
     const existing = await db.select({id: usersTable.id}).from(usersTable).where(eq(usersTable.email, email));
@@ -32,7 +39,7 @@ export default defineEventHandler(async(event)=>{
 
     const user = await db.insert(usersTable).values({
         email,
-        password,
+        password: hashedPassword,
         name,
         phoneNo,
         address,

@@ -1,18 +1,32 @@
 import {loginSchema} from '@/shared/schemas/login'
-import { signupSchema } from '@/shared/schemas/signup';
-import { userArray } from '~/server/db';
+import { loginReturnMessageType, loginReturnType } from '@/shared/types/auth';
 import { setResponseStatus, setCookie } from 'h3';
-import {json, z} from 'zod';
 import {db} from "@/drizzle/index"
 import { usersTable } from '~/drizzle/schema';
-import {eq} from 'drizzle-orm'
+import {eq} from 'drizzle-orm';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import {JWTPayload} from '@/shared/types/auth'
+import {z} from 'zod';
 
-// type baseLoginResponse = z.infer<typeof signupSchema> & {role: 'user'|'admin'}
-// type loginResponse = {success: true; message:Omit<baseLoginResponse,'password'> } | {success: false; message: string}
+const JWT_SECRET = process.env.JWT_SECRET as string
 
-export default defineEventHandler(async(event)=>{
+if(!JWT_SECRET){
+    throw new Error('JWT_Secret not defined');
+}
+
+type loginSuccess = {
+    success: true
+    message: loginReturnMessageType
+}
+
+type loginFail = {
+    success: false
+    message: string
+}
+
+export default defineEventHandler(async(event): Promise<loginSuccess | loginFail>=>{
     const body = await readBody(event);
-
     
     const validated = loginSchema.safeParse(body);
     if(!validated.success){
@@ -30,30 +44,49 @@ export default defineEventHandler(async(event)=>{
         return { success: false, message: "User not found" };
     }
 
-    if (user.password !== password) {
-        setResponseStatus(event, 400);
-        return { success: false, message: "Username and password do not match" };
+    const isValid = await bcrypt.compare(password, user.password)
+
+    if (!isValid) {
+        setResponseStatus(event, 401);
+        return {success: false, message: "Invalid Credentials"};
+    }
+    
+    //user is ok
+    const payload: JWTPayload = {
+        id: user.id,
+        name: user.name, 
+        email: user.email, 
+        role: user.role as 'admin'|'user'
     }
 
-    setResponseStatus(event, 200);
+    const audience = (user.role==='user')?'food-app-user':'food-app-admin'
 
-    const token = JSON.stringify({
-        name: user.name,
-        email: user.email,
-        role: user.role
+    const token = jwt.sign(payload, JWT_SECRET, {
+        expiresIn: '1d',
+        issuer: 'food-app',
+        audience
     })
+
 
     //Cookie Setup
     setCookie(event, 'auth_token', token, {
-        httpOnly: false,
+        httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 60 * 60 * 24,
         path: '/',
         sameSite: 'lax',
     })
 
+    setResponseStatus(event, 200);
+
     return {
         success: true,
-        message: user,
+        message: {
+            name: user.name,
+            email: user.email, 
+            address: user.address,
+            phoneNo: user.phoneNo,
+            role: user.role as 'admin' | 'user'
+        },
     };
 })

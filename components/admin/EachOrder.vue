@@ -35,7 +35,7 @@
         else nextState = 'completed';
 
         //----------------------------------//
-        const {data, error} = await useFetch('/api/orders/update_progress',{
+        const {data, error} = await useFetch('/api/admin/orders/update_progress',{
             method:'POST',
             body: {
                 orderId: props.order.orderId,
@@ -49,7 +49,8 @@
         }
         else{
             if(data.value?.success && typeof(data.value.message) !== 'string'){
-                toast.success({title: 'Success', message:`Orders fetched successfully`});
+                toast.success({title: 'Success', message:`Orders updated successfully`});
+                props.order.orderProgress=nextState;
             }else{
                 toast.error({title: 'ERROR', message:data.value?.message as string});
             }
