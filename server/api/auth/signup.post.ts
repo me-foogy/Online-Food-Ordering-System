@@ -23,7 +23,6 @@ export default defineEventHandler(async(event)=>{
     //password hashing
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-    console.log(hashedPassword)
 
     //duplicate email check
     const existing = await db.select({id: usersTable.id}).from(usersTable).where(eq(usersTable.email, email));
@@ -50,6 +49,7 @@ export default defineEventHandler(async(event)=>{
         name: usersTable.name,
         role: usersTable.role
     });
+    
     setResponseStatus(event, 200);
     return{
         success: true,

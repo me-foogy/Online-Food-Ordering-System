@@ -65,7 +65,7 @@
     //---------------------------------------------------------//
 
 
-    //----------------API CALL----------------//
+    //----------------MENU FETCH API CALL----------------//
     {
         const {data, error} = await useFetch<menuResponse>('/api/shared/menu/all')
 

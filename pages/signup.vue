@@ -23,7 +23,6 @@
     })
 
     const handleSignUpSubmit = async ()=>{
-        console.log(signUpFormData);
         //api call for signup
         try{
             const {data, error, status} = await useFetch('/api/auth/signup',{

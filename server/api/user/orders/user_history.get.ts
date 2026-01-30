@@ -6,23 +6,22 @@ import {ordersTable, eachOrderTable} from '~/drizzle/schema';
 
 export default defineEventHandler(async(event)=>{
 
-    const query = getQuery(event);
-    console.log(query);
+    const user = event.context.user;
 
-    if(!query.user){
+    if(!user){
         setResponseStatus(event, 400);
         return {
             success: false,
-            message: 'Parameter must include user'
+            message: 'No user in cookies '
         }
     }
 
     //fetch all user orders from ordersTable
     try{
-            const orders = await db.select().from(ordersTable).where(eq(ordersTable.customerName, query.user));
+            const orders = await db.select().from(ordersTable).where(eq(ordersTable.customerName, user.name));
             //if no orders send no orders response
             if(orders.length===0){
-                setResponseStatus(event, 204);
+                setResponseStatus(event, 200);
                 return {
                     success: true,
                     message: []
@@ -58,7 +57,6 @@ export default defineEventHandler(async(event)=>{
                         order: orderItems.map(i => ({
                             id: i.id,
                             itemName: i.itemName,
-                            itemCategory: i.itemCategory,
                             itemQuantity: i.itemQuantity,
                             eachItemPrice: i.itemPrice
                         })),

@@ -5,6 +5,16 @@ export type JWTPayload = {
     role: 'admin'|'user'
 }
 
+//api default response
+
+export type defaultApiType<T> = {
+    success: true,
+    message: T
+} | {
+    success: false,
+    message: string
+}
+
 //response from login api
 
 export type loginReturnMessageType = {

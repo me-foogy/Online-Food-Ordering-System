@@ -53,8 +53,7 @@
                     Rs. {{ item.price }}
                 </h2>
 
-                <div class="flex items-center gap-1">
-
+                <div class="flex items-center gap-1" v-if="item.inStock">
                     <button class="material-symbols-outlined text-gray-400 hover:text-blue-600 cursor-pointer transition"
                     @click="decreaseQuantity">remove_circle </button>
 
@@ -62,8 +61,12 @@
 
                     <button class="material-symbols-outlined text-gray-400 hover:text-blue-600 cursor-pointer transition"
                     @click="increaseQuantity">add_circle</button>
-
                 </div>
+                
+                <div v-else>
+                    <span class="text-sm bg-red-500 text-white py-1 px-2 rounded-md">Out Of Stock</span>
+                </div>
+
             </div>
         </div>
      </div>

@@ -15,12 +15,6 @@
               </div>
               <!-- Navigation -->
               <nav class="flex-1 px-2 py-4 space-y-1">
-                  <NuxtLink to="/admin" class="nav-link">
-                      <span class="material-symbols-outlined icon">
-                      dashboard
-                      </span>
-                      <span class="label">Dashboard</span>
-                  </NuxtLink>
                   <NuxtLink to="/admin/orders" class="nav-link">
                       <span class="material-symbols-outlined icon">
                       receipt_long

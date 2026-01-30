@@ -1,0 +1,1 @@
+ALTER TABLE "each_order" DROP COLUMN "item_category";

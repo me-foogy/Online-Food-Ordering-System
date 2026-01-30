@@ -11,7 +11,6 @@ export default defineNuxtRouteMiddleware((to)=>{
   if (!authUser && !isPublic) {
     return navigateTo('/login');
   }
-  console.log(authUser);
 
   // // Protected routes
   // if (authUser && isPublic) {
@@ -23,6 +22,6 @@ export default defineNuxtRouteMiddleware((to)=>{
   }
 
   if (to.path.startsWith('/user') && authUser?.role !== 'user') {
-    return navigateTo('/admin')
+    return navigateTo('/admin/orders')
   }
 })

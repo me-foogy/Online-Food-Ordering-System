@@ -30,7 +30,7 @@
     //-------------------------API FETCH FOR api/order/fetch GET request ----------------------//
 
     const orderData = ref<orderDataType[]>([]);
-    const {data, error} = await useFetch<apiResponse>('/api/user/orders/user_history?user=Sworup Karki');
+    const {data, error} = await useFetch<apiResponse>('/api/user/orders/user_history');
 
     if(error.value){
         orderData.value=[];

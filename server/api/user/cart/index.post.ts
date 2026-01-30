@@ -14,7 +14,7 @@ export default defineEventHandler(async(event)=>{
     const body = await readBody(event);
     const user = event.context.user;
 
-    if(typeof(body.menuId)!=='number'){
+    if(typeof(body.menuId)!=='number' && typeof(body.quantity)!=='number'){
         setResponseStatus(event, 400);
         return{
             success: false,
@@ -25,7 +25,7 @@ export default defineEventHandler(async(event)=>{
     const addedItem = await db.insert(cartTable).values({
         userId: user.id,
         menuId: body.menuId,
-        quantity: 1
+        quantity: body.quantity
     }).returning({
         id: cartTable.id,
         userId: cartTable.userId,

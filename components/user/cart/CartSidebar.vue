@@ -1,13 +1,30 @@
 <script lang="ts" setup>
     import EachCartItem from '@/components/user/cart/EachCartItem.vue';
     import { useCartStore } from '@/stores/cart';
-    const {cart, loading, error, fetchCart, addToCart, removeFromCart, cartTotal} = useCart()
+    import { useToast } from '#imports';
+    import CheckoutDialog from './checkoutDialog.vue';
+    const {cart, fetchCart, cartTotal} = useCart();
+    const toast = useToast();
     const showCart = ref<boolean>(false);
+    const showConfirmation = ref<boolean>(false); 
+
+    onMounted(fetchCart);
 
     const toggleCart = () =>{
         showCart.value = !showCart.value;
     }
-    onMounted(fetchCart);
+
+    const handleCheckout = ()=>{
+        if(cart.value.some(item=>item.inStock===false)){
+            toast.error({message: 'Cart contains items not in stock'});
+            return
+        }
+        if(cart.value.length===0){
+            toast.error({message: 'Cart is Empty'});
+            return
+        }
+        showConfirmation.value=true;
+    }
 </script>
 
 <template>
@@ -44,8 +61,9 @@
                 <span class="text-blue-700 font:medium text-lg">Rs. {{cartTotal}}</span>
             </div>
             <button class="bg-blue-600 w-full py-2 mt-4 rounded-md text-white font-medium
-                        hover:bg-blue-700"
+                        hover:bg-blue-700" @click="handleCheckout"
             >Checkout</button>
         </div>
+        <CheckoutDialog :isOpen="showConfirmation" :onClose="()=>{showConfirmation=false}"/>
     </aside>
 </template>

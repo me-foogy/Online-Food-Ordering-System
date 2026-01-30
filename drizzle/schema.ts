@@ -32,9 +32,9 @@ export const ordersTable = pgTable('orders',{
 
 export const eachOrderTable = pgTable('each_order',{
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  orderId: integer().references(()=>ordersTable.orderId).notNull(),
+  orderId: integer('order_id').references(()=>ordersTable.orderId).notNull(),
+  menuId: integer('menu_id').references(()=>menuTable.id, {onDelete: 'set null'}),
   itemName: varchar('item_name', {length:255}).notNull(),
-  itemCategory: varchar('item_category', {length: 255}).notNull(),
   itemQuantity: integer('item_quantity').notNull(),
   itemPrice: integer('item_price').notNull()
 })
@@ -46,7 +46,7 @@ export const categoryTable = pgTable('category', {
 
 export const cartTable =  pgTable('cart',{
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  userId: integer().notNull().references(()=>usersTable.id, {onDelete: 'cascade'}),
-  menuId: integer().notNull().references(()=>menuTable.id, {onDelete: 'cascade'}),
+  userId: integer('user_id').notNull().references(()=>usersTable.id, {onDelete: 'cascade'}),
+  menuId: integer('menu_id').notNull().references(()=>menuTable.id, {onDelete: 'cascade'}),
   quantity: integer().notNull()
 })

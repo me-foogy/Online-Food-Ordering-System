@@ -1,22 +1,33 @@
 <script setup lang="ts">
     import { ref } from 'vue'
 
-    interface User {
-        name: string
-        password: string
-        email: string
-        phone: string
-        address: string
-    }
+    //Display Cookie Data 
+    const cookieUser = useCookie<loginReturnMessageType|null>('auth_user');
+    type User = Omit<loginReturnMessageType,'role'> & {password: string};
 
-    //replace later with API
     const user = ref<User>({
-    name: 'Sworup Karki',
+    name: cookieUser.value?.name ?? '',
     password: '',
-    email: 'sworup@example.com',
-    phone: '+977-9812345678',
-    address: 'Kalimati, Kathmandu'
+    email: cookieUser.value?.email ?? '',
+    phoneNo: cookieUser.value?.phoneNo??'',
+    address:  cookieUser.value?.address ?? ''
     })
+
+    //---------------------------API CALL FOR USER DETAILS CHANGE------------------//
+
+    const confirmChanges = async() => {
+        const res = await $fetch<defaultApiType<loginReturnMessageType[]>>('/api/user/edit_details',{
+            method:'PATCH',
+            body: user.value,
+            credentials:'include'
+        });
+
+        console.log(res);
+
+        uiState.value = 'noChange'
+        user.value.password = ''
+    }
+    //-----------------------------------------------------------------------------//
 
     const originalUser = ref<User>({ ...user.value })
 
@@ -38,12 +49,6 @@
         user.value.password = ''
     }
 
-    const confirmChanges = () => {
-        console.log('Confirmed user data:', user.value)
-        uiState.value = 'noChange'
-        user.value.password = ''
-    }
-
     definePageMeta({
         layout: 'user-no-cart'
     })
@@ -59,23 +64,23 @@
                     <h2 class="text-2xl font-semibold">My Account</h2>
                         <div class="flex gap-3">
                             <button
-                                v-if="uiState === 'editing'"
+                                v-show="uiState === 'editing'"
                                 @click="cancelEdit"
                                 type="button"
-                                class="px-8 py-2 bg-red-500 text-white rounded-md hover:bg-red-700 transition">
+                                class="px-8 py-2 max-h-10 bg-red-500 text-white rounded-md hover:bg-red-700 transition">
                                 Cancel
                             </button>
                             <button
-                                v-if="uiState === 'noChange'"
+                                v-show="uiState === 'noChange'"
                                 @click="startEdit"
                                 type="button"
-                                class="px-8 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                                class="px-8 py-2 max-h-10 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
                                 Edit
                             </button>
                             <button
-                                v-if="uiState === 'editing'"
+                                v-show="uiState === 'editing'"
                                 type="submit"
-                                class="px-8 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                                class="px-8 py-2 max-h-10 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
                                 Save
                             </button>
                         </div>
@@ -105,7 +110,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
                         <input
                         type="text"
-                        v-model="user.phone"
+                        v-model="user.phoneNo"
                         :readonly="uiState === 'noChange' || uiState === 'confirmation'"
                         class="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
@@ -122,7 +127,7 @@
                 </form>
             </div>
             
-            <div v-if="uiState === 'confirmation'" class="flex flex-col justify-between max-w-xl h-auto p-6 bg-white shadow-md rounded-lg">
+            <div v-if="uiState === 'confirmation'" class="flex flex-col space-y-2 justify-between max-w-xl h-auto p-6 bg-white shadow-md rounded-lg">
                 <div>
                     <div class="flex justify-between mb-8 gap-10">
                         <h2 class="text-2xl font-semibold">Enter Password</h2>

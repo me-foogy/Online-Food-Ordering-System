@@ -38,11 +38,11 @@ export function useCart() {
             }
         }
 
-    async function addToCart(menuId: number) {
+    async function addToCart(menuId: number, quantity:number) {
         try{
             const res = await $fetch<apiResponse<cartDataType[]>>('/api/user/cart', {
                 method: 'POST',
-                body: { menuId }
+                body: { menuId, quantity }
             })
             if(!res.success){
                 error.value = res.message

@@ -5,6 +5,7 @@ export type cartDataType = {
     price: number,
     image: string,
     quantity: number
+    inStock: boolean
 }
 
 export type cartSchema = {

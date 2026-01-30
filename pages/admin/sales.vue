@@ -4,6 +4,8 @@
     import SalesChart from '@/components/admin/SalesChart.vue'
     import '@vuepic/vue-datepicker/dist/main.css'
     import {subMonths } from 'date-fns';
+    import { useToast } from '#imports'
+    const toast = useToast();
 
     const date = ref(new Date());
     const displayDate = computed(() => {
@@ -13,24 +15,84 @@
         const day = date.value.getDate().toString().padStart(2, '0')
         return `${year}-${month}-${day}`
     })
+    watch(displayDate, (newDate, oldDate) => {
+    console.log('Date changed from', oldDate, 'to', newDate);
+})
+
+    //---------------------API CALL FOR CHART DETAILS--------------------//
+
+    const {data, error} = useFetch(()=>`/api/admin/sales?date=${displayDate.value}`, {
+        method: 'GET',
+        watch: [displayDate]
+    })
+
+    const hourlyRevenue = computed(() => {
+        return data.value?.success && typeof(data.value.message) !== 'string'
+            ? data.value.message.hourlyRevenue
+            : Array(24).fill(0)
+    })
+
+    const hourlyCustomers = computed(() => {
+        return data.value?.success && typeof(data.value.message) !== 'string'
+            ? data.value.message.hourlyCustomers
+            : Array(24).fill(0)
+    })
+
+     const hourlyTotalItems = computed(() => {
+        return data.value?.success && typeof(data.value.message) !== 'string'
+            ? data.value.message.hourlyTotalItems
+            : Array(24).fill(0)
+    })
+
+    const totalRevenue = computed(()=>{
+        return hourlyRevenue.value.reduce((sum, item)=>{
+            return sum+item;
+        })
+    })
+
+    const totalItems = computed(()=>{
+        return hourlyTotalItems.value.reduce((sum, item)=>{
+            return sum+item;
+        })
+    })
+
+    const totalCustomers = computed(()=>{
+        return hourlyCustomers.value.reduce((sum, item)=>{
+            return sum+item;
+        })
+    })
+    
+
+
+    // Handle errors with a watcher
+    watch(error, (newError) => {
+        if (newError) {
+            toast.error({title: 'SERVER ERROR', message: newError.data.message});
+        }
+    })
+  //-------------------------------------------------------------------//
+
     const minDate=subMonths(new Date(), 1);
 
     interface totalSalesData {
         totalRevenue: number,
-
     }
 
     definePageMeta({
         layout: 'admin'
     })
+
 </script>
 <template>
     <div class="flex min-h-screen">
         <main class="flex-1 xl:mr-80">
 
             <!--Title and date picker(phone)-->
-            <div class="flex flex-row justify-between">
-                <h1 class="text-md lg:text-2xl font-bold mb-6 shrink-0">Sales Overview {{displayDate}}</h1>
+            <div class="flex flex-row justify-between items-center mb-4">
+                <div class="flex flex-col md:flex-row md:space-x-6">
+                    <span class="text-lg sm:text-xl lg:text-2xl font-bold shrink-0">{{displayDate}}</span>
+                    <span class="text-lg sm:text-xl lg:text-2xl font-bold shrink-0">Sales Overview </span>
+                </div>
                 <div class="flex-1 max-w-52 xl:hidden">
                     <VueDatePicker v-model="date"
                             :time-config="{ enableTimePicker: false }"
@@ -49,7 +111,7 @@
                             <span class="text-sm sm:text-base font-medium text-gray-600">Total Revenue</span>
                             <span class="material-symbols-outlined text-3xl sm:text-4xl">Attach_money</span>
                         </div>
-                        <p class="text-3xl sm:text-4xl lg:text-5xl font-bold">22.22K</p>
+                        <p class="text-3xl sm:text-4xl lg:text-5xl font-bold">{{totalRevenue}}</p>
                     </div>
                     <!--each card-->
                     <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
@@ -57,7 +119,7 @@
                             <span class="text-sm sm:text-base font-medium text-gray-600">Total Items</span>
                             <span class="material-symbols-outlined text-3xl sm:text-4xl">Fastfood</span>
                         </div>
-                        <p class="text-3xl sm:text-4xl lg:text-5xl font-bold">2</p>
+                        <p class="text-3xl sm:text-4xl lg:text-5xl font-bold">{{totalItems}}</p>
                     </div>
                     <!--each card-->
                     <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
@@ -65,10 +127,10 @@
                             <span class="ctext-sm sm:text-base font-medium text-gray-600">Total Customers</span>
                             <span class="material-symbols-outlined text-3xl sm:text-4xl">Person</span>
                         </div>
-                        <p class="text-3xl sm:text-4xl lg:text-5xl font-bold">2</p>
+                        <p class="text-3xl sm:text-4xl lg:text-5xl font-bold">{{totalCustomers}}</p>
                     </div>
                 </div>
-                <SalesChart/>
+                <SalesChart :hourlyRevenue :hourlyCustomers :key="displayDate"/>
             </div>
         </main>
         

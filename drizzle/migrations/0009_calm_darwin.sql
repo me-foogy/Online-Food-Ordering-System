@@ -1,0 +1,2 @@
+ALTER TABLE "each_order" ADD COLUMN "menuId" integer;--> statement-breakpoint
+ALTER TABLE "each_order" ADD CONSTRAINT "each_order_menuId_menu_id_fk" FOREIGN KEY ("menuId") REFERENCES "public"."menu"("id") ON DELETE set null ON UPDATE no action;
