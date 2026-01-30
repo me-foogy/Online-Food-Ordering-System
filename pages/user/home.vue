@@ -1,30 +1,95 @@
 <script lang="ts" setup>
     
     import {ref} from 'vue';
-    import { menuData } from '../admin/menudata';
     import MenuItem from '@/components/user/MenuItem.vue';
     import { useCartStore } from '@/stores/cart';
+    import { useToast } from '#imports';
+    const toast = useToast();
+
     const cart = useCartStore();
 
     interface menuType {
-        id?: number
-        name?: string,
-        category?: string,
-        price?: number,
-        description?: string
-        image?: string
-        inStock?: boolean
+        id: number
+        name: string,
+        category: string,
+        price: number,
+        description: string
+        image: string
+        inStock: boolean
     }
-    
+
+    interface menuResponse{
+        success: boolean
+        message: Required<menuType>[] | string
+    }
+
     const searchBarInput = ref<string>('');
-    const foodOptions:string[] = ['All', 'Breakfast', 'Fast Food', 'Sea Food', 'Dinner', 'Dessert', 'Drinks'];
+    const foodOptions = ref<string[]>(['All']);
     const activeType = ref('All');
     const date = new Date();
     const formatedDate = `${date.getFullYear()} - ${date.getMonth()+1} - ${date.getDate()}`;
+    const menuData = ref<menuType[]>([]);
 
-    const filteredMenuData = computed(()=>{
-        if(activeType.value==='All') return menuData.filter(item=>item.name.toLowerCase().includes(searchBarInput.value.toLowerCase()));
-        return menuData.filter(item=> item.category===activeType.value && item.name.toLowerCase().includes(searchBarInput.value.toLowerCase()));
+    //----------------Category fetch API call-------------------//
+    export interface Category {
+        id: number
+        name: string
+    }
+
+    export interface CategoriesResponse {
+        success: boolean
+        message: Category[] | string
+    }
+
+    {
+        const {data, error} = await useFetch<CategoriesResponse>('/api/shared/categories', {
+            method: 'GET'
+        })
+
+        if(error.value){
+            foodOptions.value=['All'];
+            console.error('SERVER ERROR');
+            toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+        }
+        else{
+            if(data.value?.success && typeof(data.value.message) !== 'string'){
+                const names = data.value.message.map(category=>category.name);
+                foodOptions.value=['All', ...names];
+                toast.success({title: 'Success', message:`Categories fetched successfully`});
+            }else{
+                foodOptions.value=['All'];
+                toast.error({title: 'ERROR', message:data.value?.message as string});
+            }
+        }
+    }
+    //---------------------------------------------------------//
+
+
+    //----------------MENU FETCH API CALL----------------//
+    {
+        const {data, error} = await useFetch<menuResponse>('/api/shared/menu/all')
+
+        if(error.value){
+            menuData.value=[];
+            console.error('SERVER ERROR');
+            toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+        }
+        else{
+            if(data.value?.success && typeof(data.value.message) !== 'string'){
+                menuData.value=data.value.message
+                toast.success({title: 'Success', message:`Menu Items fetched successfully`});
+            }else{
+                menuData.value=[];
+                toast.error({title: 'ERROR', message:data.value?.message as string});
+            }
+        }
+    }
+
+    //--------------------------------------------//
+
+    const filteredMenuData = computed(()=>{    
+            if(activeType.value==='All') return menuData.value.filter(item=>item.name.toLowerCase().includes(searchBarInput.value.toLowerCase()));
+            return menuData.value.filter(item=> item.category===activeType.value && item.name.toLowerCase().includes(searchBarInput.value.toLowerCase()));
     })
 
     definePageMeta({
@@ -78,7 +143,7 @@
 
             <!--Each Menu Item-->
             <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-2 overflow-y-auto">
-                <MenuItem v-for="item in filteredMenuData" :key="item.id" :item="item" @addToCart="cart.addToCart"/>
+                <MenuItem v-for="item in filteredMenuData" :key="item.id" :item="item"/>
             </div>
 </template>
 

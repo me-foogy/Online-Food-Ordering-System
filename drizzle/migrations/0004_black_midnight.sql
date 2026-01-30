@@ -1,0 +1,1 @@
+ALTER TABLE "orders" ALTER COLUMN "cutomerNotes" SET DEFAULT '';

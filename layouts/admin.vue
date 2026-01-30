@@ -1,3 +1,7 @@
+<script lang="ts" setup>
+  const { handleLogout } = useLogout();
+</script>
+
 <template>
     <div class="min-h-screen flex bg-gray-100">
       <!-- Sidebar -->
@@ -11,12 +15,6 @@
               </div>
               <!-- Navigation -->
               <nav class="flex-1 px-2 py-4 space-y-1">
-                  <NuxtLink to="/admin" class="nav-link">
-                      <span class="material-symbols-outlined icon">
-                      dashboard
-                      </span>
-                      <span class="label">Dashboard</span>
-                  </NuxtLink>
                   <NuxtLink to="/admin/orders" class="nav-link">
                       <span class="material-symbols-outlined icon">
                       receipt_long
@@ -38,12 +36,10 @@
               </nav>
               <!-- Logout -->
               <div class="p-4 border-t">
-                <NuxtLink to="/login">
-                  <button class="logout-btn">
+                  <button class="logout-btn" @click="handleLogout">
                     <span class="material-symbols-outlined icon">logout</span>
                     <span class="label">Logout</span>
                   </button>
-                </NuxtLink>
               </div>
         </div>
       </aside>

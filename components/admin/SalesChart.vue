@@ -6,40 +6,35 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted, watch } from 'vue'
   import Chart from 'chart.js/auto'
+  import type { Chart as ChartType } from 'chart.js/auto'
 
   const myChart = ref<HTMLCanvasElement | null>(null)
+  let chartInstance: ChartType | null = null
 
   // 24-hour labels
   const hourlyLabels = Array.from({ length: 24 }, (_, i) =>
-    i.toString().padStart(2, '0') + ':00'
+    i.toString().padStart(2, '0')
   )
 
-  // Example data
-  const hourlyRevenue = [
-    0, 500, 200, 800, 1200, 1500, 1800, 2000, 2200, 2500,
-    2800, 3000, 3200, 3500, 3700, 4000, 4200, 4500, 4800, 5000,
-    5200, 5500, 5700, 6000
-  ]
-
-  const hourlyCustomers = [
-    0, 1, 0, 2, 3, 5, 4, 6, 5, 7,
-    8, 6, 5, 7, 8, 9, 10, 8, 7, 9,
-    10, 11, 9, 12
-  ]
+  const props = defineProps<{
+    hourlyRevenue: Array<number>
+    hourlyCustomers: Array<number>
+  }>();
+  
 
   onMounted(() => {
     if (!myChart.value) return
 
-    new Chart(myChart.value, {
+    chartInstance = new Chart(myChart.value, {
       type: 'line',
       data: {
         labels: hourlyLabels,
         datasets: [
           {
             label: 'Revenue (Rs)',
-            data: hourlyRevenue,
+            data: props.hourlyRevenue,
             borderColor: '#3b82f6',
             backgroundColor: '#93c5fd',
             yAxisID: 'yRevenue',
@@ -49,7 +44,7 @@
           },
           {
             label: 'Customers',
-            data: hourlyCustomers,
+            data: props.hourlyCustomers,
             borderColor: '#10b981',
             backgroundColor: '#6ee7b7',
             yAxisID: 'yCustomers',
@@ -81,4 +76,12 @@
       }
     })
   })
+  watch([() => props.hourlyRevenue, () => props.hourlyCustomers], (
+    [newRevenue, newCustomers]) => {
+    if (chartInstance &&  chartInstance.data.datasets[0] && chartInstance.data.datasets[1]) {
+      chartInstance.data.datasets[0].data = newRevenue
+      chartInstance.data.datasets[1].data = newCustomers
+      chartInstance.update()
+    }
+  }, { deep: true })
 </script>

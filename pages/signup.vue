@@ -1,28 +1,52 @@
 <script setup lang="ts">
 
-    interface signUpFormData {
-        email: string
-        password: string
+    import {signupSchema} from '@/shared/schemas/signup'
+    import { useToast } from '#imports';
+    import {z} from 'zod';
+    const toast=useToast();
+
+    type basesignUpData = z.infer<typeof signupSchema>
+    type signUpData= Omit<basesignUpData, 'phoneNo'>&{
+        phoneNo: string //converted to number by zod in validation declared string for binding
         confirmPassword: string
-        name: string
-        phoneNo: number | null
-        address: string
         termsAndCond: boolean
     }
 
-    const signUpFormData=ref<signUpFormData>({
+    const signUpFormData=ref<signUpData>({
         email: '',
         password: '',
         confirmPassword: '',
         name: '',
-        phoneNo: null,
+        phoneNo: "",
         address: '',
         termsAndCond: false
     })
 
     const handleSignUpSubmit = async ()=>{
-        console.log(signUpFormData);
-        await navigateTo('/login');
+        //api call for signup
+        try{
+            const {data, error, status} = await useFetch('/api/auth/signup',{
+                method: 'POST',
+                body: signUpFormData.value
+            });
+            
+            if(error.value){
+                console.error('SERVER ERROR');
+                return
+            }
+
+            if(data.value?.success && typeof(data.value.message)!=='string'){
+                console.log('USER:', data.value);
+                toast.success({title: 'Success', message:`Sign In successful`});
+                await navigateTo('/login');
+            }else{
+                toast.error({title: 'Error', message:data.value?.message as string});
+            }
+            
+        }
+        catch(err){
+            console.error('An error occured;', err);
+        }
     }
 
     const passwordError = ref<boolean>(false);
@@ -138,7 +162,7 @@
                     <!--Phone No-->
                     <div class="mb-6">
                         <label for="confirmPassword" class="text-gray-500">Phone Number</label>
-                            <input type="number" id="confirmPassword" placeholder="98XXXXXXXX" v-model="signUpFormData.phoneNo" required
+                            <input type="text" id="confirmPassword" placeholder="98XXXXXXXX" v-model="signUpFormData.phoneNo" required
                                 class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
                                         focus:outline-none focus:border-blue-500
                                         transition"
@@ -168,7 +192,7 @@
                     disabled:bg-blue-400
                     ">Next</button>
 
-                    <button type="submit" :disabled="passwordError||emailError||confirmPasswordError||!signUpFormData.termsAndCond" v-if="displaySection==='secondPart'"
+                    <button type="submit" :disabled="passwordError||emailError||confirmPasswordError||phoneNoError||!signUpFormData.termsAndCond" v-if="displaySection==='secondPart'"
                     class="border bg-blue-600 text-white px-12 py-2 block rounded-md
                     hover:bg-blue-700 hover:shadow-sm
                     disabled:bg-blue-400

@@ -1,10 +1,11 @@
 <script setup lang="ts">
     import {ref} from 'vue'
     import { useCartStore } from '@/stores/cart';
-    const cart = useCartStore();
+    const {cart, updateCart, loading, error, fetchCart, addToCart, removeFromCart, cartTotal} = useCart()
 
     const props = defineProps<{
     order: {
+        orderId: number,
         customerName: string
         totalItems: number
         totalAmount: number
@@ -26,32 +27,12 @@
     isOpen.value = !isOpen.value
     }
 
-    const addToCart = ()=> {
-        //push data to the pinia store
-        /*
-        interface cartDataType {
-        id: number,
-        name: string,
-        category: string,
-        price: number,
-        image: string,
-        quantity: number
-        }
-        */
-
-       props.order.order.map(eachOrder=>{
-        let cartDetails = {
-            id: eachOrder.id,
-            name: eachOrder.itemName,
-            category: eachOrder.itemCategory,
-            price: eachOrder.eachItemPrice,
-            image: 'https://placehold.co/600x400',
-            quantity: eachOrder.itemQuantity
-        }
-
-        cart.orderAgain(cartDetails);
-       })
+    const orderAgainHandler = ()=> {
+        props.order.order.forEach(item=>{
+            addToCart(item.id, item.itemQuantity)
+        })
     }
+    
 </script>
 
 <template>
@@ -69,7 +50,7 @@
 
             <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                 <button class="bg-blue-600 text-white font:medium px-4 py-2 rounded-md
-                        hover:bg-blue-700 " @click.stop="addToCart">Order Again</button>
+                        hover:bg-blue-700 " @click.stop="orderAgainHandler">Order Again</button>
                 <span class="material-symbols-outlined transition-transform duration-300 text-xl sm:text-2xl text-gray-600"
                 :class="{'rotate-180': isOpen}">
                 expand_more

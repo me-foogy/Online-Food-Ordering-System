@@ -1,20 +1,61 @@
 <script setup lang="ts">
 
+    import { useToast } from '#imports';
+    const toast = useToast();
+
     interface menuType {
-        id?: number
-        name?: string,
-        category?: string,
-        price?: number,
-        description?: string
-        image?: string
-        inStock?: boolean
+        id: number
+        name: string,
+        category: string,
+        price: number,
+        description: string
+        image: string
+        inStock: boolean
+    }
+
+    interface toggleMenuResponse{
+        success: boolean,
+        message: menuType[] | string
     }
 
     const props = defineProps<{
         item: menuType
     }>()
 
-    const inStock = ref(true);
+    const inStock = ref(props.item.inStock);
+
+    const toggleStock = async() =>{
+        inStock.value=!inStock.value;
+        try{
+            const {data, error} = await useFetch<toggleMenuResponse>('/api/admin/menu/stock', {
+                method: 'POST',
+                body: {
+                    ...props.item,
+                    inStock: inStock.value
+                }
+            })
+                
+            if(error.value){
+                console.error('SERVER ERROR');
+                toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+                return
+            }
+
+            if(data.value?.success && typeof(data.value.message) !== 'string'){
+                
+                const name = data.value.message[0]?.name;
+                const inStock = data.value.message[0]?.inStock;
+                toast.success({title: 'Success', message:`${name} stock toggled to ${inStock}`});
+
+            }else{
+                toast.error({title: 'ERROR', message:data.value?.message as string});
+            }    
+        }
+        
+        catch(err){
+                toast.error({title: 'ERROR', message:'Unexpected error occured'});
+        }
+    }
 
     const emit = defineEmits<{
         (e: 'edit', item:menuType): void
@@ -48,7 +89,7 @@
                 <div class="flex items-center gap-2">
                     <label class="relative inline-flex items-center cursor-pointer">
                         <!-- Hidden Checkbox -->
-                        <input type="checkbox" v-model="inStock" class="sr-only" />
+                        <input type="checkbox" class="sr-only" @click="toggleStock"/>
                         <!-- Toggle Track -->
                         <div
                             class="w-10 h-5 rounded-full transition-colors duration-300"

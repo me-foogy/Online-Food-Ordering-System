@@ -1,3 +1,7 @@
+<script lang="ts" setup>
+  const { handleLogout } = useLogout();
+</script>
+
 <template>
     <div class="min-h-screen flex bg-gray-100">
       <!-- Sidebar -->
@@ -12,23 +16,11 @@
                       </span>
                       <span class="label">Home</span>
                   </NuxtLink>
-                  <NuxtLink to="/user/favourite" class="nav-link">
-                      <span class="material-symbols-outlined icon">
-                      favorite
-                      </span>
-                      <span class="label">Favourites</span>
-                  </NuxtLink>
                   <NuxtLink to="/user/history" class="nav-link">
                       <span class="material-symbols-outlined icon">
                       history
                       </span>
                       <span class="label">Order History</span>
-                  </NuxtLink>
-                  <NuxtLink to="/user/reviews" class="nav-link">
-                      <span class="material-symbols-outlined icon">
-                      star
-                      </span>
-                      <span class="label">Reviwes</span>
                   </NuxtLink>
               </nav>
               <!-- Logout -->
@@ -39,12 +31,10 @@
                       </span>
                       <span class="label">My Account</span>
                   </NuxtLink>
-                <NuxtLink to="/login">
-                  <button class="logout-btn">
+                  <button class="logout-btn" @click="handleLogout">
                     <span class="material-symbols-outlined icon">logout</span>
                     <span class="label">Logout</span>
                   </button>
-                </NuxtLink>
               </div>
         </div>
       </aside>

@@ -1,23 +1,21 @@
 <script setup lang="ts">
 
+    const {addToCart} = useCart();
+
     interface menuType {
-        id?: number
-        name?: string,
-        category?: string,
-        price?: number,
-        description?: string
-        image?: string
-        inStock?: boolean
+        id: number
+        name: string,
+        category: string,
+        price: number,
+        description: string
+        image: string
+        inStock: boolean
     }
 
     const props = defineProps<{
         item: menuType
     }>()
 
-    const emit = defineEmits<{
-        (e: 'addToCart', item:menuType): void
-    }>()
-    
 </script>
 
 <template>
@@ -41,13 +39,20 @@
                 <p class="text-sm text-gray-600 line-clamp-2">{{item.description}}</p>
             </div>
 
-            <div class="flex items-center justify-between pt-3 mt-auto">
-                <button class="material-symbols-outlined">favorite</button>
-                <button class="flex items-center gap-1 px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:bg-gray-100 transition"
-                @click="emit('addToCart', item)">
-                    <span class="material-symbols-outlined text-base">add</span>
-                    Add to Cart
+            <div class="flex items-center justify-end pt-3 mt-auto">
+                <!-- <button class="material-symbols-outlined">favorite</button> -->
+
+                <button class="flex items-center gap-1 px-3 py-1.5 border rounded-md text-sm text-gray-700 "
+                :class="item.inStock?'hover:bg-gray-100 transition':'bg-red-500 text-white'"
+                :disabled="!item.inStock"
+                @click="addToCart(item.id, 1)"> 
+                <!-- 1 sent as initial quantity -->
+
+                    <span class="material-symbols-outlined text-base">{{item.inStock?'add':'block'}}</span>
+                    {{item.inStock?'Add to Cart':'Out of Stock'}}
+                    
                 </button>
+
             </div>
         </div>
     </div>

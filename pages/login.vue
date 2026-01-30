@@ -1,11 +1,19 @@
 <script setup lang="ts">
 
     import { useAuthStore } from '@/stores/auth';
+    import { loginSchema } from '@/shared/schemas/login';
+    import {z} from 'zod';
+    
     const auth = useAuthStore();
+    const toast = useToast();
+    const authUser = useCookie<loginReturnMessageType>('auth_user', {
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production'
+    })
 
-    interface FormData {
-        email: string
-        password: string
+    type baseFormData = z.infer<typeof loginSchema>
+
+    type FormData = baseFormData & {
         rememberMe: boolean
     }
 
@@ -14,6 +22,10 @@
         password:'',
         rememberMe: false
     })
+
+    const visibility = ref<boolean>(false);
+    const passwordError = ref<boolean>(false);
+    const emailError = ref<boolean>(false);
 
     onMounted(()=>{
         const userEmail:string|null=localStorage.getItem('userEmail');
@@ -24,22 +36,6 @@
         }
         return;
     })
-
-    const handleLoginSubmit = async ()=>{
-        rememberMeHandler();
-        //TODO: Call the api to check for the user
-        //data will be fetched from the api to check the user
-        //for now let user = sworup which will be fetched from the dabase after authentication
-
-        //pinia state change for user
-        auth.login('Sworup Karki');
-
-        await navigateTo('/admin/orders');
-    }
-
-    const visibility = ref<boolean>(false);
-    const passwordError = ref<boolean>(false);
-    const emailError = ref<boolean>(false);
     
     watch(()=>formData.value.password, (value)=>{
         const regexExp = /^(?=.*[A-Z])(?=.*[\W_]).+$/;
@@ -58,6 +54,48 @@
             localStorage.setItem('userEmail', userEmail)
         } else {
             localStorage.removeItem('userEmail')
+        }
+    }
+
+    const handleLoginSubmit = async ()=>{
+        rememberMeHandler();
+        
+       //api call for login
+        try{
+            const {data, error} = await useFetch<loginReturnType>('/api/auth/login',{
+                method: 'POST',
+                body: formData.value,
+                ignoreResponseError:true
+            });
+            
+            if(error.value){
+                console.error('SERVER ERROR');
+                toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+                return
+            }
+
+            if(data.value?.success && typeof(data.value.message) !== 'string'){
+                //This if function uses typeguard as the response can be a string or the user object
+
+                //set Frontend Cookie
+                authUser.value = data.value.message;
+                const {name, email, address, phoneNo, role} = authUser.value;
+                auth.login(name, role as 'admin'|'user');
+                
+                // Wait for next tick(Wait for cookie to be initialized )
+                await nextTick();
+                
+                navigateTo(role==='user'?'/user/home':'/admin');
+                toast.success({title: 'Success', message:`${role} logged in successfully`});
+
+            }else{
+                toast.error({title: 'ERROR', message:data.value?.message as string});
+            }
+            
+        }
+        catch(err){
+            toast.error({title: 'ERROR', message:'Unexpected error occured'});
+
         }
     }
 

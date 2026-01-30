@@ -1,28 +1,20 @@
 <script setup lang="ts">
 
-    import { useCartStore } from '@/stores/cart'
-    const cart = useCartStore();
-
-    interface cartDataType {
-        id: number,
-        name: string,
-        category: string,
-        price: number,
-        image: string,
-        quantity: number
-    }
+    import { useCartStore } from '@/stores/cart';
+    import type { cartDataType } from '@/shared/types/cart';
+    const {cart, updateCart, loading, error, fetchCart, addToCart, removeFromCart, cartTotal} = useCart()
 
     const props = defineProps<{
         item: cartDataType
     }>();
 
     const increaseQuantity = () => {
-        cart.updateQuantity({ id: props.item.id, quantity: props.item.quantity + 1 });
+        updateCart(props.item.id, props.item.quantity+1);
     }
 
     const decreaseQuantity = () => {
         if (props.item.quantity > 1) {
-            cart.updateQuantity({ id: props.item.id, quantity: props.item.quantity - 1 });
+            updateCart(props.item.id, props.item.quantity-1);
         }
     }
 
@@ -46,7 +38,7 @@
                     {{ item.name }}
                 </h2>
                 <span class="material-symbols-outlined text-gray-400 hover:text-red-500 cursor-pointer transition"
-                @click="cart.removeFromCart(item.id)">
+                @click="removeFromCart(item.id)">
                     delete
                 </span>
             </div>
@@ -61,8 +53,7 @@
                     Rs. {{ item.price }}
                 </h2>
 
-                <div class="flex items-center gap-1">
-
+                <div class="flex items-center gap-1" v-if="item.inStock">
                     <button class="material-symbols-outlined text-gray-400 hover:text-blue-600 cursor-pointer transition"
                     @click="decreaseQuantity">remove_circle </button>
 
@@ -70,8 +61,12 @@
 
                     <button class="material-symbols-outlined text-gray-400 hover:text-blue-600 cursor-pointer transition"
                     @click="increaseQuantity">add_circle</button>
-
                 </div>
+                
+                <div v-else>
+                    <span class="text-sm bg-red-500 text-white py-1 px-2 rounded-md">Out Of Stock</span>
+                </div>
+
             </div>
         </div>
      </div>
