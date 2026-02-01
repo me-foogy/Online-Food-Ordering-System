@@ -1,28 +1,65 @@
-import CryptoJS from 'crypto-js'
+import { esewaSchema } from "~/shared/schemas/esewa";
 
-type apiResponse = defaultApiType<string>
+type apiResponse = defaultApiType<{totalAmount: number, productCode: string, transactionUuid: string, signature: string}>
+
 export function usePayment(){
 
-    async function getSignature(message: string){
+    async function signPayment(totalAmount:number, productCode: string){
+
         try{
-            const {data, error} = await useFetch<apiResponse>('/api/esewa/sign', {
+
+            const response = await $fetch<apiResponse>('/api/user/esewa/sign', {
                 method: 'POST',
-                body: message
+                body: {
+                    totalAmount,
+                    productCode
+                }
             })
 
-            if(error.value){
-                throw new Error(data.value?.message || 'Payment Failed')
+            if(!response.success){
+                throw new Error(response.message || 'Payment Failed')
             }
 
-            if(data.value?.success===true){
-                return data.value.message
-            }
+            return response.message
+            
         }catch(err){
             console.error('ERROR:', err);
+            throw err;
         }
     }
 
+    async function makePayment(totalAmount: number, transactionUuid: string, productCode: string, signature: string){
+
+        const validated = esewaSchema.safeParse({
+            total_amount: totalAmount,
+            transaction_uuid: transactionUuid,
+            product_code: productCode,
+            signature: signature
+        }); 
+
+        if (!validated.success) {
+            throw new Error("Esewa Data Validation failed");
+        }
+        const data = validated.data;
+
+        const form = document.createElement('form');
+        form.method  = 'POST'
+        form.action = 'https://rc-epay.esewa.com.np/api/epay/main/v2/form'
+
+        for(const [key,value] of Object.entries(data)){
+            const input = document.createElement('input');
+            input.type='hidden';
+            input.name = key;
+            input.value=value;
+            form.appendChild(input);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
     return {
-        getSignature
+        signPayment,
+        makePayment
     }
 }

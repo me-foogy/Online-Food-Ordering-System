@@ -4,16 +4,23 @@
     Output: Signed string | Error
 */
 import CryptoJS from 'crypto-js'
+import { esewaSchema } from '~/shared/schemas/esewa';
 
 const ESEWA_SECRET = process.env.ESEWA_SECRET
-const bodyCheck = /^(?=.*\btotal_amount=[^,]+)(?=.*\btransaction_uuid=[^,]+)(?=.*\bproduct_code=[^,]+)[^,]+(,[^,]+)*$/
+const messageCheck = /^(?=.*\btotal_amount=[^,]+)(?=.*\btransaction_uuid=[^,]+)(?=.*\bproduct_code=[^,]+)[^,]+(,[^,]+)*$/
 
 export default defineEventHandler(async(event)=>{
 
     const body = await readBody(event);
-    const isBodyValid = bodyCheck.test(body.value);
+    const {totalAmount, productCode} = body;
 
-    if(!isBodyValid){
+    //generate uuid 
+    let uuid="___123" //temp uuid
+
+    const message = `total_amount=${totalAmount},transaction_uuid=${uuid},product_code=${productCode}`
+    const ismessageValid = messageCheck.test(message);
+
+    if(!ismessageValid){
         setResponseStatus(event, 400);
         return {
             success: false,
@@ -29,12 +36,17 @@ export default defineEventHandler(async(event)=>{
         }
     }
 
-    const hash = CryptoJS.HmacSHA256(body.value, ESEWA_SECRET);
+    const hash = CryptoJS.HmacSHA256(message, ESEWA_SECRET);
     const signature = CryptoJS.enc.Base64.stringify(hash);
 
     setResponseStatus(event, 200);
-    return {
-    success: true,
-    message: signature
-  }
+    return{
+        success: true,
+        message: {
+            totalAmount, 
+            productCode,
+            transactionUuid: uuid,
+            signature
+        }
+    }
 })
