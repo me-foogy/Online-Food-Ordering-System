@@ -1,3 +1,25 @@
+# Food Ordering App
+
+## Overview
+
+This project is a **food ordering platform** that allows users to browse a menu, add items to their cart, and make payments online. The backend is built using **Nuxt 3** with **Drizzle ORM** for database management. Payments are handled securely via **eSewa**.
+
+### Key Features
+- User authentication and management.
+- Menu browsing and cart management.
+- Order placement and item tracking.
+- Payment integration with eSewa.
+- Payment verification and database updates after successful transactions.
+
+### Tech Stack
+- **Frontend:** Nuxt 3
+- **Backend:** Node.js
+- **Database:** PostgreSQL, managed with Drizzle ORM
+- **Payment Gateway:** eSewa
+
+### SCHEMA DESIGN
+
+
 # Nuxt Minimal Starter
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
@@ -37,39 +59,3 @@ yarn dev
 # bun
 bun run dev
 ```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
