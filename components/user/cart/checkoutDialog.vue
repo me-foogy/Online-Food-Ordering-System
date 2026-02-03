@@ -3,25 +3,18 @@
   import {z} from 'zod'
   const toast = useToast();
   const {cart, fetchCart, cartTotal} = useCart();
-  const {signPayment, makePayment} = usePayment();
+  const {confirmAndSignPayment} = usePayment();
 
   const props = defineProps<{
   isOpen: boolean
   onClose?: () => void
   }>()
 
-  async function handlePayment(){
+  async function confirmOrder(){
+
     try {
-      const response = await signPayment(100, 'EPAYTEST');
-      const { totalAmount, productCode, transactionUuid, signature } = response;
-
-      await makePayment(
-        totalAmount,
-        transactionUuid,
-        productCode,
-        signature
-      )
-
+      //make orders row in db
+      const response = await confirmAndSignPayment();
     }catch (err) {
       console.error('Payment flow failed:', err)
       alert('Payment failed. Please try again.')
@@ -70,7 +63,7 @@
             class="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-red-500 hover:text-white transition-colors">
             Cancel
           </button>
-          <button @click="handlePayment"
+          <button @click="confirmOrder"
             class="flex-1 px-4 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
             Confirm Order
           </button>

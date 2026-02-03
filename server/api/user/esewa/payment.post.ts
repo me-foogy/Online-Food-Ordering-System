@@ -12,12 +12,14 @@ const messageCheck = /^(?=.*\btotal_amount=[^,]+)(?=.*\btransaction_uuid=[^,]+)(
 export default defineEventHandler(async(event)=>{
 
     const body = await readBody(event);
-    const {totalAmount, productCode} = body;
+    const {amount, productCode} = body;
 
     //generate uuid 
-    let uuid="___123" //temp uuid
+    const uuid= crypto.randomUUID();
 
-    const message = `total_amount=${totalAmount},transaction_uuid=${uuid},product_code=${productCode}`
+    const amountWithDecimal = Number(amount).toFixed(2);
+
+    const message = `total_amount=${amountWithDecimal},transaction_uuid=${uuid},product_code=${productCode}`
     const ismessageValid = messageCheck.test(message);
 
     if(!ismessageValid){
@@ -43,7 +45,7 @@ export default defineEventHandler(async(event)=>{
     return{
         success: true,
         message: {
-            totalAmount, 
+            amount: amountWithDecimal, 
             productCode,
             transactionUuid: uuid,
             signature

@@ -80,7 +80,6 @@
                 //set Frontend Cookie
                 authUser.value = data.value.message;
                 const {name, email, address, phoneNo, role} = authUser.value;
-                auth.login(name, role as 'admin'|'user');
                 
                 // Wait for next tick(Wait for cookie to be initialized )
                 await nextTick();

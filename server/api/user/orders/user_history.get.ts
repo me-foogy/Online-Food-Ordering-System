@@ -46,7 +46,7 @@ export default defineEventHandler(async(event)=>{
             const response = orders.map(order=>{
                 const orderItems = orderedItems.get(order.orderId) || []
                 const totalItems = orderItems.reduce((sum, item)=>sum+item.itemQuantity, 0)
-                const totalAmount = orderItems.reduce((sum, item)=>sum+item.itemQuantity*item.itemPrice, 0)
+                const totalAmount = orderItems.reduce((sum, item)=>sum+item.itemQuantity*Number(item.itemPrice), 0)
                 return{
                         orderId: order.orderId,
                         customerName: order.customerName,
@@ -58,7 +58,7 @@ export default defineEventHandler(async(event)=>{
                             id: i.id,
                             itemName: i.itemName,
                             itemQuantity: i.itemQuantity,
-                            eachItemPrice: i.itemPrice
+                            eachItemPrice: Number(i.itemPrice)
                         })),
                         customerNotes: order.customerNotes,
                         orderProgress: order.orderProgress

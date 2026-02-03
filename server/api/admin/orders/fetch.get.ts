@@ -16,8 +16,8 @@ export default defineEventHandler(async(event)=>{
             // const orders = await db.select().from(ordersTable).where(ne(ordersTable.orderProgress,'completed'));
             const orders = await db.select().from(ordersTable)
             //if no orders send no orders response
-            if(orders.length===0){
-                setResponseStatus(event, 204);
+            if(!orders || orders.length===0){
+                setResponseStatus(event, 200);
                 return {
                     success: true,
                     message: []
@@ -42,7 +42,7 @@ export default defineEventHandler(async(event)=>{
             const response = orders.map(order=>{
                 const orderItems = orderedItems.get(order.orderId) || []
                 const totalItems = orderItems.reduce((sum, item)=>sum+item.itemQuantity, 0)
-                const totalAmount = orderItems.reduce((sum, item)=>sum+item.itemQuantity*item.itemPrice, 0)
+                const totalAmount = orderItems.reduce((sum, item)=>sum+item.itemQuantity*Number(item.itemPrice), 0)
                 return{
                         orderId: order.orderId,
                         customerName: order.customerName,
@@ -53,7 +53,6 @@ export default defineEventHandler(async(event)=>{
                         order: orderItems.map(i => ({
                             id: i.id,
                             itemName: i.itemName,
-                            itemCategory: i.itemCategory,
                             itemQuantity: i.itemQuantity,
                             eachItemPrice: i.itemPrice
                         })),
@@ -66,7 +65,6 @@ export default defineEventHandler(async(event)=>{
                 success: true,
                 message: response
             }
-            
 
     }catch(err){
         setResponseStatus(event, 500)

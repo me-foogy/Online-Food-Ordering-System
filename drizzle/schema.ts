@@ -1,7 +1,8 @@
-import { integer, pgTable, varchar, boolean, timestamp } from "drizzle-orm/pg-core";
+import { primaryKey } from "drizzle-orm/gel-core";
+import { integer, pgTable, varchar, boolean, timestamp, uuid, numeric, pgEnum } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
   email: varchar({length: 255}).notNull().unique(),
   password: varchar({length: 255}).notNull(),
   name: varchar({ length: 255 }).notNull(),
@@ -11,7 +12,7 @@ export const usersTable = pgTable("users", {
 });
 
 export const menuTable = pgTable('menu', {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
   name: varchar({length: 255}).notNull().unique(),
   category: varchar({length:255}).notNull(),
   price: integer().notNull(),
@@ -21,7 +22,7 @@ export const menuTable = pgTable('menu', {
 })
 
 export const ordersTable = pgTable('orders',{
-  orderId: integer('order_id').primaryKey().generatedAlwaysAsIdentity().notNull(),
+  orderId: integer('order_id').primaryKey().generatedByDefaultAsIdentity().notNull(),
   userId: integer('user_id').references(()=>usersTable.id).notNull(),
   customerName:varchar('customer_name',{length: 255}).notNull(),
   createdAt: timestamp('created_at', {withTimezone: true}).defaultNow().notNull(),
@@ -31,22 +32,36 @@ export const ordersTable = pgTable('orders',{
 })
 
 export const eachOrderTable = pgTable('each_order',{
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
   orderId: integer('order_id').references(()=>ordersTable.orderId).notNull(),
   menuId: integer('menu_id').references(()=>menuTable.id, {onDelete: 'set null'}),
   itemName: varchar('item_name', {length:255}).notNull(),
   itemQuantity: integer('item_quantity').notNull(),
-  itemPrice: integer('item_price').notNull()
+  itemPrice: numeric('item_price').notNull()
 })
 
 export const categoryTable = pgTable('category', {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
   name: varchar({length: 255}).notNull().unique()
 })
 
 export const cartTable =  pgTable('cart',{
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
   userId: integer('user_id').notNull().references(()=>usersTable.id, {onDelete: 'cascade'}),
   menuId: integer('menu_id').notNull().references(()=>menuTable.id, {onDelete: 'cascade'}),
   quantity: integer().notNull()
 })
+
+
+export const paymentStatusEnum = pgEnum('paymentStatus', ['PENDING', 'COMPLETE', 'Service is currently unavailable']);
+//status response from esewa
+export const paymentTable = pgTable('payment', {
+  paymentId: uuid("payment_id").primaryKey(),
+  amount: numeric().notNull(),
+  productCode: varchar('product_code', {length: 255}).notNull(),
+  ordersId: integer('order_id').notNull().references(()=>ordersTable.orderId, {onDelete: 'set null'}),
+  status: paymentStatusEnum(),
+  paidAt: timestamp("paid_at", { withTimezone: true }).notNull()
+})
+
+

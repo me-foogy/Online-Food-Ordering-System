@@ -8,24 +8,14 @@
 import { eq } from "drizzle-orm";
 import { db } from "~/drizzle";
 import { cartTable, menuTable, usersTable } from "~/drizzle/schema";
+import { getCartByUserId } from "~/server/services/cartService";
 
 
 export default defineEventHandler(async(event)=>{
 
     const user = event.context.user;
 
-    const userCart = await db.select({
-        id: cartTable.id,
-        name: menuTable.name,
-        quantity: cartTable.quantity,
-        category: menuTable.category,
-        price: menuTable.price,
-        image: menuTable.image,
-        inStock: menuTable.inStock
-    }).from(cartTable)
-    .leftJoin(usersTable, eq(cartTable.userId, usersTable.id))
-    .leftJoin(menuTable, eq(cartTable.menuId, menuTable.id))
-    .where(eq(cartTable.userId, user.id));
+    const userCart = await getCartByUserId(user.id);
 
     setResponseStatus(event, 200);
     return{

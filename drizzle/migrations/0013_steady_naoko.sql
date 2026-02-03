@@ -1,0 +1,1 @@
+ALTER TABLE "payment" ALTER COLUMN "payment_id" DROP DEFAULT;
