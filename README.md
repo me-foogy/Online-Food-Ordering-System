@@ -18,6 +18,7 @@ This project is a **food ordering platform** that allows users to browse a menu,
 - **Payment Gateway:** eSewa
 
 ### SCHEMA DESIGN
+<img width="2842" height="2096" alt="drawSQL-image-export-2026-02-03" src="https://github.com/user-attachments/assets/bc502263-8ecb-4dbd-9a39-a1a2257879f8" />
 
 
 # Nuxt Minimal Starter
