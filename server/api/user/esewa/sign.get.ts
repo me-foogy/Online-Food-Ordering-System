@@ -5,8 +5,8 @@
     Dependencies: cart, menu, orders, each_order
 */
 
-import { db } from "~/drizzle";
-import { eachOrderTable, ordersTable, paymentTable } from "~/drizzle/schema";
+import { db } from "~/server/drizzle";
+import { eachOrderTable, ordersTable, paymentTable } from "~/server/drizzle/schema";
 import { getCartByUserId } from "~/server/services/cartService";
 import CryptoJS from 'crypto-js'
 

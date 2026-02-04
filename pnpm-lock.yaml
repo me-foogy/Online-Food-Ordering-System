@@ -56,6 +56,12 @@ importers:
       pinia:
         specifier: ^3.0.4
         version: 3.0.4(vue@3.5.26)
+      primeflex:
+        specifier: ^4.0.0
+        version: 4.0.0
+      primeicons:
+        specifier: ^7.0.0
+        version: 7.0.0
       vue:
         specifier: ^3.5.26
         version: 3.5.26
@@ -4036,6 +4042,12 @@ packages:
   pretty-bytes@7.1.0:
     resolution: {integrity: sha512-nODzvTiYVRGRqAOvE84Vk5JDPyyxsVk0/fbA/bq7RqlnhksGpset09XTxbpvLTIjoaF7K8Z8DG8yHtKGTPSYRw==}
     engines: {node: '>=20'}
+
+  primeflex@4.0.0:
+    resolution: {integrity: sha512-UOEZCRjR36+sm5bUpDhS1xbA068l9VC6y1aTNVqQPtXuKIdPTqAWHRUxj3mKAoPrQ9W373ooJJMgNVXfiaw04g==}
+
+  primeicons@7.0.0:
+    resolution: {integrity: sha512-jK3Et9UzwzTsd6tzl2RmwrVY/b8raJ3QZLzoDACj+oTJ0oX7L9Hy+XnVwgo4QVKlKpnP/Ur13SXV/pVh4LzaDw==}
 
   process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
@@ -9133,6 +9145,10 @@ snapshots:
     optional: true
 
   pretty-bytes@7.1.0: {}
+
+  primeflex@4.0.0: {}
+
+  primeicons@7.0.0: {}
 
   process-nextick-args@2.0.1: {}
 

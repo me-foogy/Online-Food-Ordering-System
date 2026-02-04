@@ -36,12 +36,15 @@
                 toast.success({title: 'SUCCESS', message: 'Payment verified successfully'});
             }
             
-        } catch(err) {
-            console.error('Payment verification error:', err);
-            toast.error({
-                title: 'VERIFICATION FAILED', 
-                message: 'Contact Restaurant For Refund0'
-            });
+        }catch(err: unknown) {
+            let message = 'Unknown system error';
+            if (err && typeof err === 'object' && 'data' in err) {
+                const data = err.data;
+                if (data && typeof data === 'object' && 'message' in data) {
+                    message = String(data.message);
+                }
+            }
+            toast.error({message});
         }
     })
     //--------------------------------------------------------------//

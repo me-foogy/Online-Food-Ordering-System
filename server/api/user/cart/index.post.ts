@@ -5,8 +5,8 @@
     Dependency: cart Database
 */
 
-import { db } from "~/drizzle";
-import { cartTable } from "~/drizzle/schema";
+import { db } from "~/server/drizzle";
+import { cartTable } from "~/server/drizzle/schema";
 
 
 export default defineEventHandler(async(event)=>{

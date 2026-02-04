@@ -11,14 +11,7 @@
   }>()
 
   async function confirmOrder(){
-
-    try {
-      //make orders row in db
-      const response = await confirmAndSignPayment();
-    }catch (err) {
-      console.error('Payment flow failed:', err)
-      alert('Payment failed. Please try again.')
-    }
+    await confirmAndSignPayment();
   }
 
 </script>

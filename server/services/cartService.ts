@@ -1,6 +1,6 @@
-import {db} from '@/drizzle/index'
+import {db} from '~/server/drizzle/index'
 import { eq } from 'drizzle-orm';
-import { usersTable, menuTable, cartTable } from '~/drizzle/schema';
+import { usersTable, menuTable, cartTable } from '~/server/drizzle/schema';
 
 export async function getCartByUserId(userId: number){
     const userCart = await db.select({

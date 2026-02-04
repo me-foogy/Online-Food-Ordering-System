@@ -3,8 +3,8 @@ This api handles get request for menu and fetches all the menu items from the se
 */
 
 import { setResponseStatus } from 'h3';
-import {db} from "@/drizzle/index"
-import { menuTable} from '~/drizzle/schema';
+import {db} from "~/server/drizzle/index"
+import { menuTable} from '~/server/drizzle/schema';
 
 export default defineEventHandler(async (event)=>{
 

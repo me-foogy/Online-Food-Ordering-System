@@ -6,8 +6,8 @@
 */
 
 import { eq } from "drizzle-orm";
-import { db } from "~/drizzle";
-import { cartTable, menuTable, usersTable } from "~/drizzle/schema";
+import { db } from "~/server/drizzle";
+import { cartTable, menuTable, usersTable } from "~/server/drizzle/schema";
 import { getCartByUserId } from "~/server/services/cartService";
 
 

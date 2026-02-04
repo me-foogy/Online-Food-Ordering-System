@@ -5,16 +5,29 @@
 */
 
 import { setResponseStatus } from 'h3';
-import {db} from "@/drizzle/index";
-import {eq, inArray, ne} from 'drizzle-orm';
-import {ordersTable, eachOrderTable} from '~/drizzle/schema';
+import {db} from "~/server/drizzle/index";
+import {eq, inArray, ne, sql} from 'drizzle-orm';
+import {ordersTable, eachOrderTable} from '~/server/drizzle/schema';
+
+const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
 export default defineEventHandler(async(event)=>{
 
-    //fetch all orders from ordersTable
+    const params = getQuery(event);
+    const targetDate = params.date;
+
+    if(typeof targetDate !== "string" || !dateRegex.test(targetDate)){
+        setResponseStatus(event, 400)
+        return {
+            success: false, 
+            message: 'Date not provided or invalid'
+        }
+    }
+
+    //fetch all orders of current date from ordersTable
     try{
             // const orders = await db.select().from(ordersTable).where(ne(ordersTable.orderProgress,'completed'));
-            const orders = await db.select().from(ordersTable)
+            const orders = await db.select().from(ordersTable).where(eq(sql`${ordersTable.createdAt}::date`, targetDate)) //pg supports type casting for date
             //if no orders send no orders response
             if(!orders || orders.length===0){
                 setResponseStatus(event, 200);
@@ -26,7 +39,6 @@ export default defineEventHandler(async(event)=>{
 
             //if orders exist then fetch each item in the database
             //get all not completed order Id's
-
             const orderIds = orders.map(order=>order.orderId);
             const items = await db.select().from(eachOrderTable).where(inArray(eachOrderTable.orderId, orderIds));
 

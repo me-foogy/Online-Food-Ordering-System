@@ -1,6 +1,6 @@
 import {signupSchema} from '@/shared/schemas/signup';
-import {db} from "@/drizzle/index"
-import { usersTable } from '~/drizzle/schema';
+import {db} from "~/server/drizzle/index"
+import { usersTable } from '~/server/drizzle/schema';
 import {eq} from 'drizzle-orm'
 import { setResponseStatus } from 'h3';
 import bcrypt from 'bcrypt';

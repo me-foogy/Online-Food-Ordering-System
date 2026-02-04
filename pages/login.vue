@@ -84,7 +84,7 @@
                 // Wait for next tick(Wait for cookie to be initialized )
                 await nextTick();
                 
-                navigateTo(role==='user'?'/user/home':'/admin');
+                navigateTo(role==='user'?'/user/home':'/admin/orders');
                 toast.success({title: 'Success', message:`${role} logged in successfully`});
 
             }else{

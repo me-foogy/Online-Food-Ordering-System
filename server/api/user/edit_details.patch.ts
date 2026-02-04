@@ -5,8 +5,8 @@
 */
 
 import { eq } from "drizzle-orm";
-import { db } from "~/drizzle";
-import { usersTable } from "~/drizzle/schema";
+import { db } from "~/server/drizzle";
+import { usersTable } from "~/server/drizzle/schema";
 import { signupSchema } from "~/shared/schemas/signup";
 import bcrypt from 'bcrypt';
 

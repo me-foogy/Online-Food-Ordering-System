@@ -59,9 +59,10 @@ export const paymentTable = pgTable('payment', {
   paymentId: uuid("payment_id").primaryKey(),
   amount: numeric().notNull(),
   productCode: varchar('product_code', {length: 255}).notNull(),
-  ordersId: integer('order_id').notNull().references(()=>ordersTable.orderId, {onDelete: 'set null'}),
+  ordersId: integer('order_id').references(()=>ordersTable.orderId, {onDelete: 'set null'}),
   status: paymentStatusEnum(),
-  paidAt: timestamp("paid_at", { withTimezone: true }).notNull()
+  paidAt: timestamp("paid_at", { withTimezone: true }).notNull(),
+  remarks: varchar({length: 255})
 })
 
 

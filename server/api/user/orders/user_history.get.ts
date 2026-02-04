@@ -1,8 +1,8 @@
 
 import { setResponseStatus } from 'h3';
-import {db} from "@/drizzle/index";
+import {db} from "~/server/drizzle/index";
 import {eq, inArray, ne} from 'drizzle-orm';
-import {ordersTable, eachOrderTable} from '~/drizzle/schema';
+import {ordersTable, eachOrderTable} from '~/server/drizzle/schema';
 
 export default defineEventHandler(async(event)=>{
 

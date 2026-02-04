@@ -1,8 +1,8 @@
 import {loginSchema} from '@/shared/schemas/login'
 import { loginReturnMessageType, loginReturnType } from '@/shared/types/auth';
 import { setResponseStatus, setCookie } from 'h3';
-import {db} from "@/drizzle/index"
-import { usersTable } from '~/drizzle/schema';
+import {db} from "~/server/drizzle/index"
+import { usersTable } from '~/server/drizzle/schema';
 import {eq} from 'drizzle-orm';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';

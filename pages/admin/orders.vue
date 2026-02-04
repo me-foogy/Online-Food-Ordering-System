@@ -2,7 +2,11 @@
 
     import EachOrder from '@/components/admin/EachOrder.vue'
     import { useToast } from '#imports';
+    import { ref, computed } from 'vue';
     const toast = useToast();
+
+    const pageIndex = ref(0)
+    const totalPages = ref(20)
 
     type orderProgressType = 'notStarted' | 'inProgress' | 'completed';
     interface orderDataType {
@@ -23,6 +27,7 @@
         itemQuantity: number,
         eachItemPrice: number
     }
+    
     interface apiResponse{
         success: boolean
         message: orderDataType[] | string
@@ -30,8 +35,12 @@
 
     //-------------------------API FETCH FOR api/order/fetch GET request ----------------------//
 
+    const dateToday = new Date().toISOString().split('T')[0] //format 20xx-xx-xx
+
     const orderData = ref<orderDataType[]>([]);
-    const {data, error} = await useFetch<apiResponse>('/api/admin/orders/fetch')
+    const {data, error} = await useFetch<apiResponse>(`/api/admin/orders/fetch?date=${dateToday}`,{
+        method: 'GET'
+    })
 
     if(error.value){
         orderData.value=[];
@@ -102,9 +111,15 @@
         </div>
 
      <div class="pt-8">
-        <EachOrder v-for="(order, index) in orderData" :key="order.orderId" :order="order"/>
+        <EachOrder v-if="orderData.length!==0" v-for="(order, index) in orderData" :key="order.orderId" :order="order"/>
+        <div v-else class="h-full w-full border rounded-xl p-4 bg-white sm:p-6">
+            <span class="text-red-500 flex justify-center text-1xl">No Orders At The Moment</span>
+        </div>
     </div>
-</template>
 
-<style scoped>
-</style>
+    <!-- Pagination -->
+    <div class="pt-8 flex justify-center">
+       <Paginator :rows="10" :totalRecords="120" :rowsPerPageOptions="[10, 20, 30]"></Paginator>
+    </div>
+
+</template>

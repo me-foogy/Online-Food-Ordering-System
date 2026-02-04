@@ -141,6 +141,20 @@
       "when": 1770124207433,
       "tag": "0019_tiny_forge",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1770190710411,
+      "tag": "0020_third_pyro",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1770190783619,
+      "tag": "0021_living_bloodstorm",
+      "breakpoints": true
     }
   ]
 }
