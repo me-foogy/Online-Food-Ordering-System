@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@hennge/vue3-pagination": "^1.0.17",
     "@pinia/nuxt": "0.11.3",
     "@unovis/ts": "^1.6.2",
     "@vuepic/vue-datepicker": "^12.1.0",
@@ -29,6 +30,7 @@
     "primeflex": "^4.0.0",
     "primeicons": "^7.0.0",
     "vue": "^3.5.26",
+    "vue-awesome-paginate": "^1.2.0",
     "vue-cal": "^4.10.2",
     "vue-chartjs": "^5.3.3",
     "vue-charts": "^0.2.1",

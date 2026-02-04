@@ -69,7 +69,6 @@
 </script>
 
 <template>
-  <div class="mb-4">
     <div class="border rounded-xl bg-white p-4 w-full">
 
       <div class="flex justify-between items-center cursor-pointer"@click="toggle">
@@ -125,5 +124,4 @@
         </p>
       </div>
     </div>
-  </div>
 </template>

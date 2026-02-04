@@ -5,7 +5,7 @@
 import { eq, InferSelectModel, sql } from "drizzle-orm";
 import { uuid } from "zod";
 import { db } from "~/server/drizzle";
-import { eachOrderTable, ordersTable, paymentTable } from "~/server/drizzle/schema";
+import { cartTable, eachOrderTable, ordersTable, paymentTable } from "~/server/drizzle/schema";
 import { getCartByUserId } from "~/server/services/cartService";
 import {z} from 'zod';
 import CryptoJS from 'crypto-js'
@@ -23,7 +23,6 @@ type validationEsewaResponse = {
 export default defineEventHandler(async(event)=>{
 
     const {data} = await readBody(event);
-    console.log('API CALLED');
     if(!data){
         throw createError ({statusCode: 400, statusMessage: 'No data for validation'});
     }
@@ -106,6 +105,9 @@ export default defineEventHandler(async(event)=>{
                 }).where(eq(paymentTable.paymentId, uuid)).returning()
 
                 paymentRow=insertedPayment;
+
+                //clear cart of the user
+                await tx.delete(cartTable).where(eq(cartTable.userId, user.id))
             })
         
             if (!paymentRow) {

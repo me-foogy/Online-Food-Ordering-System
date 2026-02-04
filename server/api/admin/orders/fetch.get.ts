@@ -10,24 +10,30 @@ import {eq, inArray, ne, sql} from 'drizzle-orm';
 import {ordersTable, eachOrderTable} from '~/server/drizzle/schema';
 
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+//order of the progress
+const progressOrder: Record<string, number> = {
+    'notStarted': 1,
+    'inProgress': 2,
+    'completed': 3
+}
 
 export default defineEventHandler(async(event)=>{
 
     const params = getQuery(event);
     const targetDate = params.date;
 
-    if(typeof targetDate !== "string" || !dateRegex.test(targetDate)){
-        setResponseStatus(event, 400)
-        return {
-            success: false, 
-            message: 'Date not provided or invalid'
-        }
-    }
-
     //fetch all orders of current date from ordersTable
     try{
-            // const orders = await db.select().from(ordersTable).where(ne(ordersTable.orderProgress,'completed'));
-            const orders = await db.select().from(ordersTable).where(eq(sql`${ordersTable.createdAt}::date`, targetDate)) //pg supports type casting for date
+            // database fetch by using pagination
+            const page = Number(params.page) || 1
+            const pageSize = Number(params.pageSize) || 10
+            const offset = (page - 1) * pageSize
+            
+            const orders = await db.select().from(ordersTable)
+            .where(eq(sql`${ordersTable.createdAt}::date`, targetDate)) //pg supports type casting for date
+            .limit(pageSize)
+            .offset(offset)
+
             //if no orders send no orders response
             if(!orders || orders.length===0){
                 setResponseStatus(event, 200);
@@ -36,6 +42,13 @@ export default defineEventHandler(async(event)=>{
                     message: []
                 }
             }
+            
+            //sort orders based on priority
+            orders.sort((a, b) => {
+                const aPriority = progressOrder[a.orderProgress] ?? 999
+                const bPriority = progressOrder[b.orderProgress] ?? 999
+                return aPriority - bPriority
+            })
 
             //if orders exist then fetch each item in the database
             //get all not completed order Id's

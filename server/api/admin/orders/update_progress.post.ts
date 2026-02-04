@@ -11,7 +11,6 @@ import { setResponseStatus } from "h3";
 export default defineEventHandler(async(event)=>{
     const body = await readBody(event);
     const {orderId, orderProgress} = body;
-    console.log(body);
     if(!orderId && orderProgress!=='inProgress' && orderProgress!=='completed'){
         setResponseStatus(event, 400);
         return{
