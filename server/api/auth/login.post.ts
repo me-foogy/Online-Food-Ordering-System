@@ -1,5 +1,5 @@
 import {loginSchema} from '@/shared/schemas/login'
-import { loginReturnMessageType, loginReturnType } from '@/shared/types/auth';
+import { loginReturnMessageType} from '@/shared/types/auth';
 import { setResponseStatus, setCookie } from 'h3';
 import {db} from "~/server/drizzle/index"
 import { usersTable } from '~/server/drizzle/schema';

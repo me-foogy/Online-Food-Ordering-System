@@ -9,7 +9,6 @@ import {db} from "~/server/drizzle/index";
 import {eq, inArray, ne, sql} from 'drizzle-orm';
 import {ordersTable, eachOrderTable} from '~/server/drizzle/schema';
 
-const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 //order of the progress
 const progressOrder: Record<string, number> = {
     'notStarted': 1,
