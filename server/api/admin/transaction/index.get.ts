@@ -4,9 +4,9 @@
     Output: array of transactions
 */
 
-import { desc, gte, sql } from "drizzle-orm";
+import { desc, eq, gte, sql } from "drizzle-orm";
 import { db } from "~/server/drizzle";
-import { paymentTable } from "~/server/drizzle/schema";
+import { paymentTable, usersTable } from "~/server/drizzle/schema";
 
 export default defineEventHandler(async(event)=>{
     const params = getQuery(event);
@@ -29,7 +29,17 @@ export default defineEventHandler(async(event)=>{
     const [{count}]  = await db.select({ count: sql<number>`count(*)` }).from(paymentTable).where(gte(paymentTable.paidAt, cutoffDate));
 
     //fetch the paginated data
-    const response = await db.select().from(paymentTable)
+    const response = await db.select({
+        paymentId: paymentTable.paymentId,
+        amount: paymentTable.amount,
+        productCode: paymentTable.productCode,
+        ordersId: paymentTable.ordersId,
+        status: paymentTable.status,
+        paidAt: paymentTable.paidAt,
+        remarks: paymentTable.remarks,
+        phoneNo: usersTable.phoneNo
+    }).from(paymentTable)
+        .leftJoin(usersTable, eq(paymentTable.userId, usersTable.id))
         .where(gte(paymentTable.paidAt, cutoffDate))
         .orderBy(desc(paymentTable.paidAt))
         .limit(pageSize)

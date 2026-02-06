@@ -20,7 +20,7 @@
 
   interface apiSuccessResponse {
     success: true,
-    message: InferSelectModel<typeof paymentTable>[],
+    message: (InferSelectModel<typeof paymentTable>&{phoneNo: string})[],
     pagination: {
       page: number,
       pagesize: number, 
@@ -29,7 +29,7 @@
   }
 
   type apiFailureResponse = {success: false, message: string}
-  const transactionData = ref<InferSelectModel<typeof paymentTable>[]| null>(null)
+  const transactionData = ref<(InferSelectModel<typeof paymentTable>&{phoneNo: string})[] | null>(null)
 
 
   async function fetchTransaction(){
@@ -64,7 +64,36 @@
     fetchTransaction();
   });
 
-  //--------------------------------------------------------------------------------------//
+  //-----------------------------------API CALL TO DOWNLOAD DATA AS EXCEL-----------------//
+
+  const downloadData = async () =>{
+    try{
+        const response = await $fetch('/api/admin/transaction/download', {
+        method: "GET",
+        query: {
+          days: 30
+        },
+        responseType: 'arrayBuffer'
+      }) as ArrayBuffer
+      
+      // Create a blob and trigger download
+    const blob = new Blob([new Uint8Array(response)], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'transactions.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    toast.success({ message: 'Transaction Data Downloaded Successfully' });
+
+    }catch{
+      toast.error({message: 'Error Downloading Data'})
+    }
+  }
+  //--------------------------------------------------------------------------//
 
 // Function to get status badge styles
 const getStatusClass = (status: string | null) => {
@@ -96,8 +125,10 @@ const truncateId = (id: string) => {
   <div class="w-full bg-white">
     <!-- Header -->
     <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-      <h2 class="text-xl font-semibold text-gray-900">Transaction History</h2>
-      <button class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+      <h2 class="text-xl font-semibold text-blue-800">Transaction History</h2>
+      <button class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+        @click="downloadData">
+        <span class="material-symbols-outlined text-xl text-white flex-shrink-0">file_download</span>
         Export
       </button>
     </div>
@@ -107,7 +138,8 @@ const truncateId = (id: string) => {
       <table class="w-full border-separate border-spacing-y-2">
         <thead>
           <tr class="bg-blue-200 border-b ">
-            <th class="px-6 py-4 text-left text-sm font-semibold text-blue-700">PAYMENT ID</th>
+            <th class="px-6 py-4 text-left text-sm font-semibold text-blue-700">PAYMENT UUID</th>
+            <th class="px-6 py-4 text-left text-sm font-semibold text-blue-700">Phone No</th>
             <th class="px-6 py-4 text-left text-sm font-semibold text-blue-700">PRODUCT CODE</th>
             <th class="px-6 py-4 text-left text-sm font-semibold text-blue-700">ORDER ID</th>
             <th class="px-6 py-4 text-left text-sm font-semibold text-blue-700">AMOUNT</th>
@@ -121,6 +153,7 @@ const truncateId = (id: string) => {
           <!-- Main transaction row -->
           <tr class="bg-white hover:bg-gray-50 rounded-lg">
             <td class="px-6 py-4 text-sm text-gray-900" :class="getBorderClass(tx.remarks)">{{ truncateId(tx.paymentId) }}</td>
+            <td class="px-6 py-4 text-sm text-gray-900" :class="getBorderClass(tx.remarks)">{{tx.phoneNo}}</td>
             <td class="px-6 py-4 text-sm font-medium text-gray-900" :class="getBorderClass(tx.remarks)">{{ tx.productCode }}</td>
             <td class="px-6 py-4 text-sm text-gray-900" :class="getBorderClass(tx.remarks)">
               <span v-if="tx.ordersId">{{ tx.ordersId }}</span>
@@ -146,7 +179,7 @@ const truncateId = (id: string) => {
 
           <!-- Optional remark row -->
           <tr v-if="tx.remarks" class="bg-red-50">
-            <td colspan="7" class="px-6 py-2 text-sm text-gray-800 font-medium border-b border-blue-700">
+            <td colspan="8" class="px-6 py-2 text-sm text-gray-800 font-medium border-b border-blue-700">
               <span class="font-semibold text-red-900 uppercase">RemarkS: </span>
               {{ tx.remarks }}
             </td>
@@ -162,7 +195,7 @@ const truncateId = (id: string) => {
           :range-size="1"
           class="gap-2"
         />
-    </div>
       </div>
+    </div>
   </div>
 </template>

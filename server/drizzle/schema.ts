@@ -57,6 +57,7 @@ export const paymentStatusEnum = pgEnum('paymentStatus', ['PENDING', 'COMPLETE',
 //status response from esewa
 export const paymentTable = pgTable('payment', {
   paymentId: uuid("payment_id").primaryKey(),
+  userId: integer().references(()=>usersTable.id, {onDelete: 'set null'}),
   amount: numeric().notNull(),
   productCode: varchar('product_code', {length: 255}).notNull(),
   ordersId: integer('order_id').references(()=>ordersTable.orderId, {onDelete: 'set null'}),

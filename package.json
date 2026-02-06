@@ -21,6 +21,7 @@
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
+    "exceljs": "^4.4.0",
     "jsonwebtoken": "^9.0.3",
     "nuxt": "^4.2.2",
     "nuxt-charts": "^2.0.0",
