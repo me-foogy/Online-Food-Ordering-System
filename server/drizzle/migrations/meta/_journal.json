@@ -162,6 +162,13 @@
       "when": 1770357017481,
       "tag": "0022_reflective_dragon_man",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1770365206594,
+      "tag": "0023_slow_famine",
+      "breakpoints": true
     }
   ]
 }

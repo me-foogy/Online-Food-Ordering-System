@@ -44,11 +44,16 @@ export default defineEventHandler(async(event)=>{
         .orderBy(desc(paymentTable.paidAt))
         .limit(pageSize)
         .offset((page-1)*pageSize);
+    
+    const responseDateFormat = response.map(eachTransaction=>({
+        ...eachTransaction,
+        paidAt: new Date(eachTransaction.paidAt).toLocaleString()
+    }))
 
     setResponseStatus(event, 200)
     return {
         success: true,
-        message: response,
+        message: responseDateFormat,
         pagination: {
             page,
             pageSize,

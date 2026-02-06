@@ -53,7 +53,7 @@ export const cartTable =  pgTable('cart',{
 })
 
 
-export const paymentStatusEnum = pgEnum('paymentStatus', ['PENDING', 'COMPLETE', 'Service is currently unavailable']);
+export const paymentStatusEnum = pgEnum('paymentStatus', ['PENDING', 'COMPLETE', 'Service is currently unavailable', 'REFUNDED']);
 //status response from esewa
 export const paymentTable = pgTable('payment', {
   paymentId: uuid("payment_id").primaryKey(),
