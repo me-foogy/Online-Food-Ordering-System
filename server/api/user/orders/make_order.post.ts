@@ -68,7 +68,7 @@ export default defineEventHandler(async(event)=>{
 
 
     //add items to eachOrderTable
-    await db.insert(eachOrderTable).values(orderItems).returning();
+    await db.insert(eachOrderTable).values(orderItems);
 
     await db.insert(paymentTable).values({
         paymentId: uuid,

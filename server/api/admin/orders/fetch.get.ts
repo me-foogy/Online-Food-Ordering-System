@@ -6,20 +6,22 @@
 
 import { setResponseStatus } from 'h3';
 import {db} from "~/server/drizzle/index";
-import {eq, inArray, ne, sql} from 'drizzle-orm';
+import {and, eq, inArray, ne, or, sql} from 'drizzle-orm';
 import {ordersTable, eachOrderTable} from '~/server/drizzle/schema';
 
 //order of the progress
-const progressOrder: Record<string, number> = {
-    'notStarted': 1,
-    'inProgress': 2,
-    'completed': 3
-}
-
+const progressOrderSql=sql`
+    CASE
+    WHEN ${ordersTable.orderProgress} = 'notStarted' THEN 1
+    WHEN ${ordersTable.orderProgress} = 'inProgress' THEN 2
+    WHEN ${ordersTable.orderProgress} = 'completed' THEN 3
+    ELSE 999 
+    END
+`
 export default defineEventHandler(async(event)=>{
 
+    const dateToday = new Date().toISOString().split('T')[0] //format 20xx-xx-xx
     const params = getQuery(event);
-    const targetDate = params.date;
 
     //fetch all orders of current date from ordersTable
     try{
@@ -27,9 +29,21 @@ export default defineEventHandler(async(event)=>{
             const page = Number(params.page) || 1
             const pageSize = Number(params.pageSize) || 10
             const offset = (page - 1) * pageSize
+
+            const [{count, notStartedCount, inProgressCount}] = await db.select({
+                count: sql<number>`count(*)`,
+                notStartedCount: sql<number>`count(CASE WHEN ${ordersTable.orderProgress}='notStarted' THEN 1 END)`,
+                inProgressCount: sql<number>`count(CASE WHEN ${ordersTable.orderProgress}='inProgress' THEN 1 END)`
+            }).from(ordersTable)
+            .where(
+                or(eq(sql`${ordersTable.createdAt}::date`, dateToday), ne(ordersTable.orderProgress, 'completed'))
+            ) //pg supports type casting for date
             
             const orders = await db.select().from(ordersTable)
-            .where(eq(sql`${ordersTable.createdAt}::date`, targetDate)) //pg supports type casting for date
+            .where(
+                or(eq(sql`${ordersTable.createdAt}::date`, dateToday), ne(ordersTable.orderProgress, 'completed'))
+            ) //pg supports type casting for date
+            .orderBy(progressOrderSql)
             .limit(pageSize)
             .offset(offset)
 
@@ -38,16 +52,14 @@ export default defineEventHandler(async(event)=>{
                 setResponseStatus(event, 200);
                 return {
                     success: true,
-                    message: []
+                    message: [],
+                    pagination:{
+                        page,
+                        pageSize,
+                        totalPages: 0
+                    }
                 }
             }
-            
-            //sort orders based on priority
-            orders.sort((a, b) => {
-                const aPriority = progressOrder[a.orderProgress] ?? 999
-                const bPriority = progressOrder[b.orderProgress] ?? 999
-                return aPriority - bPriority
-            })
 
             //if orders exist then fetch each item in the database
             //get all not completed order Id's
@@ -72,7 +84,7 @@ export default defineEventHandler(async(event)=>{
                         customerName: order.customerName,
                         totalItems,
                         totalAmount,
-                        createdAt: order.createdAt.toISOString(),
+                        createdAt: new Date(order.createdAt).toLocaleString(),
                         location: order.address,
                         order: orderItems.map(i => ({
                             id: i.id,
@@ -87,7 +99,16 @@ export default defineEventHandler(async(event)=>{
 
             return {
                 success: true,
-                message: response
+                message: response,
+                count:{
+                    notStartedCount,
+                    inProgressCount
+                },
+                pagination: {
+                    page,
+                    pageSize,
+                    totalPages: Math.ceil(count/pageSize)
+                }
             }
 
     }catch(err){

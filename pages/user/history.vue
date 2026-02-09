@@ -1,11 +1,13 @@
 <script setup lang="ts">
     import HistoryCard from '@/components/user/HistoryCard.vue';
     import { useToast } from '#imports';
+    import ProgressCard from '~/components/user/ProgressCard.vue';
     const toast = useToast();
 
     interface orderDataType {
         orderId: number,
         customerName: string,
+        createdAt: string,
         totalItems: number,
         totalAmount: number,
         location: string,
@@ -19,6 +21,7 @@
         id: number
         itemName: string,
         itemCategory: string,
+        menuId: number,
         itemQuantity: number,
         eachItemPrice: number
     }
@@ -30,6 +33,9 @@
     //-------------------------API FETCH FOR api/order/fetch GET request ----------------------//
 
     const orderData = ref<orderDataType[]>([]);
+    const ordersNotCompleted=computed(()=>{
+        return orderData.value.filter(order=> order.orderProgress!=='completed')
+    })
     const {data, error} = await useFetch<apiResponse>('/api/user/orders/user_history');
 
     if(error.value){
@@ -55,7 +61,15 @@
 </script>
 
 <template>
-    <h1 class="text-4xl font-bold mb-8 text-blue-600">Order History</h1>
+    <h1 class="text-3xl font-bold mb-6 text-blue-600">Order Progress</h1>
+    <div class="border-2 rounded-xl p-2 mb-4">
+        <ProgressCard v-if="ordersNotCompleted.length!==0" v-for="order in ordersNotCompleted" :key="order.orderId" :order="order"/>
+        <div v-else class="flex flex-col w-full items-center space-y-4 p-2 text-center">
+            <p class="text-md text-red-600">Order Something To View Progress</p>
+            <P class="text-xs text-red-600">If you have already ordered and so not see order progress then your order is dispatched and is on the way</P>
+        </div>
+    </div>
+    <h1 class="text-3xl font-bold mb-6 mt-8 text-blue-600">Order History</h1>
     <div class="w-full">
         <HistoryCard v-for="order in orderData" :key="order.orderId" :order="order"/>
     </div>

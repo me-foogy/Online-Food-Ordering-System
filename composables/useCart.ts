@@ -27,7 +27,6 @@ export function useCart() {
                 toast.error({title: 'ERROR', message: error.value});
                 return
             }
-
             cart.value = res.message
 
             } catch (err) {

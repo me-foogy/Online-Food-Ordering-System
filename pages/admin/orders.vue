@@ -5,6 +5,7 @@
     import EachOrder from '@/components/admin/EachOrder.vue'
     import { useToast } from '#imports';
     import { ref, computed } from 'vue';
+    import type { InferSelectModel } from 'drizzle-orm';
     const toast = useToast();
 
     type orderProgressType = 'notStarted' | 'inProgress' | 'completed';
@@ -14,6 +15,7 @@
         totalItems: number,
         totalAmount: number,
         location: string,
+        createdAt: string
         order: Array<orderItem>
         customerNotes: string,
         //<TODO>: Fix
@@ -27,50 +29,63 @@
         eachItemPrice: number
     }
     
-    interface apiResponse{
-        success: boolean
-        message: orderDataType[] | string
-    }
-
-    //-------------------------API FETCH FOR api/order/fetch GET request ----------------------//
-
-    const dateToday = new Date().toISOString().split('T')[0] //format 20xx-xx-xx
-    const page = ref<number>(1);
-    const pageSize:number = 10;
-    const totalPages = ref<number>(1);
-
-    const orderData = ref<orderDataType[]>([]);
-    const {data, error} = await useFetch<apiResponse>(`/api/admin/orders/fetch?date=${dateToday}&page=${page}&pageSize=${pageSize}`,{
-        method: 'GET'
-    })
-
-    if(error.value){
-        orderData.value=[];
-        console.error('SERVER ERROR');
-        toast.error({title: 'SERVER ERROR', message:error.value.data.message});
-    }
-    else{
-        if(data.value?.success && typeof(data.value.message) !== 'string'){
-            orderData.value=data.value.message;
-            totalPages.value= Math.ceil(data.value.message.length/pageSize);
-            toast.success({title: 'Success', message:`Orders fetched successfully`});
-        }else{
-            orderData.value=[];
-            toast.error({title: 'ERROR', message:data.value?.message as string});
+    interface apiSuccessResponse{
+        success: true,
+        message: orderDataType[],
+        count:{
+            notStartedCount: number
+            inProgressCount: number
+        }
+        pagination: {
+            page: number,
+            pagesize: number,
+            totalPages: number
         }
     }
 
+        interface apiFailureResponse{
+        success: false,
+        message: string,
+        }
+
+    //-------------------------API FETCH FOR api/order/fetch GET request ----------------------//
+    const page = ref<number>(1);
+    const pageSize:number = 10;
+    const totalPages = ref<number>(1);
+    const notStartedCount=ref<number>(0);
+    const inProgressCount=ref<number>(0);
+
+    const orderData = ref<orderDataType[]>([]);
+    const {data, error} = await useFetch<apiSuccessResponse|apiFailureResponse>(`/api/admin/orders/fetch`,{
+        method: 'GET',
+        query: {
+            page: page,
+            pageSize
+        },
+        key: `orders-${page.value}`,
+        watch: [page]
+    })
+
+    watch([data, error], ()=>{
+        if(error.value){
+            orderData.value=[];
+            console.error('SERVER ERROR');
+            toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+        }
+        else{
+            if(data.value?.success && typeof(data.value.message) !== 'string'){
+                orderData.value=data.value.message;
+                totalPages.value= data.value.pagination.totalPages;
+                notStartedCount.value=data.value.count.notStartedCount;
+                inProgressCount.value=data.value.count.inProgressCount;
+                toast.success({title: 'Success', message:`Orders fetched successfully`});
+            }else{
+                orderData.value=[];
+                toast.error({title: 'ERROR', message:data.value?.message as string});
+            }
+        }
+    }, {immediate: true})
     //--------------------------------------------------------------------------------------//
-
-    // Total number of orders
-    const totalOrders = computed(() => 
-    orderData.value.filter(order => order.orderProgress === 'notStarted').length
-    )
-
-    // Orders In Progress
-    const orderInProgress = computed(() =>
-    orderData.value.filter(order => order.orderProgress === 'inProgress').length
-    )
 
     definePageMeta({
         layout: 'admin' 
@@ -87,7 +102,7 @@
                     <span class="text-sm sm:text-base font-medium text-gray-600">Remaining Orders</span>
                     <span class="material-symbols-outlined text-5xl sm:text-7xl">Fastfood</span>
                 </div>
-                <p class="text-5xl sm:text-6xl lg:text-7xl font-bold text-red-500">{{totalOrders}}</p>
+                <p class="text-5xl sm:text-6xl lg:text-7xl font-bold text-red-500">{{notStartedCount}}</p>
             </div>
             <!--each card-->
             <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
@@ -95,7 +110,7 @@
                     <span class="text-sm sm:text-base font-medium text-gray-600">Orders In Progress</span>
                     <span class="material-symbols-outlined text-5xl sm:text-7xl">Cached</span>
                 </div>
-                <p class="text-5xl sm:text-6xl lg:text-7xl font-bold text-blue-500">{{orderInProgress}}</p>
+                <p class="text-5xl sm:text-6xl lg:text-7xl font-bold text-blue-500">{{inProgressCount}}</p>
             </div>
         </div>
 
