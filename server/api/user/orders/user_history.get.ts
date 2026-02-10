@@ -2,7 +2,7 @@
 import { setResponseStatus } from 'h3';
 import {db} from "~/server/drizzle/index";
 import {desc, eq, inArray, ne} from 'drizzle-orm';
-import {ordersTable, eachOrderTable} from '~/server/drizzle/schema';
+import {ordersTable, eachOrderTable, usersTable} from '~/server/drizzle/schema';
 
 export default defineEventHandler(async(event)=>{
 
@@ -16,11 +16,15 @@ export default defineEventHandler(async(event)=>{
         }
     }
 
+    //fetch userName for customer_name
+    const result=await db.select({name: usersTable.name}).from(usersTable).where(eq(usersTable.id, user.id))
+    const name=result[0].name;
+
     //fetch all user orders from ordersTable
     try{
             const orders = await db.select()
                 .from(ordersTable)
-                .where(eq(ordersTable.customerName, user.name))
+                .where(eq(ordersTable.customerName, name))
                 .orderBy(desc(ordersTable.createdAt));
             //if no orders send no orders response
             if(orders.length===0){

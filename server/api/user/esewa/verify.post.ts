@@ -5,7 +5,7 @@
 import { eq, InferSelectModel, sql } from "drizzle-orm";
 import { uuid } from "zod";
 import { db } from "~/server/drizzle";
-import { cartTable, eachOrderTable, ordersTable, paymentTable } from "~/server/drizzle/schema";
+import { cartTable, eachOrderTable, ordersTable, paymentTable, usersTable } from "~/server/drizzle/schema";
 import { getCartByUserId } from "~/server/services/cartService";
 import {z} from 'zod';
 import CryptoJS from 'crypto-js'
@@ -28,7 +28,7 @@ export default defineEventHandler(async(event)=>{
     }
 
     const decoded = JSON.parse(atob(data)); //string converted response of esewa
-    const {product_code, total_amount, transaction_uuid, signature} = decoded;
+    const {product_code, total_amount, transaction_uuid} = decoded;
     const amountNumber = parseFloat(total_amount);
     const user = event.context.user;
     let paymentId: string | undefined;
@@ -44,9 +44,8 @@ export default defineEventHandler(async(event)=>{
 
         if(response.status === 'COMPLETE' || response.status==='Service is currently unavailable'){
             const user = event.context.user;
-            const {id, name} = user;
-            const address = "Temp Hardcoded Address"
-            const notes = 'hardcoded notes';
+            const {id} = user;
+            const notes = 'No Notes';
             const uuid = z.uuid().parse(transaction_uuid);
             paymentId = uuid;
             let paymentRow:paymentType|undefined;
@@ -54,12 +53,18 @@ export default defineEventHandler(async(event)=>{
             // const productCode = `ESEWA-PAY:${order.orderId}`
             const productCode = product_code //for dev testing
 
+            //fetch userName for customer_name and address for customer_address
+            const result=await db.select({name: usersTable.name, address: usersTable.address}).from(usersTable).where(eq(usersTable.id, id))
+            const name=result[0].name || 'Error: call to confirm';
+            const address = result[0].address || 'Error: Call to confirm';
+
             //Store the payment as the payment has already been made
             await db.insert(paymentTable).values({
                     paymentId: uuid,
                     amount: total_amount.toString(),
                     paidAt: sql`now()`,
                     productCode,
+                    userId: id,
                     ordersId: null,
                     status: response.status as 'COMPLETE'|'Service is currently unavailable'
             }).returning()
@@ -133,7 +138,7 @@ export default defineEventHandler(async(event)=>{
         }
 
     }catch(err){
-        const message = err instanceof Error ? err.message:'unknown system error';
+        const message = err instanceof Error ? err.message.slice(0, 200):'unknown system error';
         //Transaction has been made but needs to be refunded due to error
         if(paymentId){
             await db.update(paymentTable).set({
