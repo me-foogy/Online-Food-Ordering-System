@@ -3,8 +3,8 @@
 */
 
 import { and, gte, lt, lte, eq } from "drizzle-orm";
-import { db } from "~/drizzle";
-import { eachOrderTable, ordersTable } from "~/drizzle/schema";
+import { db } from "~/server/drizzle";
+import { eachOrderTable, ordersTable } from "~/server/drizzle/schema";
 
 export default defineEventHandler(async(event)=>{
 
@@ -40,12 +40,11 @@ export default defineEventHandler(async(event)=>{
         }
 
         const order = orderMap.get(orderId)!;
-        order.totalRevenue += itemPrice * itemQuantity;
+        order.totalRevenue += Number(itemPrice) * itemQuantity;
         order.totalItems += itemQuantity;
     });
 
     const ordersForChart = Array.from(orderMap.values());
-
     const hourlyRevenue = Array(24).fill(0);
     const hourlyCustomersSet: Set<number>[] = Array.from({ length: 24 }, () => new Set());
     const hourlyTotalItems = Array(24).fill(0);

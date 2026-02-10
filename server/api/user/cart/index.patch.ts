@@ -6,8 +6,8 @@
 */
 
 import { eq } from "drizzle-orm";
-import { db } from "~/drizzle";
-import { cartTable } from "~/drizzle/schema";
+import { db } from "~/server/drizzle";
+import { cartTable } from "~/server/drizzle/schema";
 import type { cartSchema } from "~/shared/types/cart";
 
 type apiResponse<T> = {success: false, message: string} | {success: true, message: T }

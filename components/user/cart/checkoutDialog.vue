@@ -1,14 +1,18 @@
 <script setup lang="ts">
+  import { useToast } from '#imports';
+  import {z} from 'zod'
+  const toast = useToast();
+  const {cart, fetchCart, cartTotal} = useCart();
+  const {confirmAndSignPayment} = usePayment();
 
-    import { useToast } from '#imports';
-    import {z} from 'zod'
-    const toast = useToast();
-    const {cart, fetchCart, cartTotal} = useCart();
+  const props = defineProps<{
+  isOpen: boolean
+  onClose?: () => void
+  }>()
 
-    const props = defineProps<{
-    isOpen: boolean
-    onClose?: () => void
-    }>()
+  async function confirmOrder(){
+    await confirmAndSignPayment();
+  }
 
 </script>
 
@@ -52,7 +56,7 @@
             class="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-red-500 hover:text-white transition-colors">
             Cancel
           </button>
-          <button @click=""
+          <button @click="confirmOrder"
             class="flex-1 px-4 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
             Confirm Order
           </button>

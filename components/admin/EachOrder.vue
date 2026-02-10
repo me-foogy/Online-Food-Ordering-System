@@ -10,6 +10,7 @@
         customerName: string
         totalItems: number
         totalAmount: number
+        createdAt: string
         location: string
         order: {
             itemName: string
@@ -69,22 +70,25 @@
 </script>
 
 <template>
-  <div class="mb-4">
     <div class="border rounded-xl bg-white p-4 w-full">
 
-      <div class="flex justify-between items-center cursor-pointer"@click="toggle">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 cursor-pointer" @click="toggle">
 
             <div class="flex flex-col">
-                <span class="font-semibold text-gray-800">{{ order.customerName }}</span>
-                <span class="text-gray-600 text-sm">
-                    {{ order.totalItems }} items • Rs. {{order.totalAmount}} •  {{ order.location }}
+                <div class="flex flex-col items-start sm:flex-row sm:gap-5">
+                    <span class="font-semibold text-gray-800">{{ order.customerName }}</span>
+                    <span class="font-semibold text-blue-800 text-sm">{{ order.createdAt.replaceAll('/','-')}}</span>
+                </div>
+                <span class="text-gray-600 text-sm mt-2 sm:mt-0">
+                    {{ order.totalItems }} items • <span class="text-green-800 font-semibold">Rs. {{order.totalAmount}}</span> •  {{ order.location }}
                 </span>
             </div>
 
-            <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+            <div class="flex items-center gap-2 sm:gap-4 self-start sm:self-auto w-full sm:w-auto">
                 <button
                     @click.stop="()=>handleButtonClick(order.orderProgress)"
-                    class="rounded-md font-semibold transition-colors duration-300 px-3 py-3 text-xs sm:px-4 sm:py-2 sm:text-sm md:px-6 md:text-base"
+                    class="rounded-md font-semibold flex-1 transition-colors duration-300 px-3 py-3 text-xs 
+                        sm:px-4 sm:py-2 sm:text-sm md:px-6 md:text-base"
                     :class="{
                         'bg-red-500 text-white': order.orderProgress === 'notStarted',
                         'bg-blue-500 text-white': order.orderProgress === 'inProgress',
@@ -105,12 +109,14 @@
       <div v-show="isOpen" class="mt-3">
             <ul class="divide-y divide-gray-200">
                 <li v-for="(item, index) in order.order" :key="index"
-                    class="py-2 flex justify-between items-center">
+                    class="py-2 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+
                     <div class="sm:pl-4">
                         <span class="font-medium">{{ item.itemName }}</span>
                         <span class="text-gray-500 text-sm ml-6">{{ item.itemCategory }}</span>
                     </div>
-                    <div class="text-right sm:pr-4">
+
+                    <div class="text-left sm:text-right sm:pr-4">
                         <span class="font-medium">{{ item.itemQuantity }} x Rs. {{ item.eachItemPrice }}</span>
                         <p class="text-gray-500 text-sm">
                             Total: Rs. {{ item.itemQuantity * item.eachItemPrice }}
@@ -125,5 +131,4 @@
         </p>
       </div>
     </div>
-  </div>
 </template>

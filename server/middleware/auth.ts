@@ -41,7 +41,7 @@ export default defineEventHandler ((event)=>{
         })
     }
 
-    if(!decoded.role || !decoded.id || !decoded.email){
+    if(!decoded.role || !decoded.id){
         throw createError({
             statusCode: 401,
             statusMessage: 'Corrupt token'

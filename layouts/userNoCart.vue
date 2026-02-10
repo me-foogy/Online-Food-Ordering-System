@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  const { handleLogout } = useLogout();
+  const {logout} = useAuth();
 </script>
 
 <template>
@@ -31,7 +31,7 @@
                       </span>
                       <span class="label">My Account</span>
                   </NuxtLink>
-                  <button class="logout-btn" @click="handleLogout">
+                  <button class="logout-btn" @click="logout">
                     <span class="material-symbols-outlined icon">logout</span>
                     <span class="label">Logout</span>
                   </button>

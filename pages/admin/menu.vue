@@ -148,10 +148,10 @@
         <div class="flex flex-row justify-between items-center my-6">
             <h2 class="text-xl font-semibold text-gray-800">Manage Your Menu Items</h2>
             <button
-            class="flex items-center gap-2 h-11 px-5 rounded-md font-medium whitespace-nowrap border bg-white
-            text-blue-600 hover:bg-gray-100  hover:border-blue-600 transition"
+            class="flex items-center gap-2 h-9 px-3 rounded-md font-medium whitespace-nowrap border bg-white
+            text-blue-600 hover:bg-gray-100  hover:border-blue-600 transition sm:px-4 md:px-5 md:h-11"
             @click="showCategoryDialog = true">
-                <span class="material-symbols-outlined text-base sm:text-md md:text-md">edit</span>
+                <span class="material-symbols-outlined text-sm sm:text-md md:text-md">edit</span>
                 <span class="text-sm sm:text-base md:text-sm truncate">Edit Categories</span>
             </button>
         </div>

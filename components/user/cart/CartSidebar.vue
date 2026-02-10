@@ -14,7 +14,8 @@
         showCart.value = !showCart.value;
     }
 
-    const handleCheckout = ()=>{
+    const handleCheckout = async ()=>{
+        await fetchCart();
         if(cart.value.some(item=>item.inStock===false)){
             toast.error({message: 'Cart contains items not in stock'});
             return

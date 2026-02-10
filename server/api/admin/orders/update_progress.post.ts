@@ -3,15 +3,14 @@
     Dependency on the database - ordersTable
 */
 
-import { ordersTable } from "~/drizzle/schema";
+import { ordersTable } from "~/server/drizzle/schema";
 import { eq } from "drizzle-orm";
-import { db } from "~/drizzle";
+import { db } from "~/server/drizzle";
 import { setResponseStatus } from "h3";
 
 export default defineEventHandler(async(event)=>{
     const body = await readBody(event);
     const {orderId, orderProgress} = body;
-    console.log(body);
     if(!orderId && orderProgress!=='inProgress' && orderProgress!=='completed'){
         setResponseStatus(event, 400);
         return{

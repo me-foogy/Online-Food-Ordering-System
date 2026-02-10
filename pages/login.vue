@@ -4,28 +4,16 @@
     import { loginSchema } from '@/shared/schemas/login';
     import {z} from 'zod';
     
-    const auth = useAuthStore();
-    const toast = useToast();
-    const authUser = useCookie<loginReturnMessageType>('auth_user', {
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production'
-    })
-
-    type baseFormData = z.infer<typeof loginSchema>
-
-    type FormData = baseFormData & {
-        rememberMe: boolean
-    }
-
-    const formData=ref<FormData>({
+    const {login} = useAuth();
+    const visibility = ref<boolean>(false);
+    const passwordError = ref<boolean>(false);
+    const emailError = ref<boolean>(false);
+    
+    const formData=ref<loginFormData>({
         email: '',
         password:'',
         rememberMe: false
     })
-
-    const visibility = ref<boolean>(false);
-    const passwordError = ref<boolean>(false);
-    const emailError = ref<boolean>(false);
 
     onMounted(()=>{
         const userEmail:string|null=localStorage.getItem('userEmail');
@@ -47,56 +35,8 @@
         emailError.value=!regexExp.test(value);
     })
 
-    const rememberMeHandler = ()=>{
-        const userEmail = formData.value.email?.trim();
-        if (!userEmail) return
-        if (formData.value.rememberMe) {
-            localStorage.setItem('userEmail', userEmail)
-        } else {
-            localStorage.removeItem('userEmail')
-        }
-    }
-
-    const handleLoginSubmit = async ()=>{
-        rememberMeHandler();
-        
-       //api call for login
-        try{
-            const {data, error} = await useFetch<loginReturnType>('/api/auth/login',{
-                method: 'POST',
-                body: formData.value,
-                ignoreResponseError:true
-            });
-            
-            if(error.value){
-                console.error('SERVER ERROR');
-                toast.error({title: 'SERVER ERROR', message:error.value.data.message});
-                return
-            }
-
-            if(data.value?.success && typeof(data.value.message) !== 'string'){
-                //This if function uses typeguard as the response can be a string or the user object
-
-                //set Frontend Cookie
-                authUser.value = data.value.message;
-                const {name, email, address, phoneNo, role} = authUser.value;
-                auth.login(name, role as 'admin'|'user');
-                
-                // Wait for next tick(Wait for cookie to be initialized )
-                await nextTick();
-                
-                navigateTo(role==='user'?'/user/home':'/admin');
-                toast.success({title: 'Success', message:`${role} logged in successfully`});
-
-            }else{
-                toast.error({title: 'ERROR', message:data.value?.message as string});
-            }
-            
-        }
-        catch(err){
-            toast.error({title: 'ERROR', message:'Unexpected error occured'});
-
-        }
+    const handleLoginSubmit = () =>{
+        login(formData.value);
     }
 
 </script>
@@ -128,19 +68,19 @@
             <form class="pt-8" @submit.prevent="handleLoginSubmit">
 
                 <!--Email-->
-                <div class="mb-4">
+                <div class="mb-1">
                     <label for="username" class="text-gray-500">Email Address</label>
                     <input type="mail" placeholder="example@gmail.com" id="username" v-model="formData.email" required
-                        class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
+                        class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-1
                                 focus:outline-none focus:border-blue-500
                                 transition"
                     />
-                    <P class="text-red-500" v-show="emailError">Email must be in the in correct format</P>
+                    <P class="text-red-500" :class="{ 'invisible': !emailError }">Email must be in the in correct format</P>
                 </div>
 
                 <!--password-->
                 <label for="password" class="text-gray-500">Password</label>
-                <div class="flex flex-row space-x-2 mb-2">
+                <div class="flex flex-row space-x-2">
                     <input :type="visibility?`text`:`password`" id="password" v-model="formData.password" required
                         class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border
                                 focus:outline-none focus:border-blue-500 
@@ -154,10 +94,10 @@
                         <span class="material-symbols-outlined my-auto" v-else>visibility_off</span>
                     </button>
                 </div>
-                <P class="text-red-500" v-show="passwordError">Password must include a capital letter and a special character</P>
+                <P class="text-red-500" :class="{ 'invisible': !passwordError }">Password must include a capital letter and a special character</P>
 
                 <!--remember me and password-->
-                <div class="flex flex-row justify-between my-8">
+                <div class="flex flex-row justify-between my-4">
                     <div class="flex flex-row space-x-2 items-center">
                         <input type="checkbox" class="w-4 h-4" v-model="formData.rememberMe">
                         <span class="ml-2">Remember Me</span>

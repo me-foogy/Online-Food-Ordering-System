@@ -1,7 +1,9 @@
+import {z} from 'zod';
+import type { loginSchema } from '../schemas/login';
+import type { signupSchema } from '../schemas/signup';
+
 export type JWTPayload = {
     id: number
-    name: string
-    email: string
     role: 'admin'|'user'
 }
 
@@ -25,7 +27,23 @@ export type loginReturnMessageType = {
     role: 'admin' | 'user'
 }
 
-export type loginReturnType = {
-    success: boolean
-    message: loginReturnMessageType | string
+//formData - Input for login
+export type baseFormData = z.infer<typeof loginSchema>
+
+export type loginFormData = baseFormData & {
+    rememberMe: boolean
+}
+
+//signUpFormData - Input for signup
+export type basesignUpData = z.infer<typeof signupSchema>
+export type signUpData= Omit<basesignUpData, 'phoneNo'>&{
+    phoneNo: string //converted to number by zod in validation declared string for binding
+    confirmPassword: string
+    termsAndCond: boolean
+}
+export type signUpResponse = {
+    id: number
+    email: string
+    name: string
+    role: 'admin'|'user'
 }

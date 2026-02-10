@@ -1,16 +1,7 @@
 <script setup lang="ts">
-
-    import {signupSchema} from '@/shared/schemas/signup'
     import { useToast } from '#imports';
-    import {z} from 'zod';
     const toast=useToast();
-
-    type basesignUpData = z.infer<typeof signupSchema>
-    type signUpData= Omit<basesignUpData, 'phoneNo'>&{
-        phoneNo: string //converted to number by zod in validation declared string for binding
-        confirmPassword: string
-        termsAndCond: boolean
-    }
+    const {signup} = useAuth();
 
     const signUpFormData=ref<signUpData>({
         email: '',
@@ -22,31 +13,9 @@
         termsAndCond: false
     })
 
-    const handleSignUpSubmit = async ()=>{
+    const handleSignUpSubmit = ()=>{
         //api call for signup
-        try{
-            const {data, error, status} = await useFetch('/api/auth/signup',{
-                method: 'POST',
-                body: signUpFormData.value
-            });
-            
-            if(error.value){
-                console.error('SERVER ERROR');
-                return
-            }
-
-            if(data.value?.success && typeof(data.value.message)!=='string'){
-                console.log('USER:', data.value);
-                toast.success({title: 'Success', message:`Sign In successful`});
-                await navigateTo('/login');
-            }else{
-                toast.error({title: 'Error', message:data.value?.message as string});
-            }
-            
-        }
-        catch(err){
-            console.error('An error occured;', err);
-        }
+        signup(signUpFormData.value);
     }
 
     const passwordError = ref<boolean>(false);
@@ -90,7 +59,7 @@
 
         <div class="w-[100%] h-full bg-gray-100 p-8 
                     lg:w-[40%]">
-            <!--Top Logo in login-->
+            <!--Top Logo in signup-->
             <div class="flex flex-row gap-2">
                 <span class="material-symbols-outlined text-6xl text-blue-600 flex-shrink-0">storefront</span>
                 <p class="text-lg font-semibold text-gray-800">
@@ -98,7 +67,7 @@
                 </p>
             </div>
 
-            <!--Welcome Message-->
+            <!--Create Account Message-->
             <div class="my-4 space-y-1">
                 <h1 class="font-bold text-4xl">Create Account</h1>
                 <p class="text-gray-500">Create a New Account</p>
@@ -109,34 +78,38 @@
 
                 <div v-if="displaySection==='firstPart'">
                     <!--Email-->
-                    <div class="mb-2">
+                    <div class="mb-1">
                         <label for="username" class="text-gray-500">Email Address</label>
                         <input type="mail" placeholder="example@gmail.com" id="username" v-model="signUpFormData.email" required
-                            class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
+                            class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-1
                                     focus:outline-none focus:border-blue-500
                                     transition"
                         />
-                        <P class="text-red-500" v-show="emailError">Email must be in the in correct format</P>
+                        <p class="text-red-500 text-sm h-5" :class="{ 'invisible': !emailError }">
+                            Email must be in the correct format
+                        </p>
                     </div>
                     <!--password-->
-                    <div class="mb-2">
+                    <div class="mb-1">
                         <label for="password" class="text-gray-500">Password</label>
                             <input type="text" id="password" v-model="signUpFormData.password" required
-                                class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
+                                class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-1
                                         focus:outline-none focus:border-blue-500
                                         transition"
                             />
-                        <P class="text-red-500" v-show="passwordError">Password must include a capital letter and a special character</P>
+                        <P class="text-red-500" :class="{ 'invisible': !passwordError }">
+                            Password must include a capital letter and a special character
+                        </P>
                     </div>
                     <!--Verify Password-->
-                    <div class="mb-6">
+                    <div class="mb-4">
                         <label for="confirmPassword" class="text-gray-500">Confirm Password</label>
                             <input type="text" id="confirmPassword" v-model="signUpFormData.confirmPassword" required
-                                class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
+                                class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-1
                                         focus:outline-none focus:border-blue-500
                                         transition"
                             />
-                        <P class="text-red-500" v-show="confirmPasswordError">Passwords Must Match</P>
+                        <P class="text-red-500" :class="{ 'invisible': !confirmPasswordError}">Passwords Must Match</P>
                     </div>
                 </div>
 
@@ -202,7 +175,7 @@
             </form>
 
             <!--Sign Up info-->
-            <div class="mt-10 space-x-2 w-full flex flex-row justify-center">
+            <div class="mt-9 space-x-2 w-full flex flex-row justify-center">
                 <span>Already have an account?</span>
                 <button class="text-blue-600">
                     <NuxtLink to="/login">Log In</NuxtLink>

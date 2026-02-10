@@ -10,8 +10,8 @@
 
 import {menuItemSchema, editMenuItemSchema} from '@/shared/schemas/menuItem'
 import { setResponseStatus } from 'h3';
-import {db} from "@/drizzle/index"
-import { menuTable} from '~/drizzle/schema';
+import {db} from "~/server/drizzle/index"
+import { menuTable} from '~/server/drizzle/schema';
 import {eq} from 'drizzle-orm'
 
 export default defineEventHandler(async (event)=>{

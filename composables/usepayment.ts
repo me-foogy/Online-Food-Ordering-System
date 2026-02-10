@@ -1,28 +1,64 @@
-import CryptoJS from 'crypto-js'
+import type { UUID } from "crypto";
+import { esewaSchema } from "~/shared/schemas/esewa";
 
-type apiResponse = defaultApiType<string>
+type apiResponse = defaultApiType<{orderId: number, transactionUuid: UUID, signature: string, amountWithDecimal: number, productCode: string}>
+
 export function usePayment(){
 
-    async function getSignature(message: string){
+    async function confirmAndSignPayment(){
+
         try{
-            const {data, error} = await useFetch<apiResponse>('/api/esewa/sign', {
-                method: 'POST',
-                body: message
+
+            const response = await $fetch<apiResponse>('/api/user/esewa/sign', {
+                method: 'GET',
             })
 
-            if(error.value){
-                throw new Error(data.value?.message || 'Payment Failed')
+            if(!response.success){
+                throw new Error(response.message || 'Signing Failed')
             }
 
-            if(data.value?.success===true){
-                return data.value.message
+            const {transactionUuid, signature, amountWithDecimal, productCode}= response.message;
+
+            const validated = esewaSchema.safeParse({
+                //undefined fields are replaced with zod default defined values
+                amount: amountWithDecimal,
+                transaction_uuid: transactionUuid,
+                product_code: productCode,
+                signature: signature,
+                success_url: undefined,
+                failure_url: undefined,
+                signed_field_names: undefined,
+                tax_amount: undefined,
+                product_service_charge: undefined,
+                product_delivery_charge: undefined
+            });
+
+            if (!validated.success) {
+                throw new Error("Esewa Data Validation failed");
             }
+            const data = validated.data;
+
+            const form = document.createElement('form');
+            form.method  = 'POST'
+            form.action = 'https://rc-epay.esewa.com.np/api/epay/main/v2/form'
+
+            for(const [key,value] of Object.entries(data)){
+                const input = document.createElement('input');
+                input.type='hidden';
+                input.name = key;
+                input.value=value;
+                form.appendChild(input);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+            
         }catch(err){
             console.error('ERROR:', err);
+            throw err;
         }
     }
-
     return {
-        getSignature
+        confirmAndSignPayment,
     }
 }

@@ -1,8 +1,8 @@
 
 import { setResponseStatus } from 'h3';
-import {db} from "@/drizzle/index";
-import {eq, inArray, ne} from 'drizzle-orm';
-import {ordersTable, eachOrderTable} from '~/drizzle/schema';
+import {db} from "~/server/drizzle/index";
+import {desc, eq, inArray, ne} from 'drizzle-orm';
+import {ordersTable, eachOrderTable, usersTable} from '~/server/drizzle/schema';
 
 export default defineEventHandler(async(event)=>{
 
@@ -16,9 +16,16 @@ export default defineEventHandler(async(event)=>{
         }
     }
 
+    //fetch userName for customer_name
+    const result=await db.select({name: usersTable.name}).from(usersTable).where(eq(usersTable.id, user.id))
+    const name=result[0].name;
+
     //fetch all user orders from ordersTable
     try{
-            const orders = await db.select().from(ordersTable).where(eq(ordersTable.customerName, user.name));
+            const orders = await db.select()
+                .from(ordersTable)
+                .where(eq(ordersTable.customerName, name))
+                .orderBy(desc(ordersTable.createdAt));
             //if no orders send no orders response
             if(orders.length===0){
                 setResponseStatus(event, 200);
@@ -46,19 +53,20 @@ export default defineEventHandler(async(event)=>{
             const response = orders.map(order=>{
                 const orderItems = orderedItems.get(order.orderId) || []
                 const totalItems = orderItems.reduce((sum, item)=>sum+item.itemQuantity, 0)
-                const totalAmount = orderItems.reduce((sum, item)=>sum+item.itemQuantity*item.itemPrice, 0)
+                const totalAmount = orderItems.reduce((sum, item)=>sum+item.itemQuantity*Number(item.itemPrice), 0)
                 return{
                         orderId: order.orderId,
                         customerName: order.customerName,
                         totalItems,
                         totalAmount,
-                        createdAt: order.createdAt.toISOString(),
+                        createdAt: new Date(order.createdAt).toLocaleString(),
                         location: order.address,
                         order: orderItems.map(i => ({
                             id: i.id,
                             itemName: i.itemName,
+                            menuId: i.menuId,
                             itemQuantity: i.itemQuantity,
-                            eachItemPrice: i.itemPrice
+                            eachItemPrice: Number(i.itemPrice)
                         })),
                         customerNotes: order.customerNotes,
                         orderProgress: order.orderProgress

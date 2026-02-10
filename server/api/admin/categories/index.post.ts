@@ -9,8 +9,8 @@
     }
 */
 
-import { categoryTable } from "~/drizzle/schema";
-import { db } from "~/drizzle";
+import { categoryTable } from "~/server/drizzle/schema";
+import { db } from "~/server/drizzle";
 
 export default defineEventHandler(async(event)=>{
 
