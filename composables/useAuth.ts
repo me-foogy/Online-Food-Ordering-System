@@ -104,9 +104,10 @@ export function useAuth(){
             }
 
             toast.success({ title: 'Logged out', message: 'You have been logged out' })
-            //remoove UI coo    kie
-            const authUser = useCookie('auth_user')
-            authUser.value = null
+            //remoove UI cookie
+            useCookie('auth_user',{
+                maxAge: -1
+            })
 
             navigateTo('/login');
         } catch {
