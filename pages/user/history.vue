@@ -4,17 +4,18 @@
     import ProgressCard from '~/components/user/ProgressCard.vue';
     const toast = useToast();
 
-    interface orderDataType {
+    type orderProgessType = 'notStarted'|'inProgress'|'completed';
+
+    export interface orderDataType {
         orderId: number,
         customerName: string,
-        createdAt: string,
         totalItems: number,
         totalAmount: number,
+        createdAt: string,
         location: string,
         order: Array<orderItem>
         customerNotes: string,
-        //<TODO>: Fix
-        orderProgress:  any// orderProgess must have orderProgressType but when fetching it is fetched as string which is creating problems 
+        orderProgress:  orderProgessType
     }
 
     interface orderItem{
@@ -25,6 +26,7 @@
         itemQuantity: number,
         eachItemPrice: number
     }
+
     interface apiResponse{
         success: boolean
         message: orderDataType[] | string
@@ -58,6 +60,7 @@
     definePageMeta({
         layout: 'user'
     })
+    
 </script>
 
 <template>

@@ -35,19 +35,7 @@
         emailError.value=!regexExp.test(value);
     })
 
-    const rememberMeHandler = ()=>{
-        const userEmail = formData.value.email?.trim();
-        if (!userEmail) return
-        if (formData.value.rememberMe) {
-            localStorage.setItem('userEmail', userEmail)
-        } else {
-            localStorage.removeItem('userEmail')
-        }
-    }
-
     const handleLoginSubmit = () =>{
-        rememberMeHandler(); 
-       //api call for login
         login(formData.value);
     }
 

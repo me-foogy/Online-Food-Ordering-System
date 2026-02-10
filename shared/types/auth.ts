@@ -4,8 +4,6 @@ import type { signupSchema } from '../schemas/signup';
 
 export type JWTPayload = {
     id: number
-    name: string
-    email: string
     role: 'admin'|'user'
 }
 

@@ -1,27 +1,36 @@
 import { defineNuxtRouteMiddleware, navigateTo, useCookie } from '#app';
 
-export default defineNuxtRouteMiddleware((to)=>{
+export default defineNuxtRouteMiddleware(async (to) => {
 
-  const authUser = useCookie<loginReturnMessageType>('auth_user').value;
+  const authUserCookie = useCookie<loginReturnMessageType | null>('auth_user', {
+    default: ()=>null
+  })
+  const authUser = authUserCookie.value
 
-  // Public routes
-  const isPublic = to.path === '/login' || to.path === '/signup'
+  const publicRoutes = ['/login', '/signup']
+  const isPublic = publicRoutes.includes(to.path)
 
-  // Logged-in users
-  if (!authUser && !isPublic) {
-    return navigateTo('/login');
+  if (!authUser && !isPublic && to.path !== '/login') {
+    return navigateTo('/login')
   }
 
-  // // Protected routes
-  // if (authUser && isPublic) {
-  //   return navigateTo(authUser?.role === 'admin' ? '/admin' : '/user/home')
-  // }
-
-  if (to.path.startsWith('/admin') && authUser?.role !== 'admin') {
+  // If logged in and trying to access login/signup
+if (authUser && isPublic) {
+  if (authUser.role === 'admin') {
+    return navigateTo('/admin/orders')
+  }
+  if (authUser.role === 'user') {
     return navigateTo('/user/home')
   }
+}
 
-  if (to.path.startsWith('/user') && authUser?.role !== 'user') {
-    return navigateTo('/admin/orders')
+  if (authUser) {
+    if (to.path.startsWith('/user') && authUser?.role === 'admin') {
+        return navigateTo('/admin/orders')
+    }
+
+    if (to.path.startsWith('/admin') && authUser?.role === 'user') {
+        return navigateTo('/user/home')
+    }
   }
 })

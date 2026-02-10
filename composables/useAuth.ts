@@ -1,6 +1,8 @@
 import { useToast, type defaultApiType, type loginReturnMessageType, type signUpData, type signUpResponse } from '#imports';
 const toast = useToast();
 
+const COOKIE_AGE = parseInt(process.env.COOKIE_AGE || '86400') //one day fallback
+
 export function useAuth(){
 
     const loading = useState<boolean>('auth:loading', ()=>false);
@@ -16,7 +18,8 @@ export function useAuth(){
         error.value = null
         const authUser = useCookie<loginReturnMessageType>('auth_user', {
             sameSite: 'lax',
-            secure: process.env.NODE_ENV === 'production'
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: COOKIE_AGE
         })
 
         try{
@@ -33,8 +36,6 @@ export function useAuth(){
             }
 
             if(response?.success && typeof(response.message) !== 'string'){
-                //This if function uses typeguard as the response can be a string or the user object
-
                 //set Frontend Cookie
                 authUser.value = response.message;
                 const {role} = authUser.value;
@@ -103,7 +104,7 @@ export function useAuth(){
             }
 
             toast.success({ title: 'Logged out', message: 'You have been logged out' })
-            //remoove UI cookie
+            //remoove UI coo    kie
             const authUser = useCookie('auth_user')
             authUser.value = null
 

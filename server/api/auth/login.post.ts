@@ -10,6 +10,8 @@ import {JWTPayload} from '@/shared/types/auth'
 import {z} from 'zod';
 
 const JWT_SECRET = process.env.JWT_SECRET as string
+const COOKIE_AGE = parseInt(process.env.COOKIE_AGE || '86400') //one day fallback
+const JWT_SESSION_AGE = 3600 //1 hour jwt validity
 
 if(!JWT_SECRET){
     throw new Error('JWT_Secret not defined');
@@ -34,7 +36,7 @@ export default defineEventHandler(async(event): Promise<loginSuccess | loginFail
         return {success: false, message: 'Form validation error'}
     }  
 
-    const {email, password} = validated.data;
+    const {email, password, rememberMe} = validated.data;
     
     //fetch user
     const [user]= await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
@@ -54,15 +56,13 @@ export default defineEventHandler(async(event): Promise<loginSuccess | loginFail
     //user is ok
     const payload: JWTPayload = {
         id: user.id,
-        name: user.name, 
-        email: user.email, 
         role: user.role as 'admin'|'user'
     }
 
     const audience = (user.role==='user')?'food-app-user':'food-app-admin'
 
     const token = jwt.sign(payload, JWT_SECRET, {
-        expiresIn: '1d',
+        expiresIn: rememberMe ? COOKIE_AGE : JWT_SESSION_AGE,
         issuer: 'food-app',
         audience
     })
@@ -72,7 +72,7 @@ export default defineEventHandler(async(event): Promise<loginSuccess | loginFail
     setCookie(event, 'auth_token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24,
+        maxAge: rememberMe? COOKIE_AGE : undefined,
         path: '/',
         sameSite: 'lax',
     })

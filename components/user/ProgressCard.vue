@@ -1,23 +1,8 @@
 <script setup lang="ts">
+import type { orderDataType } from '~/pages/user/history.vue';
+
     const props = defineProps<{
-    order: {
-        orderId: number
-        customerName: string
-        createdAt: string
-        totalItems: number
-        totalAmount: number
-        location: string
-        order: {
-        id:number
-        itemName: string
-        itemCategory: string
-        itemQuantity: number
-        menuId: number
-        eachItemPrice: number
-        }[]
-        customerNotes: string
-        orderProgress: string
-    }
+    order: orderDataType
     }>()
 
     function getStateValue (progress: string): number {
@@ -31,7 +16,7 @@
 <template>
     <span class="text-md px-2 text-blue-700">Order Id: #{{order.orderId}}</span>
     <div class="flex items-center justify-center p-6">
-            <div class="flex items-center">
+        <div class="flex items-center">
                 <!-- Ordered -->
                 <div class="flex flex-col items-center">
                     <div class="w-20 h-20 rounded-full flex items-center bg-blue-700 justify-center shadow-md">

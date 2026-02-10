@@ -114,6 +114,9 @@ export default defineEventHandler(async(event)=>{
                 throw new Error("Payment insert failed");
             }
 
+            //broadcast newOrder to all peers
+
+
             setResponseStatus(event, 200);
             return {
             success: true,
