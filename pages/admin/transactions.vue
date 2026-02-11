@@ -41,7 +41,7 @@
 type apiFailureResponse = {success: false, message: string}
 const transactionData = ref<(InferSelectModel<typeof paymentTable>&{phoneNo: string})[] | null>(null)
 
-  const {data, error, refresh, pending} = useFetch<apiSuccessResponse | apiFailureResponse>(`/api/admin/transaction`,{
+  const {data, error, refresh, pending} = await useFetch<apiSuccessResponse | apiFailureResponse>(`/api/admin/transaction`,{
       method: 'GET',
       query:{
         page: page,
@@ -50,10 +50,6 @@ const transactionData = ref<(InferSelectModel<typeof paymentTable>&{phoneNo: str
       },
       key:`transactions-${page.value}`,
       watch: [page, days]
-  })
-
-  watch(pending, (isPending)=>{
-    loading.value=isPending;
   })
 
   watch([data, error], () => {

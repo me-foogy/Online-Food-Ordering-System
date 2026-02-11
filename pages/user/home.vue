@@ -18,63 +18,48 @@
     //----------------Category fetch API call-------------------//
 
     {
-        const {data, error, pending} = useFetch<CategoriesResponse>('/api/shared/categories', {
+        const {data, error} = await useFetch<CategoriesResponse>('/api/shared/categories', {
             method: 'GET'
         })
 
-        watch(pending, (isPending) => {
-            loading.value = isPending;
-        }, { immediate: true })
-
-        watch(data, (newData) => {
-            if(newData?.success && typeof(newData.message) !== 'string'){
-                const names = newData.message.map(category => category.name);
-                foodOptions.value = ['All', ...names];
-                toast.success({title: 'Success', message: `Categories fetched successfully`});
-            } else if(newData) {
-                foodOptions.value = ['All'];
-                toast.error({title: 'ERROR', message: newData?.message as string});
+        if(error.value){
+            foodOptions.value=['All'];
+            console.error('SERVER ERROR');
+            toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+        }
+        else{
+            if(data.value?.success && typeof(data.value.message) !== 'string'){
+                const names = data.value.message.map(category=>category.name);
+                foodOptions.value=['All', ...names];
+                toast.success({title: 'Success', message:`Categories fetched successfully`});
+            }else{
+                foodOptions.value=['All'];
+                toast.error({title: 'ERROR', message:data.value?.message as string});
             }
-        })
-
-        watch(error, (err) => {
-            if(err) {
-                foodOptions.value = ['All'];
-                toast.error({title: 'SERVER ERROR', message: err.data.message});
-            }
-        })
+        }
     }
     //---------------------------------------------------------//
 
 
     //----------------MENU FETCH API CALL----------------//
     {
-        const {data, error, pending} = useFetch<menuResponse>('/api/shared/menu/all')
-        
-        watch(pending, (isPending)=>{
-            loading.value=isPending;
-        }, {immediate: true})
+        const {data, error} = await useFetch<menuResponse>('/api/shared/menu/all')
 
-        watch(data, (newData)=>{
-            if(newData?.success && typeof(newData.message) !== 'string'){
-                menuData.value=newData.message
+        if(error.value){
+            menuData.value=[];
+            console.error('SERVER ERROR');
+            toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+        }
+        else{
+            if(data.value?.success && typeof(data.value.message) !== 'string'){
+                menuData.value=data.value.message
                 toast.success({title: 'Success', message:`Menu Items fetched successfully`});
             }else{
                 menuData.value=[];
                 toast.error({title: 'ERROR', message:data.value?.message as string});
             }
-        })
-
-        watch(error, (newError)=>{
-            if(newError){
-                menuData.value=[];
-                console.error('SERVER ERROR');
-                toast.error({title: 'SERVER ERROR', message:newError.data.message});
-            }
-        })
+        }
     }
-
-    //--------------------------------------------//
 
     const filteredMenuData = computed(()=>{    
             if(activeType.value==='All') return menuData.value.filter(item=>item.name.toLowerCase().includes(searchBarInput.value.toLowerCase()));

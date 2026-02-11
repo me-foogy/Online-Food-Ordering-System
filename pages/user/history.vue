@@ -17,30 +17,23 @@
         return orderData.value.filter(order=> order.orderProgress!=='completed')
     })
 
-    const {data, error, pending} = useFetch<apiResponse>('/api/user/orders/user_history');
-    
-    watch(pending, (isPending)=>{
-        loading.value=isPending;
-    }, {immediate: true})
+    const {data, error} = await useFetch<apiResponse>('/api/user/orders/user_history');
 
-    watch(data, (newData)=>{
-        if(newData?.success && typeof(newData.message) !== 'string'){
-            orderData.value=newData.message
+    if(error.value){
+        orderData.value=[];
+        console.error('SERVER ERROR');
+        toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+    }
+    else{
+        if(data.value?.success && typeof(data.value.message) !== 'string'){
+            orderData.value=data.value.message
+
             toast.success({title: 'Success', message:`Orders fetched successfully`});
         }else{
             orderData.value=[];
             toast.error({title: 'ERROR', message:data.value?.message as string});
         }
-    })
-
-    watch(error, (err)=>{
-        if(err){
-            orderData.value=[];
-            console.error('SERVER ERROR');
-            toast.error({title: 'SERVER ERROR', message:err.data.message});
-        }
-    })
-
+    }
     //--------------------------------------------------------------------------------------//
 
     definePageMeta({
