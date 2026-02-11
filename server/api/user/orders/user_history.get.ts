@@ -16,15 +16,11 @@ export default defineEventHandler(async(event)=>{
         }
     }
 
-    //fetch userName for customer_name
-    const result=await db.select({name: usersTable.name}).from(usersTable).where(eq(usersTable.id, user.id))
-    const name=result[0].name;
-
     //fetch all user orders from ordersTable
     try{
             const orders = await db.select()
                 .from(ordersTable)
-                .where(eq(ordersTable.customerName, name))
+                .where(eq(ordersTable.userId, user.id))
                 .orderBy(desc(ordersTable.createdAt));
             //if no orders send no orders response
             if(orders.length===0){

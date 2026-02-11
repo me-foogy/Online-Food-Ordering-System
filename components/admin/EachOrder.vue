@@ -29,7 +29,7 @@
 
     //-------------------API call for progress change----------------------//
 
-    const handleButtonClick = async(orderProgress: orderProgressType) => {
+    const handleButtonClick = async() => {
         let nextState: orderProgressType
         if (props.order.orderProgress === 'notStarted') nextState = 'inProgress'
         else if (props.order.orderProgress === 'inProgress') nextState = 'completed'
@@ -86,7 +86,7 @@
 
             <div class="flex items-center gap-2 sm:gap-4 self-start sm:self-auto w-full sm:w-auto">
                 <button
-                    @click.stop="()=>handleButtonClick(order.orderProgress)"
+                    @click.stop="()=>handleButtonClick()"
                     class="rounded-md font-semibold flex-1 transition-colors duration-300 px-3 py-3 text-xs 
                         sm:px-4 sm:py-2 sm:text-sm md:px-6 md:text-base"
                     :class="{

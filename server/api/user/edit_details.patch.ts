@@ -45,9 +45,10 @@ export default defineEventHandler(async(event)=>{
         phoneNo,
         address
     }).where(eq(usersTable.email, email)).returning({
-        id: usersTable.id,
         email: usersTable.email,
         name: usersTable.name,
+        address: usersTable.address,
+        phoneNo: usersTable.phoneNo,
         role: usersTable.role
     })
 

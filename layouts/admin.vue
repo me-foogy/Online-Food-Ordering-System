@@ -3,9 +3,9 @@
 </script>
 
 <template>
-    <div class="min-h-screen flex bg-gray-100">
+    <div class="min-h-[100dvh] flex bg-gray-100">
       <!-- Sidebar -->
-      <aside class="bg-white border-r border-gray-200 w-14 lg:w-64 fixed top-0 left-0 h-screen flex flex-col">
+      <aside class="bg-white border-r border-gray-200 w-14 lg:w-64 fixed top-0 left-0 h-[100dvh] flex flex-col">
         <div class="h-full flex flex-col">
             <div class="border-b py-4 flex justify-center lg:justify-start lg:px-6">
                   <span class="hidden lg:block font-semibold text-lg">Admin Panel</span>

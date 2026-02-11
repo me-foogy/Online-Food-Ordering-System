@@ -2,24 +2,10 @@
     import {ref} from 'vue';
     import MenuItem from '@/components/admin/MenuItem.vue'
     import FoodDialog from '@/components/admin/FoodDialog.vue'
-    import { useToast } from '#imports';
+    import { useToast, type menuResponse } from '#imports';
     import CategoryDialog from '~/components/admin/CategoryDialog.vue';
     const toast = useToast();
-
-    interface menuType {
-        id: number
-        name: string,
-        category: string,
-        price: number,
-        description: string
-        image: string
-        inStock: boolean
-    }
-
-    interface menuResponse{
-        success: boolean
-        message: Required<menuType>[] | string
-    }
+    const loading = useLoadingScreen();
 
     const searchBarInput = ref<string>('');
     const selectedItem = ref<menuType|null>(null);

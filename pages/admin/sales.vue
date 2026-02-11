@@ -6,6 +6,7 @@
     import {subMonths } from 'date-fns';
     import { useToast } from '#imports'
     const toast = useToast();
+    const loading = useLoadingScreen();
 
     const date = ref(new Date());
     const displayDate = computed(() => {
@@ -21,9 +22,13 @@
 
     //---------------------API CALL FOR CHART DETAILS--------------------//
 
-    const {data, error} = useFetch(()=>`/api/admin/sales?date=${displayDate.value}`, {
+    const {data, error, pending} = useFetch(()=>`/api/admin/sales?date=${displayDate.value}`, {
         method: 'GET',
         watch: [displayDate]
+    })
+
+    watch(pending, (isLoading)=>{
+        loading.value = isLoading
     })
 
     const hourlyRevenue = computed(() => {
@@ -149,7 +154,7 @@
                     />
                 </div>
             </div>
-            <p class="text-red-500 p-4">* Sales Data is only available for the last 30 days</p>
+            <p class="text-red-500 p-4">* Select a date to view sales data of selected date</p>
         </aside>
     </div>
 </template>
