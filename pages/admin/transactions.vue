@@ -9,6 +9,7 @@
   import RefundDialog from '~/components/admin/Refund Dialog.vue';
 
   const toast = useToast()
+  const loading = useLoadingScreen()
   const showRefundDialog = ref<boolean>(false);
   const refundDetails = ref<{uuid: string, amount: number, phoneNo: string}>({
     uuid: '',
@@ -40,7 +41,7 @@
 type apiFailureResponse = {success: false, message: string}
 const transactionData = ref<(InferSelectModel<typeof paymentTable>&{phoneNo: string})[] | null>(null)
 
-  const {data, error, refresh} = await useFetch<apiSuccessResponse | apiFailureResponse>(`/api/admin/transaction`,{
+  const {data, error, refresh, pending} = useFetch<apiSuccessResponse | apiFailureResponse>(`/api/admin/transaction`,{
       method: 'GET',
       query:{
         page: page,
@@ -49,6 +50,10 @@ const transactionData = ref<(InferSelectModel<typeof paymentTable>&{phoneNo: str
       },
       key:`transactions-${page.value}`,
       watch: [page, days]
+  })
+
+  watch(pending, (isPending)=>{
+    loading.value=isPending;
   })
 
   watch([data, error], () => {
@@ -68,30 +73,33 @@ const transactionData = ref<(InferSelectModel<typeof paymentTable>&{phoneNo: str
   //-----------------------------------API CALL TO DOWNLOAD DATA AS EXCEL-----------------//
 
   const downloadData = async () =>{
+    loading.value=true;
     try{
         const response = await $fetch('/api/admin/transaction/download', {
         method: "GET",
         query: {
           days: 30
-        },
-        responseType: 'arrayBuffer'
-      }) as ArrayBuffer
+        }
+      }) as unknown  as ArrayBuffer
       
-    // Create a blob and trigger download
-    const blob = new Blob([new Uint8Array(response)], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'transactions.xlsx');
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    toast.success({ message: 'Transaction Data Downloaded Successfully' });
+      // Create a blob and trigger download
+      const blob = new Blob([new Uint8Array(response)], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'transactions.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success({ message: 'Transaction Data Downloaded Successfully' });
 
     }catch{
+      loading.value=false;
       toast.error({message: 'Error Downloading Data'})
+    }finally{
+      loading.value=false;
     }
   }
   //--------------------------------------------------------------------------//

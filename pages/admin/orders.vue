@@ -8,27 +8,6 @@
     import type { InferSelectModel } from 'drizzle-orm';
     const toast = useToast();
 
-    type orderProgressType = 'notStarted' | 'inProgress' | 'completed';
-    interface orderDataType {
-        orderId: number,
-        customerName: string,
-        totalItems: number,
-        totalAmount: number,
-        location: string,
-        createdAt: string
-        order: Array<orderItem>
-        customerNotes: string,
-        //<TODO>: Fix
-        orderProgress: any // orderProgess must have orderProgressType but when fetching it is fetched as string which is creating problems 
-    }
-
-    interface orderItem{
-        itemName: string,
-        itemCategory: string,
-        itemQuantity: number,
-        eachItemPrice: number
-    }
-    
     interface apiSuccessResponse{
         success: true,
         message: orderDataType[],
@@ -43,10 +22,10 @@
         }
     }
 
-        interface apiFailureResponse{
+    interface apiFailureResponse{
         success: false,
         message: string,
-        }
+    }
 
     //-------------------------API FETCH FOR api/order/fetch GET request ----------------------//
     const page = ref<number>(1);
@@ -94,7 +73,7 @@
 
 <template>
 
-    <div class="w-full h-[93vh] flex flex-col gap-4">
+    <div class="w-full h-[93dvh] flex flex-col gap-4">
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <!--each card-->
             <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
@@ -125,27 +104,10 @@
             </div>
         </div>
 
-        <div v-if="orderData.length!==0" class="flex-1 w-full border border-gray-300 rounded-xl p-2 overflow-auto sm:p-3 space-y-3">
-            <EachOrder v-for="(order, index) in orderData" :key="order.orderId" :order="order"/>
-        </div>
-        <div v-else class="h-full w-full border border-gray-300 rounded-xl p-4 flex items-center justify-center sm:p-6">
-            <span class="text-red-500 flex justify-center text-1xl">No Orders At The Moment</span>
+        <div class="flex-1 w-full border border-gray-300 rounded-xl p-2 overflow-y-auto sm:p-3 space-y-3 flex flex-col">
+            <EachOrder v-if="orderData.length!==0" v-for="(order) in orderData" :key="order.orderId" :order="order"/>
+            <span v-else class="text-red-500 flex justify-center text-1xl self-center m-auto">No Orders At The Moment</span>
         </div>
     </div>
 
 </template>
-
-<style>
-/* overwrite internal button classes */
-.v-pagination .btn {
-  @apply px-4 py-2 rounded-lg border border-gray-300;
-}
-
-.v-pagination .btn-active {
-  @apply bg-blue-500 text-white border-blue-500;
-}
-
-.v-pagination .btn:hover:not(.btn-active) {
-  @apply border-blue-500;
-}
-</style>

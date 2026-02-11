@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import {ref} from 'vue'
   import { useCartStore } from '@/stores/cart';
-  import type { orderDataType } from '~/pages/user/history.vue';
   const {addToCart} = useCart()
 
   const props = defineProps<{

@@ -53,6 +53,10 @@ export default defineEventHandler(async(event)=>{
                 return {
                     success: true,
                     message: [],
+                    count:{
+                    notStartedCount: notStartedCount??0,
+                    inProgressCount: inProgressCount??0
+                    },
                     pagination:{
                         page,
                         pageSize,
@@ -101,8 +105,8 @@ export default defineEventHandler(async(event)=>{
                 success: true,
                 message: response,
                 count:{
-                    notStartedCount,
-                    inProgressCount
+                    notStartedCount: notStartedCount??0,
+                    inProgressCount: inProgressCount??0
                 },
                 pagination: {
                     page,

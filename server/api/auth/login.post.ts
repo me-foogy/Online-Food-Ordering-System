@@ -11,7 +11,7 @@ import {z} from 'zod';
 
 const JWT_SECRET = process.env.JWT_SECRET as string
 const COOKIE_AGE = parseInt(process.env.COOKIE_AGE || '86400') //one day fallback
-const JWT_SESSION_AGE = 3600 //1 hour jwt validity
+const JWT_SESSION_AGE = 86400 //1 day jwt validity
 
 if(!JWT_SECRET){
     throw new Error('JWT_Secret not defined');

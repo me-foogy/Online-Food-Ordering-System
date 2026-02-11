@@ -2,6 +2,7 @@
 
     import { useToast } from '#imports';
     const toast = useToast();
+    const loading = useLoadingScreen();
 
     const Amount = ref<number>(0);
     const PaidAt = ref<string>('');
@@ -19,6 +20,7 @@
         }
 
         try{
+            loading.value = true;
             const response = await $fetch('/api/user/esewa/verify', {
                 method: 'POST',
                 body: {
@@ -37,6 +39,7 @@
             }
             
         }catch(err: unknown) {
+            loading.value=false;
             let message = 'Unknown system error';
             if (err && typeof err === 'object' && 'data' in err) {
                 const data = err.data;
@@ -45,11 +48,11 @@
                 }
             }
             toast.error({message});
+        }finally{
+            loading.value = false
         }
     })
     //--------------------------------------------------------------//
-
-
     definePageMeta({
         layout: 'user-no-cart'
     })

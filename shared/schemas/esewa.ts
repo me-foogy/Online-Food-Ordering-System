@@ -1,4 +1,5 @@
 import {z} from 'zod';
+const BASE_URL = process.env.BASE_URL;
 
 export const esewaSchema = z.object({
     amount: z.coerce.number('NOT A NUMBER'),
@@ -8,8 +9,8 @@ export const esewaSchema = z.object({
     product_code: z.string(),
     product_service_charge: z.coerce.number().default(0),
     product_delivery_charge: z.coerce.number().default(0),
-    success_url: z.url().default("http://localhost:3000/user/payment/success"),
-    failure_url: z.url().default("http://localhost:3000/user/payment/failed"),
+    success_url: z.url().default(`${BASE_URL}/user/payment/success`),
+    failure_url: z.url().default(`${BASE_URL}/user/payment/failed`),
     signed_field_names: z.string().default("total_amount,transaction_uuid,product_code"),
     signature: z.string()
 

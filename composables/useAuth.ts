@@ -1,13 +1,12 @@
 import { useToast, type defaultApiType, type loginReturnMessageType, type signUpData, type signUpResponse } from '#imports';
-const toast = useToast();
 
 const COOKIE_AGE = parseInt(process.env.COOKIE_AGE || '86400') //one day fallback
 
 export function useAuth(){
 
+    const toast = useToast();
     const loading = useState<boolean>('auth:loading', ()=>false);
     const error = useState<string | null>('auth:error', ()=>null);
-    type apiResponse<T>={success: true; message: T} | {success: false, message: string}
     interface logoutApiResponse  {
         success: boolean, 
         message: string
@@ -104,13 +103,22 @@ export function useAuth(){
             }
 
             toast.success({ title: 'Logged out', message: 'You have been logged out' })
+
             //remoove UI cookie
-            useCookie('auth_user',{
-                maxAge: -1
+            const authUser = useCookie('auth_user', {
+                sameSite: 'lax',
+                secure: process.env.NODE_ENV === 'production',
             })
+            authUser.value = undefined
 
             navigateTo('/login');
         } catch {
+            //also delete cookie if api call fails
+            const authUser = useCookie('auth_user', {
+                sameSite: 'lax',
+                secure: process.env.NODE_ENV === 'production',
+            })
+            authUser.value = undefined
             toast.error({ title: 'Error', message: 'Unexpected error occurred' })
         }finally{
             loading.value=false;
@@ -118,6 +126,7 @@ export function useAuth(){
     }
 
     return{
+        loading,
         login,
         signup,
         logout
