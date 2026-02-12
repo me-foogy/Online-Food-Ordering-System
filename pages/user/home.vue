@@ -4,7 +4,8 @@
     import MenuItem from '@/components/user/MenuItem.vue';
     import { useCartStore } from '@/stores/cart';
     import { useToast } from '#imports';
-    
+
+    const {receivingOrders} = useReceivingOrders()
     const toast = useToast();
     const loading = useLoadingScreen()
 
@@ -18,63 +19,59 @@
     //----------------Category fetch API call-------------------//
 
     {
-        const {data, error, pending} = useFetch<CategoriesResponse>('/api/shared/categories', {
+        const {data, error} = await useFetch<CategoriesResponse>('/api/shared/categories', {
             method: 'GET'
         })
 
-        watch(pending, (isPending) => {
-            loading.value = isPending;
-        }, { immediate: true })
-
-        watch(data, (newData) => {
-            if(newData?.success && typeof(newData.message) !== 'string'){
-                const names = newData.message.map(category => category.name);
-                foodOptions.value = ['All', ...names];
-                toast.success({title: 'Success', message: `Categories fetched successfully`});
-            } else if(newData) {
-                foodOptions.value = ['All'];
-                toast.error({title: 'ERROR', message: newData?.message as string});
+        if(error.value){
+            foodOptions.value=['All'];
+            console.error('SERVER ERROR');
+            toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+        }
+        else{
+            if(data.value?.success && typeof(data.value.message) !== 'string'){
+                const names = data.value.message.map(category=>category.name);
+                foodOptions.value=['All', ...names];
+                toast.success({title: 'Success', message:`Categories fetched successfully`});
+            }else{
+                foodOptions.value=['All'];
+                toast.error({title: 'ERROR', message:data.value?.message as string});
             }
-        })
-
-        watch(error, (err) => {
-            if(err) {
-                foodOptions.value = ['All'];
-                toast.error({title: 'SERVER ERROR', message: err.data.message});
-            }
-        })
+        }
     }
     //---------------------------------------------------------//
 
 
     //----------------MENU FETCH API CALL----------------//
     {
-        const {data, error, pending} = useFetch<menuResponse>('/api/shared/menu/all')
-        
-        watch(pending, (isPending)=>{
-            loading.value=isPending;
-        }, {immediate: true})
+        const {data, error} = await useFetch<menuResponse>('/api/shared/menu/all', {
+            method:'GET',
+            onRequest(){
+                loading.value = true;
+            },
+            onResponse(){
+                loading.value = false;
+            },
+            onResponseError(){
+                loading.value=false;
+            }
+        })
 
-        watch(data, (newData)=>{
-            if(newData?.success && typeof(newData.message) !== 'string'){
-                menuData.value=newData.message
+        if(error.value){
+            menuData.value=[];
+            console.error('SERVER ERROR');
+            toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+        }
+        else{
+            if(data.value?.success && typeof(data.value.message) !== 'string'){
+                menuData.value=data.value.message
                 toast.success({title: 'Success', message:`Menu Items fetched successfully`});
             }else{
                 menuData.value=[];
                 toast.error({title: 'ERROR', message:data.value?.message as string});
             }
-        })
-
-        watch(error, (newError)=>{
-            if(newError){
-                menuData.value=[];
-                console.error('SERVER ERROR');
-                toast.error({title: 'SERVER ERROR', message:newError.data.message});
-            }
-        })
+        }
     }
-
-    //--------------------------------------------//
 
     const filteredMenuData = computed(()=>{    
             if(activeType.value==='All') return menuData.value.filter(item=>item.name.toLowerCase().includes(searchBarInput.value.toLowerCase()));
@@ -108,6 +105,13 @@
                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                         hover:border-blue-400 transition min-w-0"/>
                     </form>
+            </div>
+
+            <div class="w-full border rounded-lg py-2 px-4 bg-white flex flex-row justify-center gap-4 mt-4"
+                :class="{'border-blue-800':receivingOrders, 'border-red-800': !receivingOrders}"
+            >
+                <span class="material-symbols-outlined text-base text-red-800">cancel</span>
+                <span class="text-red-800">The Restaurant Closed At The Moment</span>
             </div>
 
             <!--The Filter By Category Section-->

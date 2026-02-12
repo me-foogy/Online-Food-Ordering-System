@@ -24,6 +24,7 @@
         <!-- Add Category Row -->
         <form class="flex gap-3 mb-5" @submit.prevent="()=>addCategory(newCategory)">
           <input v-model="newCategory" type="text" placeholder="Enter category name"
+            required
             class="flex-1 h-11 px-4 border rounded-md
             focus:border-blue-500 focus:outline-none"
           />

@@ -7,6 +7,7 @@
     const toast = useToast();
     const showCart = ref<boolean>(false);
     const showConfirmation = ref<boolean>(false); 
+    const {receivingOrders, fetchReceivingOrders} = useReceivingOrders();
 
     onMounted(fetchCart);
 
@@ -14,8 +15,16 @@
         showCart.value = !showCart.value;
     }
 
-    const handleCheckout = async ()=>{
-        await fetchCart();
+    const handleCheckout = ()=>{
+        //check if restaurant is receiving orders
+        fetchReceivingOrders();
+        if(receivingOrders.value===false){
+            toast.error({message: 'Restaurant is Closed at the moment'});
+            return
+        }
+
+        //check if cart items are out of stock
+        fetchCart();
         if(cart.value.some(item=>item.inStock===false)){
             toast.error({message: 'Cart contains items not in stock'});
             return
@@ -40,7 +49,7 @@
     
     <!--Each Cart Item-->
     <aside :class="[
-        'w-96 lg:w-96 bg-white border-l border-gray-200 p-4 fixed top-0 right-0 h-screen transition-transform duration-300',
+        'w-96 lg:w-96 bg-white border-l border-gray-200 p-4 fixed top-0 right-0 h-[100dvh] transition-transform duration-300',
         showCart? 'translate-x-0' : 'translate-x-full',
         'xl:translate-x-0 flex flex-col justify-between'
         ]">

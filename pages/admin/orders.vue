@@ -1,12 +1,14 @@
 <script setup lang="ts">
 
-    import VPagination from '@hennge/vue3-pagination'
-    import '@hennge/vue3-pagination/dist/vue3-pagination.css'
-    import EachOrder from '@/components/admin/EachOrder.vue'
-    import { useToast } from '#imports';
-    import { ref, computed } from 'vue';
-    import type { InferSelectModel } from 'drizzle-orm';
-    const toast = useToast();
+import VPagination from '@hennge/vue3-pagination'
+import '@hennge/vue3-pagination/dist/vue3-pagination.css'
+import EachOrder from '@/components/admin/EachOrder.vue'
+import { useToast } from '#imports';
+import { ref, computed } from 'vue';
+import ReceivingOrdersDialog from '~/components/admin/ReceivingOrdersDialog.vue';
+const toast = useToast();
+const loading = useLoadingScreen();
+const {receivingOrders, fetchReceivingOrders} = useReceivingOrders();
 
     interface apiSuccessResponse{
         success: true,
@@ -26,7 +28,8 @@
         success: false,
         message: string,
     }
-
+    
+    const openConfirmDialog = ref<boolean>(false);
     //-------------------------API FETCH FOR api/order/fetch GET request ----------------------//
     const page = ref<number>(1);
     const pageSize:number = 10;
@@ -42,8 +45,17 @@
             pageSize
         },
         key: `orders-${page.value}`,
-        watch: [page]
-    })
+        watch: [page],
+        onRequest(){
+            loading.value = true;
+        },
+        onResponse(){
+            loading.value = false;
+        },
+        onResponseError(){
+            loading.value=false;
+        }
+})
 
     watch([data, error], ()=>{
         if(error.value){
@@ -65,6 +77,15 @@
         }
     }, {immediate: true})
     //--------------------------------------------------------------------------------------//
+    //Fetch the state of the restaurant
+    onMounted(()=>{
+        fetchReceivingOrders();
+    })
+
+    const handleClose = () =>{
+        openConfirmDialog.value=false;
+        fetchReceivingOrders();
+    }
 
     definePageMeta({
         layout: 'admin' 
@@ -72,24 +93,48 @@
 </script>
 
 <template>
-
+    <ReceivingOrdersDialog :isOpen="openConfirmDialog" :onClose="handleClose" :state="receivingOrders"/>
     <div class="w-full h-[93dvh] flex flex-col gap-4">
-        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <!--each card-->
-            <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
-                <div class="flex flex-row justify-between items-center">
-                    <span class="text-sm sm:text-base font-medium text-gray-600">Remaining Orders</span>
-                    <span class="material-symbols-outlined text-5xl sm:text-7xl">Fastfood</span>
-                </div>
-                <p class="text-5xl sm:text-6xl lg:text-7xl font-bold text-red-500">{{notStartedCount}}</p>
+        <div class="flex flex-col gap-4">
+            <div class="w-full border rounded-lg py-2 px-4 bg-white flex flex-row justify-between"
+                :class="{'border-blue-800':receivingOrders, 'border-red-800': !receivingOrders}"
+            >
+                <span> Currently Receiving Orders : 
+                    <span :class="{'text-blue-800':receivingOrders, 'text-red-800': !receivingOrders}">
+                        {{receivingOrders?'YES':'NO'}}                        
+                    </span>
+                </span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" v-model="receivingOrders" class="sr-only" @click="openConfirmDialog=true">
+                    <!-- Toggle Track -->
+                    <div
+                        class="w-10 h-5 rounded-full transition-colors duration-300"
+                        :class="{'bg-blue-600': receivingOrders,  'bg-gray-300':!receivingOrders}"
+                    ></div>
+                    <!-- Toggle Thumb -->
+                    <div
+                        class="absolute w-4 h-4 bg-white rounded-full top-1 transition-transform duration-300"
+                        :class="{'translate-x-5': receivingOrders, 'translate-x-1': !receivingOrders}"
+                    ></div>
+                </label>
             </div>
-            <!--each card-->
-            <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
-                <div class="flex flex-row justify-between items-center">
-                    <span class="text-sm sm:text-base font-medium text-gray-600">Orders In Progress</span>
-                    <span class="material-symbols-outlined text-5xl sm:text-7xl">Cached</span>
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <!--each card-->
+                <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
+                    <div class="flex flex-row justify-between items-center">
+                        <span class="text-sm sm:text-base font-medium text-gray-600">Remaining Orders</span>
+                        <span class="material-symbols-outlined text-5xl sm:text-7xl">Fastfood</span>
+                    </div>
+                    <p class="text-5xl sm:text-6xl lg:text-7xl font-bold text-red-500">{{notStartedCount}}</p>
                 </div>
-                <p class="text-5xl sm:text-6xl lg:text-7xl font-bold text-blue-500">{{inProgressCount}}</p>
+                <!--each card-->
+                <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
+                    <div class="flex flex-row justify-between items-center">
+                        <span class="text-sm sm:text-base font-medium text-gray-600">Orders In Progress</span>
+                        <span class="material-symbols-outlined text-5xl sm:text-7xl">Cached</span>
+                    </div>
+                    <p class="text-5xl sm:text-6xl lg:text-7xl font-bold text-blue-500">{{inProgressCount}}</p>
+                </div>
             </div>
         </div>
 

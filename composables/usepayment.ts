@@ -1,5 +1,5 @@
 import type { UUID } from "crypto";
-import { esewaSchema } from "~/shared/schemas/esewa";
+import { createEsewaSchema } from "~/shared/schemas/esewa";
 
 type apiResponse = defaultApiType<{orderId: number, transactionUuid: UUID, signature: string, amountWithDecimal: number, productCode: string}>
 
@@ -8,6 +8,8 @@ export function usePayment(){
     async function confirmAndSignPayment(){
 
         try{
+            const config = useRuntimeConfig();
+            const baseUrl = config.public.baseUrl as string;
 
             const response = await $fetch<apiResponse>('/api/user/esewa/sign', {
                 method: 'GET',
@@ -18,6 +20,8 @@ export function usePayment(){
             }
 
             const {transactionUuid, signature, amountWithDecimal, productCode}= response.message;
+
+            const esewaSchema = createEsewaSchema(baseUrl)
 
             const validated = esewaSchema.safeParse({
                 //undefined fields are replaced with zod default defined values

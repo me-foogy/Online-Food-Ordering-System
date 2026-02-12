@@ -22,7 +22,15 @@
             const res = await $fetch<defaultApiType<loginReturnMessageType[]>>('/api/user/edit_details',{
                 method:'PATCH',
                 body: user.value,
-                credentials:'include'
+                onRequest(){
+                    loading.value = true;
+                },
+                onResponse(){
+                    loading.value = false;
+                },
+                onResponseError(){
+                    loading.value=false;
+                }
             });
 
             if(!res.success && typeof(res.message)=='string'){
@@ -72,7 +80,7 @@
 
 
 <template>
-    <div class="min-h-screen bg-[url(/images/foodDoodle.png)] bg-cover bg-center bg-no-repeat p-4 sm:p-6">
+    <div class="min-h-[95dvh] bg-[url(/images/foodDoodle.png)] bg-cover bg-center bg-no-repeat p-4 sm:p-6">
         <div class="flex flex-col gap-4 lg:flex-row max-w-7xl mx-auto">
             
             <!-- Account Form -->

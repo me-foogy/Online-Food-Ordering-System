@@ -66,4 +66,8 @@ export const paymentTable = pgTable('payment', {
   remarks: varchar({length: 255})
 })
 
+export const receiveOrders = pgTable('receive_orders', {
+  id: integer('id').primaryKey().default(1),
+  isReceivingOrders: boolean("is_receiving_orders").notNull()
+})
 

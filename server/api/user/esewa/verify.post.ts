@@ -69,9 +69,8 @@ export default defineEventHandler(async(event)=>{
                     status: response.status as 'COMPLETE'|'Service is currently unavailable'
             }).returning()
             
-            await db.transaction(async(tx)=>{
                 //first insert into orders table
-                const [order] = await tx.insert(ordersTable).values({
+                const [order] = await db.insert(ordersTable).values({
                     userId: id,
                     customerName: name,
                     address: address,
@@ -103,17 +102,16 @@ export default defineEventHandler(async(event)=>{
                 })
 
                 //add items to eachOrderTable
-                await tx.insert(eachOrderTable).values(orderItems);
+                await db.insert(eachOrderTable).values(orderItems);
 
-                const [insertedPayment]=await tx.update(paymentTable).set({
+                const [insertedPayment]=await db.update(paymentTable).set({
                     ordersId: order.orderId
                 }).where(eq(paymentTable.paymentId, uuid)).returning()
 
                 paymentRow=insertedPayment;
 
                 //clear cart of the user
-                await tx.delete(cartTable).where(eq(cartTable.userId, user.id))
-            })
+                await db.delete(cartTable).where(eq(cartTable.userId, user.id))
         
             if (!paymentRow) {
                 throw new Error("Payment insert failed");
