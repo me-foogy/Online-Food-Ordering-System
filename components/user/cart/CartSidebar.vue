@@ -40,7 +40,7 @@
     
     <!--Each Cart Item-->
     <aside :class="[
-        'w-96 lg:w-96 bg-white border-l border-gray-200 p-4 fixed top-0 right-0 h-screen transition-transform duration-300',
+        'w-96 lg:w-96 bg-white border-l border-gray-200 p-4 fixed top-0 right-0 h-[100dvh] transition-transform duration-300',
         showCart? 'translate-x-0' : 'translate-x-full',
         'xl:translate-x-0 flex flex-col justify-between'
         ]">
