@@ -80,7 +80,7 @@
 
 
 <template>
-    <div class="min-h-screen bg-[url(/images/foodDoodle.png)] bg-cover bg-center bg-no-repeat p-4 sm:p-6">
+    <div class="min-h-[95dvh] bg-[url(/images/foodDoodle.png)] bg-cover bg-center bg-no-repeat p-4 sm:p-6">
         <div class="flex flex-col gap-4 lg:flex-row max-w-7xl mx-auto">
             
             <!-- Account Form -->

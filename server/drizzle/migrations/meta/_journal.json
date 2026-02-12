@@ -169,6 +169,13 @@
       "when": 1770365206594,
       "tag": "0023_slow_famine",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1770882605791,
+      "tag": "0024_dry_toad",
+      "breakpoints": true
     }
   ]
 }

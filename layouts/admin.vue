@@ -42,10 +42,10 @@
               </nav>
               <!-- Logout -->
               <div class="p-4 border-t">
-                  <button class="logout-btn" @click="logout">
-                    <span class="material-symbols-outlined icon">logout</span>
-                    <span class="label">Logout</span>
-                  </button>
+                <button class="logout-btn" @click="logout">
+                  <span class="material-symbols-outlined icon">logout</span>
+                  <span class="label">Logout</span>
+                </button>
               </div>
         </div>
       </aside>
