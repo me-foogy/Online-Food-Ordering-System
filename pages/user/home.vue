@@ -4,7 +4,8 @@
     import MenuItem from '@/components/user/MenuItem.vue';
     import { useCartStore } from '@/stores/cart';
     import { useToast } from '#imports';
-    
+
+    const {receivingOrders} = useReceivingOrders()
     const toast = useToast();
     const loading = useLoadingScreen()
 
@@ -104,6 +105,13 @@
                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                         hover:border-blue-400 transition min-w-0"/>
                     </form>
+            </div>
+
+            <div class="w-full border rounded-lg py-2 px-4 bg-white flex flex-row justify-center gap-4 mt-4"
+                :class="{'border-blue-800':receivingOrders, 'border-red-800': !receivingOrders}"
+            >
+                <span class="material-symbols-outlined text-base text-red-800">cancel</span>
+                <span class="text-red-800">The Restaurant Closed At The Moment</span>
             </div>
 
             <!--The Filter By Category Section-->

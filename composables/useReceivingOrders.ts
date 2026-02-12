@@ -29,7 +29,6 @@ export function useReceivingOrders(){
             })
 
             if(response.success===true && typeof(response.message)!=='string'){
-                toast.success({message: `Receiving Orders State is ${response.message[0]!.isReceivingOrders}`});
                 receivingOrders.value = response.message[0]!.isReceivingOrders;
             }
         }catch(err: any){
