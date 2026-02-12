@@ -22,7 +22,15 @@
             const res = await $fetch<defaultApiType<loginReturnMessageType[]>>('/api/user/edit_details',{
                 method:'PATCH',
                 body: user.value,
-                credentials:'include'
+                onRequest(){
+                    loading.value = true;
+                },
+                onResponse(){
+                    loading.value = false;
+                },
+                onResponseError(){
+                    loading.value=false;
+                }
             });
 
             if(!res.success && typeof(res.message)=='string'){

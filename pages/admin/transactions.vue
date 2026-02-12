@@ -49,7 +49,16 @@ const transactionData = ref<(InferSelectModel<typeof paymentTable>&{phoneNo: str
         days
       },
       key:`transactions-${page.value}`,
-      watch: [page, days]
+      watch: [page, days],
+      onRequest(){
+        loading.value = true;
+      },
+      onResponse(){
+        loading.value = false;
+      },
+      onResponseError(){
+        loading.value=false;
+      }
   })
 
   watch([data, error], () => {

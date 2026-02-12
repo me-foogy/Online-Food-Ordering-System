@@ -5,8 +5,8 @@
     import EachOrder from '@/components/admin/EachOrder.vue'
     import { useToast } from '#imports';
     import { ref, computed } from 'vue';
-    import type { InferSelectModel } from 'drizzle-orm';
     const toast = useToast();
+    const loading = useLoadingScreen();
 
     interface apiSuccessResponse{
         success: true,
@@ -42,8 +42,17 @@
             pageSize
         },
         key: `orders-${page.value}`,
-        watch: [page]
-    })
+        watch: [page],
+        onRequest(){
+            loading.value = true;
+        },
+        onResponse(){
+            loading.value = false;
+        },
+        onResponseError(){
+            loading.value=false;
+        }
+})
 
     watch([data, error], ()=>{
         if(error.value){

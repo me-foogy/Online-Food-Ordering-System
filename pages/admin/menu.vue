@@ -21,7 +21,16 @@
     //----------------Category fetch API call-------------------//
     {
         const {data, error} = await useFetch<menuResponse>('/api/shared/categories', {
-            method: 'GET'
+            method: 'GET',
+            onRequest(){
+                loading.value = true;
+            },
+            onResponse(){
+                loading.value = false;
+            },
+            onResponseError(){
+                loading.value=false;
+            }
         })
 
         if(error.value){

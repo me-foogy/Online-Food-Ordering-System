@@ -17,7 +17,18 @@
         return orderData.value.filter(order=> order.orderProgress!=='completed')
     })
 
-    const {data, error} = await useFetch<apiResponse>('/api/user/orders/user_history');
+    const {data, error} = await useFetch<apiResponse>('/api/user/orders/user_history',{
+        method: 'GET',
+        onRequest(){
+            loading.value = true;
+        },
+        onResponse(){
+            loading.value = false;
+        },
+        onResponseError(){
+            loading.value=false;
+        }
+    });
 
     if(error.value){
         orderData.value=[];

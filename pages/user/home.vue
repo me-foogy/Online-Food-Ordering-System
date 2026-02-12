@@ -43,7 +43,18 @@
 
     //----------------MENU FETCH API CALL----------------//
     {
-        const {data, error} = await useFetch<menuResponse>('/api/shared/menu/all')
+        const {data, error} = await useFetch<menuResponse>('/api/shared/menu/all', {
+            method:'GET',
+            onRequest(){
+                loading.value = true;
+            },
+            onResponse(){
+                loading.value = false;
+            },
+            onResponseError(){
+                loading.value=false;
+            }
+        })
 
         if(error.value){
             menuData.value=[];

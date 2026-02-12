@@ -1,3 +1,8 @@
+<script>
+    const router = useRouter()
+    router.push('/login')
+</script>
+
 <template>
-    <h1>This is the Home page</h1>
+    <h1>Redirecting To login Page</h1>
 </template>
