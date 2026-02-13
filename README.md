@@ -26,4 +26,8 @@ This project is a **food ordering platform** that allows users to browse a menu,
 -Database: Neon
 
 ### SCHEMA DESIGN
-<img width="2842" height="2096" alt="drawSQL-image-export-2026-02-03" src="https://github.com/user-attachments/assets/bc502263-8ecb-4dbd-9a39-a1a2257879f8" />
+<img width="2720" height="1916" alt="schema design" src="https://github.com/user-attachments/assets/cd44f6bb-0eb6-4a57-8190-20bee0d112bd" />
+
+### PAYMENT FLOW
+<img width="529" height="509" alt="paymentFlow" src="https://github.com/user-attachments/assets/6db3eee5-05bb-48ed-8b4e-03150fabb796" />
+
