@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   tailwindcss: { exposeConfig: true },
   modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', 'nuxt-toast', 'nuxt-nodemailer'],
    build: {
-    transpile: ['@vuepic/vue-datepicker'] //datepicker component
+    transpile: ['@vuepic/vue-datepicker']
   },
   toast: {
     settings: {

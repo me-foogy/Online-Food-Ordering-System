@@ -1,6 +1,5 @@
 <script setup lang="ts">
     import { useToast } from '#imports';
-    const toast=useToast();
     const {signup, verifySignup} = useAuth();
 
     const signUpFormData=ref<signUpData>({
@@ -18,7 +17,9 @@
     const confirmPasswordError = ref<boolean>(false);
     const emailError= ref<boolean>(false);
     const phoneNoError = ref<boolean>(false);
-    const displaySection = ref<'firstPart'|'secondPart'>('firstPart')
+    const displaySection = ref<'firstPart'|'secondPart'>('secondPart');
+    const totalSeconds = ref<number>(5*60);
+    let timer: NodeJS.Timeout|null = null;
     
     watch(()=>signUpFormData.value.password, (value)=>{
         const regexExp = /^(?=.*[A-Z])(?=.*[\W_]).+$/;
@@ -44,16 +45,47 @@
         }
     })
 
-    const handleSignup = ()=>{
+    const formattedTime = computed(()=>{
+        const minutes = Math.floor(totalSeconds.value/60)
+        const seconds = totalSeconds.value%60
+        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2,"0")}`;
+    })
+
+    const startClock = () =>{
+
+        totalSeconds.value=5*60;
+        if(timer) clearInterval(timer)
+
+        timer = setInterval(()=>{
+            if(totalSeconds.value > 0) totalSeconds.value--;
+            else clearInterval(timer!)
+        }, 1000)
+    }
+
+    const handleSignup = async()=>{
         //api call for signup
-        signup(signUpFormData.value);
-        displaySection.value='secondPart'
+        const isSignedUp = await signup(signUpFormData.value);
+        if(isSignedUp) displaySection.value='secondPart';
+        //start timer after OTP sent to user
+        startClock();
     }
 
     const handleSignupVerification = () =>{
         //api call to verify otp
         verifySignup(signUpFormData.value, otp.value);
     }
+
+    const handleResend = () =>{
+        //send signup details to the api endpoint for otp resend and otp reassign
+        handleSignup();
+        //reset Timer
+        startClock();
+    }
+
+    onUnmounted(()=>{
+        //cleanup on unmounted
+        if(timer) clearInterval(timer);
+    })
 
 </script>
 
@@ -160,28 +192,43 @@
                     <p class="text-red-700 mb-2 text-md">An OTP has been sent to the Signup Email. The OTP is valid for 30 minutes</p>
                     <p class="text-gray-500 mb-12 text-sm">Remember to Check the email spam</p>
                     <label class="text-gray-500">Enter 6 Digit OTP Code</label>
-                    <input
-                        type="text"
-                        maxlength="6"
-                        v-model="otp"
-                        inputmode="numeric"
-                        class="w-full px-4 py-2 text-center tracking-widest text-lg
-                            rounded-md border border-gray-300 bg-white my-2
-                            focus:outline-none focus:border-blue-500 mb-28 mt-8"
-                    />
+                    <div class="flex flex-row justify-between items-center align-middle mb-4 mt-4 gap-4">
+                        <input
+                            type="text"
+                            maxlength="6"
+                            v-model="otp"
+                            inputmode="numeric"
+                            class="w-full px-4 py-2 text-center tracking-widest text-lg
+                                rounded-md border border-gray-300 bg-white my-2
+                                focus:outline-none focus:border-blue-500"
+                        />
+                        <button type="button" class="bg-blue-600 px-4 py-2 rounded-md text-white flex flex-row gap-2
+                            disabled:bg-blue-400 disabled:cursor-not-allowed
+                            hover:bg-blue-700 hover:shadow-sm"
+                            @click="handleResend"    
+                            :disabled="totalSeconds>0"
+                        >
+                            <span class="material-symbols-outlined">cached</span>
+                            Resend
+                        </button>
+                    </div>
+                    <div class="mb-16">
+                        <p>You can resend OTP again in <span class="text-red-700">{{formattedTime}}</span> seconds</p>
+                    </div>
                 </div>
 
 
                 <div class="flex flex-row justify-end">  
                     <button type="submit" v-if="displaySection==='firstPart'"
-                    :disabled="signUpFormData.email===''||signUpFormData.password===''||signUpFormData.confirmPassword===''"
+                    :disabled="signUpFormData.email===''||signUpFormData.password===''||signUpFormData.confirmPassword===''
+                    ||passwordError||emailError||confirmPasswordError||phoneNoError||!signUpFormData.termsAndCond"
                     class="border bg-blue-600 text-white px-12 py-2 block rounded-md
                     hover:bg-blue-700 hover:shadow-sm
                     disabled:bg-blue-400
                     ">Next</button>
 
                     <button type="button" 
-                    :disabled="passwordError||emailError||confirmPasswordError||phoneNoError||signUpFormData.termsAndCond===false" 
+                    :disabled="otp.length!==6" 
                     v-if="displaySection==='secondPart'"
                     @click="handleSignupVerification"
                     class="border bg-blue-600 text-white px-12 py-2 block rounded-md

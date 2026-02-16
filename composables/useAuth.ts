@@ -56,7 +56,7 @@ export function useAuth(){
         }
     }
 
-    async function signup(signUpFormData: signUpData){
+    async function signup(signUpFormData: signUpData): Promise<boolean>{
         loading.value = true
         error.value = null
         try{
@@ -68,17 +68,20 @@ export function useAuth(){
             if(!response.success && typeof(response.message)=='string'){
                 error.value = response.message
                 toast.error({title: 'FAILED', message:error.value});
-                return
+                return false
             }
 
             if(response.success && typeof(response.message)!=='string'){
                 toast.success({title: 'SUCCESS', message:'OTP sent Successfully'});
+                return true
             }else{
                 toast.error({title: 'Error', message:response.message as string});
+                return false
             }   
         }
         catch(err: any){
             toast.error({title: 'Error', message:err.data.message as string});
+            return false
         }finally{
             loading.value=false;
         }

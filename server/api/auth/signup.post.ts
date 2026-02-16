@@ -14,7 +14,6 @@ const OTP_AGE = Number(process.env.OTP_AGE);
 
 
 export default defineEventHandler(async(event)=>{
-    const {sendMail} = useNodeMailer();
     let body = await readBody(event);
     
     const validated = signupSchema.safeParse(body);
@@ -110,11 +109,14 @@ export default defineEventHandler(async(event)=>{
             otp,
             expiresAt
         }).returning({
-            id: usersTable.id,
-            email: usersTable.email,
-            name: usersTable.name,
-            role: usersTable.role
+            id: signupTable.id,
+            email: signupTable.email,
+            name: signupTable.name,
+            role: signupTable.role,
+            otp: signupTable.otp
         });
+
+        mailService(user[0].email, user[0].otp);
 
         setResponseStatus(event, 200);
         return{
