@@ -5,7 +5,7 @@
     import { useCartStore } from '@/stores/cart';
     import { useToast } from '#imports';
 
-    const {receivingOrders} = useReceivingOrders()
+    const {receivingOrders, fetchReceivingOrders} = useReceivingOrders()
     const toast = useToast();
     const loading = useLoadingScreen()
 
@@ -76,6 +76,10 @@
     const filteredMenuData = computed(()=>{    
             if(activeType.value==='All') return menuData.value.filter(item=>item.name.toLowerCase().includes(searchBarInput.value.toLowerCase()));
             return menuData.value.filter(item=> item.category===activeType.value && item.name.toLowerCase().includes(searchBarInput.value.toLowerCase()));
+    })
+
+    onMounted(()=>{
+        fetchReceivingOrders();
     })
 
     definePageMeta({

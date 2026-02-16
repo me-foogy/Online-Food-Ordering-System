@@ -123,6 +123,12 @@ importers:
       drizzle-kit:
         specifier: ^0.31.8
         version: 0.31.8
+      nodemailer:
+        specifier: ^8.0.1
+        version: 8.0.1
+      nuxt-nodemailer:
+        specifier: ^1.1.4
+        version: 1.1.4(magicast@0.5.1)(nodemailer@8.0.1)
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
@@ -1737,6 +1743,9 @@ packages:
 
   '@types/node@25.0.9':
     resolution: {integrity: sha512-/rpCXHlCWeqClNBwUhDcusJxXYDjZTyE8v5oTO7WbL8eij2nKhUeU89/6xgjU7N4/Vh3He0BtyhJdQbDyhiXAw==}
+
+  '@types/nodemailer@7.0.10':
+    resolution: {integrity: sha512-tP+9WggTFN22Zxh0XFyst7239H0qwiRCogsk7v9aQS79sYAJY+WEbTHbNYcxUMaalHKmsNpxmoTe35hBEMMd6g==}
 
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
@@ -3751,6 +3760,10 @@ packages:
   node-releases@2.0.27:
     resolution: {integrity: sha512-nmh3lCkYZ3grZvqcCH+fjmQ7X+H0OeZgP40OierEaAptX4XofMh5kwNbWh7lBduUzCcV/8kZ+NDLCwm2iorIlA==}
 
+  nodemailer@8.0.1:
+    resolution: {integrity: sha512-5kcldIXmaEjZcHR6F28IKGSgpmZHaF1IXLWFTG+Xh3S+Cce4MiakLtWY+PlBU69fLbRa8HlaGIrC/QolUpHkhg==}
+    engines: {node: '>=6.0.0'}
+
   nopt@8.1.0:
     resolution: {integrity: sha512-ieGu42u/Qsa4TFktmaKEwM6MQH0pOWnaB3htzh0JRtx84+Mebc0cbZYN5bC+6WTZ4+77xrL9Pn5m7CV6VIkV7A==}
     engines: {node: ^18.17.0 || >=20.5.0}
@@ -3773,6 +3786,11 @@ packages:
 
   nuxt-charts@2.0.0:
     resolution: {integrity: sha512-KoyJ36bYbyEDI/vx++CDMfCrsh/xcKCblw8zE0N6l3M/rSECARMpNUaOs9QS8xC+LgPACkEa8LEbBGv1i+NfsA==}
+
+  nuxt-nodemailer@1.1.4:
+    resolution: {integrity: sha512-nIH9dfQ/Z58QtwspetoHJI+XGNraVBW7setEu0f8EJDTLLh2WRMIZgamVRmrF9d10/POT+fLDmQ2N1QEmUwWuw==}
+    peerDependencies:
+      nodemailer: ^7.0.6
 
   nuxt-toast@1.4.0:
     resolution: {integrity: sha512-LGqzlRlLj4ildwAPL8w0MEQWN++DNLYhYPLT+ONkanofTI0yY/5HcUa4x+Y0vozII/Z1e51O3v1hDyCzEWFcHQ==}
@@ -6826,6 +6844,10 @@ snapshots:
     dependencies:
       undici-types: 7.16.0
 
+  '@types/nodemailer@7.0.10':
+    dependencies:
+      '@types/node': 25.0.9
+
   '@types/parse-json@4.0.2': {}
 
   '@types/parse-path@7.1.0':
@@ -9103,6 +9125,8 @@ snapshots:
 
   node-releases@2.0.27: {}
 
+  nodemailer@8.0.1: {}
+
   nopt@8.1.0:
     dependencies:
       abbrev: 3.0.1
@@ -9130,6 +9154,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - vue
+
+  nuxt-nodemailer@1.1.4(magicast@0.5.1)(nodemailer@8.0.1):
+    dependencies:
+      '@nuxt/kit': 3.20.2(magicast@0.5.1)
+      '@types/nodemailer': 7.0.10
+      nodemailer: 8.0.1
+    transitivePeerDependencies:
+      - magicast
 
   nuxt-toast@1.4.0(izitoast@1.4.0)(magicast@0.5.1):
     dependencies:

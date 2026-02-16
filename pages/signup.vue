@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import { useToast } from '#imports';
     const toast=useToast();
-    const {signup} = useAuth();
+    const {signup, verifySignup} = useAuth();
 
     const signUpFormData=ref<signUpData>({
         email: '',
@@ -13,11 +13,7 @@
         termsAndCond: false
     })
 
-    const handleSignUpSubmit = ()=>{
-        //api call for signup
-        signup(signUpFormData.value);
-    }
-
+    const otp=ref<string>('')
     const passwordError = ref<boolean>(false);
     const confirmPasswordError = ref<boolean>(false);
     const emailError= ref<boolean>(false);
@@ -48,10 +44,21 @@
         }
     })
 
+    const handleSignup = ()=>{
+        //api call for signup
+        signup(signUpFormData.value);
+        displaySection.value='secondPart'
+    }
+
+    const handleSignupVerification = () =>{
+        //api call to verify otp
+        verifySignup(signUpFormData.value, otp.value);
+    }
+
 </script>
 
 <template>
-    <div class="w-screen h-screen bg-gray-500 flex flex-row">
+    <div class="w-[100dvw] h-[100dvh] bg-gray-500 flex flex-row">
         <div class="w-[60%] h-full hidden 
                     bg-[url(/images/loginBG.jpg)] bg-cover bg-center bg-no-repeat
                     lg:block">
@@ -74,7 +81,7 @@
             </div>
 
             <!--Input Form-->
-            <form class="pt-2" @submit.prevent="handleSignUpSubmit">
+            <form class="pt-2 max-h-[60%] overflow-y-auto" @submit.prevent="handleSignup">
 
                 <div v-if="displaySection==='firstPart'">
                     <!--Email-->
@@ -102,7 +109,7 @@
                         </P>
                     </div>
                     <!--Verify Password-->
-                    <div class="mb-4">
+                    <div class="mb-1">
                         <label for="confirmPassword" class="text-gray-500">Confirm Password</label>
                             <input type="text" id="confirmPassword" v-model="signUpFormData.confirmPassword" required
                                 class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-1
@@ -111,11 +118,9 @@
                             />
                         <P class="text-red-500" :class="{ 'invisible': !confirmPasswordError}">Passwords Must Match</P>
                     </div>
-                </div>
 
-                <div v-if="displaySection==='secondPart'">
                     <!--Name-->
-                    <div class="mb-2">
+                    <div class="mb-6">
                         <label for="fullName" class="text-gray-500">Full Name</label>
                         <input type="mail" id="fullName" placeholder="Enter Full Name" v-model="signUpFormData.name" required
                             class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
@@ -124,7 +129,7 @@
                         />
                     </div>
                     <!--address-->
-                    <div class="mb-2">
+                    <div class="mb-6">
                         <label for="address" class="text-gray-500">Address</label>
                             <input type="text" id="address" placeholder="Enter Full Address" v-model="signUpFormData.address" required
                                 class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
@@ -148,27 +153,40 @@
                         <input type="checkbox" class="w-4 h-4" v-model="signUpFormData.termsAndCond">
                         <span class="ml-2">Agree To Our Terms and Conditions</span>
                     </div>
+
+                </div>
+
+                <div v-if="displaySection==='secondPart'">
+                    <p class="text-red-700 mb-2 text-md">An OTP has been sent to the Signup Email. The OTP is valid for 30 minutes</p>
+                    <p class="text-gray-500 mb-12 text-sm">Remember to Check the email spam</p>
+                    <label class="text-gray-500">Enter 6 Digit OTP Code</label>
+                    <input
+                        type="text"
+                        maxlength="6"
+                        v-model="otp"
+                        inputmode="numeric"
+                        class="w-full px-4 py-2 text-center tracking-widest text-lg
+                            rounded-md border border-gray-300 bg-white my-2
+                            focus:outline-none focus:border-blue-500 mb-28 mt-8"
+                    />
                 </div>
 
 
-                <div class="flex flex-row justify-between">
-                    <button type="button" :disabled="displaySection==='firstPart'" @click="()=>displaySection='firstPart'"
-                    class="border bg-blue-600 text-white px-12 py-2 block rounded-md
-                    hover:bg-blue-700 hover:shadow-sm
-                    disabled:bg-blue-400
-                    ">Previous</button>
-                    
-                    <button type="button" v-if="displaySection==='firstPart'" @click="()=>displaySection='secondPart'"
+                <div class="flex flex-row justify-end">  
+                    <button type="submit" v-if="displaySection==='firstPart'"
                     :disabled="signUpFormData.email===''||signUpFormData.password===''||signUpFormData.confirmPassword===''"
                     class="border bg-blue-600 text-white px-12 py-2 block rounded-md
                     hover:bg-blue-700 hover:shadow-sm
                     disabled:bg-blue-400
                     ">Next</button>
 
-                    <button type="submit" :disabled="passwordError||emailError||confirmPasswordError||phoneNoError||!signUpFormData.termsAndCond" v-if="displaySection==='secondPart'"
+                    <button type="button" 
+                    :disabled="passwordError||emailError||confirmPasswordError||phoneNoError||signUpFormData.termsAndCond===false" 
+                    v-if="displaySection==='secondPart'"
+                    @click="handleSignupVerification"
                     class="border bg-blue-600 text-white px-12 py-2 block rounded-md
                     hover:bg-blue-700 hover:shadow-sm
-                    disabled:bg-blue-400
+                    disabled:bg-blue-400 disabled:cursor-not-allowed
                     ">Sign Up</button>
                 </div>
 

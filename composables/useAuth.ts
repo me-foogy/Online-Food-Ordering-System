@@ -39,7 +39,7 @@ export function useAuth(){
                 authUser.value = response.message;
                 const {role} = authUser.value;
                 
-                // Wait for next tick(Wait for cookie to be initialized )
+                // Wait for next tick(Wait for cookie to be initialized 
                 await nextTick();
                 
                 navigateTo(role==='user'?'/user/home':'/admin/orders');
@@ -72,7 +72,32 @@ export function useAuth(){
             }
 
             if(response.success && typeof(response.message)!=='string'){
-                toast.success({title: 'SUCCESS', message:`Sign In successful`});
+                toast.success({title: 'SUCCESS', message:'OTP sent Successfully'});
+            }else{
+                toast.error({title: 'Error', message:response.message as string});
+            }   
+        }
+        catch(err: any){
+            toast.error({title: 'Error', message:err.data.message as string});
+        }finally{
+            loading.value=false;
+        }
+    }
+
+    async function verifySignup(signUpFormData: signUpData, otp: string){
+        loading.value = true
+        error.value=null
+        try{
+            const response = await $fetch<defaultApiType<signUpResponse>>('/api/auth/verify_signup', {
+                method: 'POST',
+                body: {
+                    email: signUpFormData.email,
+                    otp
+                }
+            });
+
+             if(response.success && typeof(response.message)!=='string'){
+                toast.success({title: 'SUCCESS', message:'Sign In Successful'});
                 login({
                     email: signUpFormData.email,
                     password: signUpFormData.password,
@@ -81,8 +106,7 @@ export function useAuth(){
             }else{
                 toast.error({title: 'Error', message:response.message as string});
             }   
-        }
-        catch(err: any){
+        }catch(err: any){
             toast.error({title: 'Error', message:err.data.message as string});
         }finally{
             loading.value=false;
@@ -129,6 +153,7 @@ export function useAuth(){
         loading,
         login,
         signup,
+        verifySignup,
         logout
     }
 }

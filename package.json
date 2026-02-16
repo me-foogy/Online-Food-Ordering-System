@@ -51,6 +51,8 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/pg": "^8.16.0",
     "drizzle-kit": "^0.31.8",
+    "nodemailer": "^8.0.1",
+    "nuxt-nodemailer": "^1.1.4",
     "tsx": "^4.21.0"
   }
 }
