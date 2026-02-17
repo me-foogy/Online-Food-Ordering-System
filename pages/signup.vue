@@ -17,7 +17,7 @@
     const confirmPasswordError = ref<boolean>(false);
     const emailError= ref<boolean>(false);
     const phoneNoError = ref<boolean>(false);
-    const displaySection = ref<'firstPart'|'secondPart'>('secondPart');
+    const displaySection = ref<'firstPart'|'secondPart'>('firstPart');
     const totalSeconds = ref<number>(5*60);
     let timer: NodeJS.Timeout|null = null;
     

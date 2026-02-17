@@ -9,7 +9,8 @@ const issuer = 'food-app';
 const publicRoutes = [
     '/api/auth/login',
     '/api/auth/signup',
-    '/api/auth/verify_signup'
+    '/api/auth/verify_signup',
+    '/api/auth/reset'
 ]
 
 export default defineEventHandler ((event)=>{

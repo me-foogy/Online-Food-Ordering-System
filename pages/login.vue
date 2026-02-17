@@ -102,9 +102,8 @@
                         <input type="checkbox" class="w-4 h-4" v-model="formData.rememberMe">
                         <span class="ml-2">Remember Me</span>
                     </div>
-                    <button class="text-gray-500 hover:text-blue-600" type="button">Forgot Password?</button>
+                    <NuxtLink to="/reset" class="text-gray-500 hover:text-blue-600">Forgot Password?</NuxtLink>
                 </div>
-
 
                 <button type="submit" :disabled="passwordError||emailError" 
                 class="border bg-blue-600 text-white px-12 py-2 block rounded-md
@@ -116,9 +115,7 @@
             <!--Sign Up info-->
             <div class="mt-10 space-x-2 w-full flex flex-row justify-center">
                 <span>Don't have an account?</span>
-                <button class="text-blue-600">
-                    <NuxtLink to="/signup">Sign Up</NuxtLink>
-                </button>
+                <NuxtLink to="/signup" class="text-blue-600">Sign Up</NuxtLink>
             </div>
         </div>
     </div>
