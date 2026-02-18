@@ -102,7 +102,7 @@
                         <input type="checkbox" class="w-4 h-4" v-model="formData.rememberMe">
                         <span class="ml-2">Remember Me</span>
                     </div>
-                    <NuxtLink to="/reset" class="text-gray-500 hover:text-blue-600">Forgot Password?</NuxtLink>
+                    <NuxtLink to="/reset-password" class="text-gray-500 hover:text-blue-600">Forgot Password?</NuxtLink>
                 </div>
 
                 <button type="submit" :disabled="passwordError||emailError" 

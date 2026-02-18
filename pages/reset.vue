@@ -1,3 +1,0 @@
-<template>
-    RESET PAGE
-</template>
