@@ -75,7 +75,7 @@
                                 focus:outline-none focus:border-blue-500
                                 transition"
                     />
-                    <P class="text-red-500" :class="{ 'invisible': !emailError }">Email must be in the in correct format</P>
+                    <p class="text-red-500" :class="{ 'invisible': !emailError }">Email must be in the in correct format</p>
                 </div>
 
                 <!--password-->
@@ -94,7 +94,7 @@
                         <span class="material-symbols-outlined my-auto" v-else>visibility_off</span>
                     </button>
                 </div>
-                <P class="text-red-500" :class="{ 'invisible': !passwordError }">Password must include a capital letter and a special character</P>
+                <p class="text-red-500" :class="{ 'invisible': !passwordError }">Password must include a capital letter and a special character</p>
 
                 <!--remember me and password-->
                 <div class="flex flex-row justify-between my-4">

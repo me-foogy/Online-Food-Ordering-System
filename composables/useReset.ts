@@ -1,4 +1,4 @@
-import type { resetPasswordType } from "~/pages/reset.vue";
+import type { resetPasswordType } from "~/pages/reset-password.vue";
 
 export function useReset(){
 

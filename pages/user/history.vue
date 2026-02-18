@@ -59,7 +59,7 @@
             <ProgressCard v-if="ordersNotCompleted.length!==0" v-for="order in ordersNotCompleted" :key="order.orderId" :order="order"/>
             <div v-else class="flex flex-col w-full items-center space-y-4 p-2 text-center">
                 <p class="text-md text-red-600">Order Something To View Progress</p>
-                <P class="text-xs text-red-600">If you have already ordered and do not see order progress then your order is on the way</P>
+                <p class="text-xs text-red-600">If you have already ordered and do not see order progress then your order is on the way</p>
             </div>
         </div>
         <h1 class="text-3xl font-bold mb-6 mt-8 text-blue-600">Order History</h1>
@@ -67,7 +67,7 @@
             <HistoryCard v-if="orderData.length!==0" v-for="order in orderData" :key="order.orderId" :order="order"/>
             <div v-else class="flex flex-col border-2 rounded-md p-6 w-full items-center space-y-4 text-center">
                 <p class="text-md text-red-600">Nothing has been ordered yet</p>
-                <P class="text-xs text-red-600">Details of previously ordered items appear here</P>
+                <p class="text-xs text-red-600">Details of previously ordered items appear here</p>
             </div>
         </div>
 </template>

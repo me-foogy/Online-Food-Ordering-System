@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import { useToast } from '#imports';
+import LocationSelector from '~/components/user/LocationSelector.vue';
     const {signup, verifySignup} = useAuth();
 
     const signUpFormData=ref<signUpData>({
@@ -20,6 +21,7 @@
     const displaySection = ref<'firstPart'|'secondPart'>('firstPart');
     const totalSeconds = ref<number>(5*60);
     let timer: NodeJS.Timeout|null = null;
+    const displayMap = ref<boolean>(false);
     
     watch(()=>signUpFormData.value.password, (value)=>{
         const regexExp = /^(?=.*[A-Z])(?=.*[\W_]).+$/;
@@ -44,6 +46,16 @@
             phoneNoError.value=false
         }
     })
+
+    //handlers for location selector
+    const handleLocationConfirm = (location: [number, number]) => {
+        signUpFormData.value.address = `${location[0].toFixed(6)}, ${location[1].toFixed(6)}`
+        displayMap.value = false
+    }
+
+    const handleMapClose = () => {
+        displayMap.value = false
+    }
 
     const formattedTime = computed(()=>{
         const minutes = Math.floor(totalSeconds.value/60)
@@ -113,14 +125,14 @@
             </div>
 
             <!--Input Form-->
-            <form class="pt-2 max-h-[60%] overflow-y-auto" @submit.prevent="handleSignup">
+            <form class="pt-2 px-4 max-h-[60%] overflow-y-auto" @submit.prevent="handleSignup">
 
                 <div v-if="displaySection==='firstPart'">
                     <!--Email-->
                     <div class="mb-1">
                         <label for="username" class="text-gray-500">Email Address</label>
                         <input type="mail" placeholder="example@gmail.com" id="username" v-model="signUpFormData.email" required
-                            class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-1
+                            class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
                                     focus:outline-none focus:border-blue-500
                                     transition"
                         />
@@ -132,23 +144,23 @@
                     <div class="mb-1">
                         <label for="password" class="text-gray-500">Password</label>
                             <input type="text" id="password" v-model="signUpFormData.password" required
-                                class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-1
+                                class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
                                         focus:outline-none focus:border-blue-500
                                         transition"
                             />
-                        <P class="text-red-500" :class="{ 'invisible': !passwordError }">
+                        <p class="text-red-500" :class="{ 'invisible': !passwordError }">
                             Password must include a capital letter and a special character
-                        </P>
+                        </p>
                     </div>
                     <!--Verify Password-->
                     <div class="mb-1">
                         <label for="confirmPassword" class="text-gray-500">Confirm Password</label>
                             <input type="text" id="confirmPassword" v-model="signUpFormData.confirmPassword" required
-                                class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-1
+                                class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
                                         focus:outline-none focus:border-blue-500
                                         transition"
                             />
-                        <P class="text-red-500" :class="{ 'invisible': !confirmPasswordError}">Passwords Must Match</P>
+                        <p class="text-red-500" :class="{ 'invisible': !confirmPasswordError}">Passwords Must Match</p>
                     </div>
 
                     <!--Name-->
@@ -160,15 +172,24 @@
                                     transition"
                         />
                     </div>
+
                     <!--address-->
                     <div class="mb-6">
-                        <label for="address" class="text-gray-500">Address</label>
-                            <input type="text" id="address" placeholder="Enter Full Address" v-model="signUpFormData.address" required
-                                class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
-                                        focus:outline-none focus:border-blue-500
-                                        transition"
-                            />
+                        <label for="address" class="text-gray-500">Location</label>
+                        <input 
+                            type="text" 
+                            id="address" 
+                            v-model="signUpFormData.address"
+                            placeholder="Click to select location on map"
+                            required
+                            readonly
+                            @click="displayMap=true"
+                            class="w-full px-4 py-2 pr-10 rounded-md border-gray-300 bg-white text-gray-800 border my-2
+                                    focus:outline-none focus:border-blue-500 cursor-pointer
+                                    transition"
+                        />
                     </div>
+
                     <!--Phone No-->
                     <div class="mb-6">
                         <label for="confirmPassword" class="text-gray-500">Phone Number</label>
@@ -177,7 +198,7 @@
                                         focus:outline-none focus:border-blue-500
                                         transition"
                             />
-                            <P class="text-red-500" v-show="phoneNoError">Number must be of ten digits</P>
+                            <p class="text-red-500" v-show="phoneNoError">Number must be of ten digits</p>
                     </div>
                     
                     <!--T&C-->
@@ -189,14 +210,20 @@
                 </div>
 
                 <div v-if="displaySection==='secondPart'">
-                    <p class="text-red-700 mb-2 text-md">An OTP has been sent to the Signup Email. The OTP is valid for 30 minutes</p>
-                    <p class="text-gray-500 mb-12 text-sm">Remember to Check the email spam</p>
+                
+                    <!-- OTP notice -->
+                    <div class="bg-red-50 border border-red-200 rounded-md px-4 py-3 space-y-1 mb-8">
+                        <p class="text-red-700 text-sm font-medium">An OTP has been sent to your email. It is valid for 30 minutes.</p>
+                        <p class="text-gray-500 text-xs">Remember to check your spam folder.</p>
+                    </div>
+
                     <label class="text-gray-500">Enter 6 Digit OTP Code</label>
                     <div class="flex flex-row justify-between items-center align-middle mb-4 mt-4 gap-4">
                         <input
                             type="text"
                             maxlength="6"
                             v-model="otp"
+                            placeholder=". . . . . ."
                             inputmode="numeric"
                             class="w-full px-4 py-2 text-center tracking-widest text-lg
                                 rounded-md border border-gray-300 bg-white my-2
@@ -248,4 +275,11 @@
             </div>
         </div>
     </div>
+
+    <LocationSelector
+        :is-open="displayMap"
+        @close="handleMapClose"
+        @confirm="handleLocationConfirm"
+    />
+
 </template>

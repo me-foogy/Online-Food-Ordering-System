@@ -3,7 +3,13 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   tailwindcss: { exposeConfig: true },
-  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', 'nuxt-toast', 'nuxt-nodemailer'],
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@pinia/nuxt',
+    'nuxt-toast',
+    'nuxt-nodemailer',
+    '@nuxtjs/leaflet'
+  ],
    build: {
     transpile: ['@vuepic/vue-datepicker']
   },
@@ -26,7 +32,10 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       baseUrl: process.env.NUXT_PUBLIC_BASE_URL,
-      esewaUrl:process.env.NUXT_PUBLIC_ESEWA_URL
+      esewaUrl:process.env.NUXT_PUBLIC_ESEWA_URL,
+      storeLat:process.env.NUXT_PUBLIC_STORE_LAT,
+      storeLng:process.env.NUXT_PUBLIC_STORE_LNG,
+      deliveryRadius: process.env.NUXT_PUBLIC_DELIVERY_RADIUS
     },
     nodemailer: {
       from: process.env.SENDGRID_FROM,
