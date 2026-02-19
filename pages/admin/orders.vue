@@ -6,6 +6,7 @@ import EachOrder from '@/components/admin/EachOrder.vue'
 import { useToast } from '#imports';
 import { ref, computed } from 'vue';
 import ReceivingOrdersDialog from '~/components/admin/ReceivingOrdersDialog.vue';
+import ViewLocation from '~/components/admin/ViewLocation.vue';
 const toast = useToast();
 const loading = useLoadingScreen();
 const {receivingOrders, fetchReceivingOrders} = useReceivingOrders();
@@ -36,6 +37,8 @@ const {receivingOrders, fetchReceivingOrders} = useReceivingOrders();
     const totalPages = ref<number>(1);
     const notStartedCount=ref<number>(0);
     const inProgressCount=ref<number>(0);
+    const orderLocation = ref<[number, number]|null>(null);
+    const displayMap = ref<boolean>(false);
 
     const orderData = ref<orderDataType[]>([]);
     const {data, error} = await useFetch<apiSuccessResponse|apiFailureResponse>(`/api/admin/orders/fetch`,{
@@ -85,6 +88,15 @@ const {receivingOrders, fetchReceivingOrders} = useReceivingOrders();
     const handleClose = () =>{
         openConfirmDialog.value=false;
         fetchReceivingOrders();
+    }
+    
+    const handleMapClose = () => {
+        displayMap.value = false
+    }
+
+    const handleDisplayEmit = (location: [number, number]) => {
+        orderLocation.value=location;
+        displayMap.value=true;
     }
 
     definePageMeta({
@@ -150,9 +162,21 @@ const {receivingOrders, fetchReceivingOrders} = useReceivingOrders();
         </div>
 
         <div class="flex-1 w-full border border-gray-300 rounded-xl p-2 overflow-y-auto sm:p-3 space-y-3 flex flex-col">
-            <EachOrder v-if="orderData.length!==0" v-for="(order) in orderData" :key="order.orderId" :order="order"/>
+            <EachOrder 
+                v-if="orderData.length!==0" 
+                v-for="(order) in orderData" 
+                :key="order.orderId" 
+                :order="order"
+                @display-map="handleDisplayEmit"
+            />
             <span v-else class="text-red-500 flex justify-center text-1xl self-center m-auto">No Orders At The Moment</span>
         </div>
     </div>
+
+    <ViewLocation
+        :is-open="displayMap"
+        :current-location="orderLocation"
+        @close="handleMapClose"
+    />
 
 </template>

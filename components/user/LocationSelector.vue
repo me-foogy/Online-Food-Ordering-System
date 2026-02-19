@@ -90,7 +90,7 @@
                 />
 
                 <LCircle
-                    :lat-lng="[27.689108, 85.337386]"
+                    :lat-lng="[storeLat, storeLng]"
                     :radius="deliveryRadius"
                     :color="'green'"
                 />

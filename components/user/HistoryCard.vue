@@ -7,7 +7,7 @@
   order: orderDataType
   }>()
 
-  const isOpen = ref(false)
+  const isOpen = ref(false);
 
   function toggle() {
   isOpen.value = !isOpen.value
@@ -36,7 +36,7 @@
             </span>
           </div>
           <span class="text-gray-600 text-sm">
-            {{ order.totalItems }} items • Rs. {{order.totalAmount}} • {{ order.location }}
+            {{ order.totalItems }} items • Rs. {{order.totalAmount}}
           </span>
         </div>
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { useToast } from '#imports';
-import LocationSelector from '~/components/user/LocationSelector.vue';
+    import LocationSelector from '~/components/user/LocationSelector.vue';
     const {signup, verifySignup} = useAuth();
 
     const signUpFormData=ref<signUpData>({
@@ -128,6 +128,12 @@ import LocationSelector from '~/components/user/LocationSelector.vue';
             <form class="pt-2 px-4 max-h-[60%] overflow-y-auto" @submit.prevent="handleSignup">
 
                 <div v-if="displaySection==='firstPart'">
+                    
+                    <!-- OTP notice -->
+                    <div class="bg-red-50 border border-red-200 rounded-md px-4 py-3 space-y-1 mb-6">
+                        <p class="text-red-700 text-sm font-medium">All fields are compulsary.</p>
+                    </div>
+
                     <!--Email-->
                     <div class="mb-1">
                         <label for="username" class="text-gray-500">Email Address</label>
@@ -251,7 +257,7 @@ import LocationSelector from '~/components/user/LocationSelector.vue';
                     ||passwordError||emailError||confirmPasswordError||phoneNoError||!signUpFormData.termsAndCond"
                     class="border bg-blue-600 text-white px-12 py-2 block rounded-md
                     hover:bg-blue-700 hover:shadow-sm
-                    disabled:bg-blue-400
+                    disabled:bg-blue-400 disabled:cursor-not-allowed
                     ">Next</button>
 
                     <button type="button" 

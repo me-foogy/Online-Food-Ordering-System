@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { ref } from 'vue'
-import LocationSelector from '~/components/user/LocationSelector.vue';
+    import LocationSelector from '~/components/user/LocationSelector.vue';
     const toast = useToast();
     const loading = useLoadingScreen();
     const {parseAddress} = useLocation();
