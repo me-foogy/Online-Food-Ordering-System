@@ -18,8 +18,11 @@ export default defineEventHandler(async(event)=>{
     
     const validated = signupSchema.safeParse(body);
     if(!validated.success){
-        setResponseStatus(event, 400);
-        return {success: false, message:validated.error.message}
+        throw createError({
+            status: 400,
+            statusMessage: 'Invalid Body',
+            message: validated.error.message
+        })
     }
 
     //generate OTP using crypto
@@ -39,11 +42,11 @@ export default defineEventHandler(async(event)=>{
     //duplicate email check
     const existing = await db.select({id: usersTable.id}).from(usersTable).where(eq(usersTable.email, signUpData.email));
     if(existing.length>0){
-        setResponseStatus(event, 409);
-        return{
-            success: false,
+        throw createError({
+            status: 409,
+            statusMessage: 'Email Conflict',
             message: 'An account with the email already exists'
-        }
+        })
     }
 
     //check if otp already exists from previous attempt
@@ -59,10 +62,8 @@ export default defineEventHandler(async(event)=>{
     }).from(signupTable).where(eq(signupTable.email, signUpData.email));
 
     if(existingUser.length!==0){
-        console.log('User already exists')
         //The user already exists so resend the otp back
         if(new Date(existingUser[0].expiresAt).getTime()>Date.now()){
-            console.log('OTP is OK and REMAINS SAME')
             mailService(existingUser[0].email, existingUser[0].otp);
             setResponseStatus(event, 200);
             return{
@@ -88,7 +89,6 @@ export default defineEventHandler(async(event)=>{
                 otp: signupTable.otp
             });
 
-            console.log('UPDATE NEW OTP')
             mailService(updateUser[0].email, updateUser[0].otp);
             setResponseStatus(event, 200);
             return{

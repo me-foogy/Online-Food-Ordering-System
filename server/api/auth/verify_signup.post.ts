@@ -36,7 +36,7 @@ export default defineEventHandler(async(event)=>{
     }
 
     if(new Date(user[0].expiresAt).getTime()<Date.now()){
-                throw createError({
+        throw createError({
             status: 410,
             message: 'The OTP has already expired'
         })

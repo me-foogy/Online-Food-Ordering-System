@@ -36,7 +36,7 @@ export const menuTable = pgTable('menu', {
 
 export const ordersTable = pgTable('orders',{
   orderId: integer('order_id').primaryKey().generatedByDefaultAsIdentity().notNull(),
-  userId: integer('user_id').references(()=>usersTable.id).notNull(),
+  userId: integer('user_id').references(()=>usersTable.id, {onDelete: 'set null'}),
   customerName:varchar('customer_name',{length: 255}).notNull(),
   createdAt: timestamp('created_at', {withTimezone: true}).defaultNow().notNull(),
   address: varchar({length: 255}).notNull(),

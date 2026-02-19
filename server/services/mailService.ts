@@ -1,6 +1,5 @@
 export const mailService = async (to: string, otp: string) =>{
     const { sendMail } = useNodeMailer();
-    console.log(`Sending OTP ${otp} to ${to}`);
     sendMail({
         subject: 'One Time Password (OTP) for login',
         text: `The Otp for the signUp is ${otp}. Do Not Share This OTP with anyone else`,

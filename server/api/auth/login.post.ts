@@ -32,8 +32,10 @@ export default defineEventHandler(async(event): Promise<loginSuccess | loginFail
     
     const validated = loginSchema.safeParse(body);
     if(!validated.success){
-        setResponseStatus(event, 400);
-        return {success: false, message: 'Form validation error'}
+        throw createError({
+            status: 400,
+            message: 'Input Validation Failed'
+        })
     }  
 
     const {email, password, rememberMe} = validated.data;
@@ -42,15 +44,19 @@ export default defineEventHandler(async(event): Promise<loginSuccess | loginFail
     const [user]= await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
 
     if (!user) {
-        setResponseStatus(event, 400);
-        return { success: false, message: "User not found" };
+        throw createError({
+            status: 404,
+            message: 'User Not Found'
+        })
     }
 
     const isValid = await bcrypt.compare(password, user.password)
 
     if (!isValid) {
-        setResponseStatus(event, 401);
-        return {success: false, message: "Invalid Credentials"};
+        throw createError({
+            status: 401,
+            message: 'Invalid Credentials'
+        })
     }
     
     //user is ok
@@ -78,7 +84,6 @@ export default defineEventHandler(async(event): Promise<loginSuccess | loginFail
     })
 
     setResponseStatus(event, 200);
-
     return {
         success: true,
         message: {

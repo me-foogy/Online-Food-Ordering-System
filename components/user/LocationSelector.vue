@@ -111,7 +111,7 @@
                         hover:bg-red-700 transition shadow-sm hover:shadow-md
                         disabled:opacity-50 disabled:cursor-not-allowed"
                         @click="handleConfirm"
-                        :disabled="!isSelectionValid"
+                        :disabled="!isSelectionValid || !selectedLocation"
                     >
                         <span class="material-symbols-outlined text-base">check_circle_outline</span>
                         Confirm
