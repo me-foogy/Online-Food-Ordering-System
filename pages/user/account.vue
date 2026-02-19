@@ -1,10 +1,13 @@
 <script setup lang="ts">
     import { ref } from 'vue'
+    import LocationSelector from '~/components/user/LocationSelector.vue';
     const toast = useToast();
     const loading = useLoadingScreen();
+    const {parseAddress} = useLocation();
 
     const cookieUser = useCookie<Omit<loginReturnMessageType, 'id'>|null>('auth_user');
     type User = Omit<loginReturnMessageType,'role'> & {password: string};
+    const displayMap = ref<boolean>(false);
 
     const user = ref<User>({
     name: cookieUser.value?.name ?? '',
@@ -13,6 +16,16 @@
     phoneNo: cookieUser.value?.phoneNo??'',
     address:  cookieUser.value?.address ?? ''
     })
+
+    //handlers for location selector
+    const handleLocationConfirm = (location: [number, number]) => {
+        user.value.address = `${location[0].toFixed(6)}, ${location[1].toFixed(6)}`
+        displayMap.value = false
+    }
+
+    const handleMapClose = () => {
+        displayMap.value = false
+    }
 
     //---------------------------API CALL FOR USER DETAILS CHANGE------------------//
 
@@ -119,7 +132,7 @@
                             type="email"
                             v-model="user.email"
                             :readonly="true"
-                            class="w-full border rounded-md px-3 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            class="w-full border rounded-md px-3 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-not-allowed"
                         />
                     </div>
                     
@@ -130,6 +143,7 @@
                             type="text"
                             v-model="user.name"
                             :readonly="uiState === 'noChange' || uiState === 'confirmation'"
+                            :class="uiState === 'editing' ? 'cursor-pointer' : 'cursor-not-allowed'"
                             class="w-full border rounded-md px-3 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
@@ -141,19 +155,27 @@
                             type="text"
                             v-model="user.phoneNo"
                             :readonly="uiState === 'noChange' || uiState === 'confirmation'"
+                            :class="uiState === 'editing' ? 'cursor-pointer' : 'cursor-not-allowed'"
                             class="w-full border rounded-md px-3 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
                     
                     <!-- Address -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                        <textarea
+                        <label for="address" class="text-gray-700">Location</label>
+                        <input 
+                            type="text" 
+                            id="address" 
                             v-model="user.address"
-                            :readonly="uiState === 'noChange' || uiState === 'confirmation'"
-                            rows="3"
-                            class="w-full border rounded-md px-3 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        ></textarea>
+                            placeholder="Click to select location on map"
+                            required
+                            readonly
+                            @click="uiState === 'editing' ? displayMap = true : null"
+                            :class="uiState === 'editing' ? 'cursor-pointer' : 'cursor-not-allowed'"
+                            class="w-full px-4 py-2 pr-10 rounded-md border-gray-300 bg-white text-gray-800 border my-2
+                                    focus:outline-none focus:border-blue-500
+                                    transition"
+                        />
                     </div>
                 </form>
             </div>
@@ -190,4 +212,11 @@
             </div>
         </div>
     </div>
+
+    <LocationSelector
+        :is-open="displayMap"
+        :current-location="parseAddress(user.address)"
+        @close="handleMapClose"
+        @confirm="handleLocationConfirm"
+    />
 </template>

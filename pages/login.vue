@@ -48,77 +48,99 @@
                     lg:block">
         </div>
 
-        <div class="w-[100%] h-full bg-gray-100 p-8 
-                    lg:w-[40%]">
+        <div class="w-full h-full bg-gray-100 p-4 sm:p-6 lg:p-8 lg:w-[40%]">
+
             <!--Top Logo in login-->
-            <div class="flex flex-row gap-2">
-                <span class="material-symbols-outlined text-6xl text-blue-600 flex-shrink-0">storefront</span>
-                <p class="text-lg font-semibold text-gray-800">
+            <div class="flex flex-row gap-2 items-center mb-4 sm:mb-6">
+                <span class="material-symbols-outlined text-3xl md:text-6xl text-blue-600 flex-shrink-0">storefront</span>
+                <p class="text-sm md:text-lg font-semibold text-gray-800">
                     THE <br> RESTAURANT
                 </p>
             </div>
 
             <!--Welcome Message-->
-            <div class="my-4 space-y-1">
-                <h1 class="font-bold text-4xl">Welcome Back</h1>
-                <p class="text-gray-500">Sign in with your email and password</p>
+            <div class="mb-4 sm:mb-6 space-y-1">
+                <h1 class="font-bold text-xl md:text-4xl">Welcome Back</h1>
+                <p class="text-gray-500 text-sm md:text-base">Sign in with your email and password</p>
             </div>
 
             <!--Input Form-->
-            <form class="pt-8" @submit.prevent="handleLoginSubmit">
+            <form class="space-y-3 sm:space-y-4" @submit.prevent="handleLoginSubmit">
 
                 <!--Email-->
-                <div class="mb-1">
-                    <label for="username" class="text-gray-500">Email Address</label>
-                    <input type="mail" placeholder="example@gmail.com" id="username" v-model="formData.email" required
-                        class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-1
-                                focus:outline-none focus:border-blue-500
-                                transition"
+                <div>
+                    <label for="username" class="text-gray-500 text-sm md:text-base">Email Address</label>
+                    <input 
+                        type="mail" 
+                        placeholder="example@gmail.com" 
+                        id="username" 
+                        v-model="formData.email" 
+                        required
+                        class="w-full px-3 py-2 sm:px-4 sm:py-2.5 rounded-md border-gray-300 bg-white text-gray-800 border mt-1
+                               focus:outline-none focus:border-blue-500 transition"
                     />
-                    <P class="text-red-500" :class="{ 'invisible': !emailError }">Email must be in the in correct format</P>
+                    <p class="text-red-500 text-xs sm:text-sm mt-1 h-5" :class="{ 'invisible': !emailError }">
+                        Email must be in the correct format
+                    </p>
                 </div>
 
                 <!--password-->
-                <label for="password" class="text-gray-500">Password</label>
-                <div class="flex flex-row space-x-2">
-                    <input :type="visibility?`text`:`password`" id="password" v-model="formData.password" required
-                        class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border
-                                focus:outline-none focus:border-blue-500 
-                                transition"
-                    />
-                    <button type="button" @click="()=>visibility=!visibility" 
-                        class="bg-white border border-gray-300 rounded-md px-2 flex items-center justify-center
-                                hover:border-blue-500" 
+                <div>
+                    <label for="password" class="text-gray-500 text-sm md:text-base">Password</label>
+                    <div class="flex flex-row gap-2 mt-1">
+                        <input 
+                            :type="visibility ? 'text' : 'password'" 
+                            id="password" 
+                            v-model="formData.password" 
+                            required
+                            class="w-full px-3 py-2 sm:px-4 sm:py-2.5 rounded-md border-gray-300 bg-white text-gray-800 border
+                                   focus:outline-none focus:border-blue-500 transition"
+                        />
+                        <button 
+                            type="button" 
+                            @click="visibility = !visibility" 
+                            class="bg-white border border-gray-300 rounded-md px-2 sm:px-3 flex items-center justify-center
+                                   hover:border-blue-500"
                         >
-                        <span class="material-symbols-outlined my-auto" v-if="visibility">visibility</span>
-                        <span class="material-symbols-outlined my-auto" v-else>visibility_off</span>
-                    </button>
-                </div>
-                <P class="text-red-500" :class="{ 'invisible': !passwordError }">Password must include a capital letter and a special character</P>
-
-                <!--remember me and password-->
-                <div class="flex flex-row justify-between my-4">
-                    <div class="flex flex-row space-x-2 items-center">
-                        <input type="checkbox" class="w-4 h-4" v-model="formData.rememberMe">
-                        <span class="ml-2">Remember Me</span>
+                            <span class="material-symbols-outlined text-xl sm:text-2xl" v-if="visibility">visibility</span>
+                            <span class="material-symbols-outlined text-xl sm:text-2xl" v-else>visibility_off</span>
+                        </button>
                     </div>
-                    <button class="text-gray-500 hover:text-blue-600" type="button">Forgot Password?</button>
+                    <p class="text-red-500 text-xs sm:text-sm mt-1 h-5" :class="{ 'invisible': !passwordError }">
+                        Password must include a capital letter and a special character
+                    </p>
                 </div>
 
+                <!--remember me and forgot password-->
+                <div class="flex flex-row justify-between items-center py-2">
+                    <div class="flex flex-row gap-2 items-center">
+                        <input type="checkbox" class="w-4 h-4" v-model="formData.rememberMe">
+                        <span class="text-xs sm:text-sm md:text-base">Remember Me</span>
+                    </div>
+                    <NuxtLink 
+                        to="/reset-password" 
+                        class="text-gray-500 hover:text-blue-600 text-xs sm:text-sm md:text-base"
+                    >
+                        Forgot Password?
+                    </NuxtLink>
+                </div>
 
-                <button type="submit" :disabled="passwordError||emailError" 
-                class="border bg-blue-600 text-white px-12 py-2 block rounded-md
-                hover:bg-blue-700 hover:shadow-sm
-                disabled:bg-blue-400
-                ">LogIn</button>
+                <button 
+                    type="submit" 
+                    :disabled="passwordError || emailError" 
+                    class="w-auto bg-blue-600 text-white px-8 py-2.5 sm:py-3 rounded-md
+                           hover:bg-blue-700 hover:shadow-sm transition
+                           disabled:bg-blue-400 disabled:cursor-not-allowed
+                           text-sm sm:text-base font-medium"
+                >
+                    Log In
+                </button>
             </form>
 
             <!--Sign Up info-->
-            <div class="mt-10 space-x-2 w-full flex flex-row justify-center">
+            <div class="mt-6 sm:mt-8 lg:mt-10 w-full flex flex-row justify-center gap-2 text-sm sm:text-base">
                 <span>Don't have an account?</span>
-                <button class="text-blue-600">
-                    <NuxtLink to="/signup">Sign Up</NuxtLink>
-                </button>
+                <NuxtLink to="/signup" class="text-blue-600 hover:text-blue-700 font-medium">Sign Up</NuxtLink>
             </div>
         </div>
     </div>

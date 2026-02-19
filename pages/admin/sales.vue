@@ -16,10 +16,6 @@
         const day = date.value.getDate().toString().padStart(2, '0')
         return `${year}-${month}-${day}`
     })
-    watch(displayDate, (newDate, oldDate) => {
-    console.log('Date changed from', oldDate, 'to', newDate);
-})
-
     //---------------------API CALL FOR CHART DETAILS--------------------//
 
     const {data, error, pending} = useFetch(()=>`/api/admin/sales?date=${displayDate.value}`, {
@@ -99,12 +95,14 @@
                     <span class="text-lg sm:text-xl lg:text-2xl font-bold shrink-0">Sales Overview </span>
                 </div>
                 <div class="flex-1 max-w-52 xl:hidden">
-                    <VueDatePicker v-model="date"
-                            :time-config="{ enableTimePicker: false }"
-                            :min-date="minDate"
-                            :max-date="new Date()"
-                            prevent-min-max-navigation
-                        />
+                    <ClientOnly>
+                        <VueDatePicker v-model="date"
+                                :time-config="{ enableTimePicker: false }"
+                                :min-date="minDate"
+                                :max-date="new Date()"
+                                prevent-min-max-navigation
+                            />
+                    </ClientOnly>
                 </div>
             </div>
 
@@ -145,13 +143,15 @@
             <h2 class="text-lg font-semibold mb-4 pl-4">Select Date</h2>
             <div class="flex justify-center">
                 <div class="w-max">
-                    <VueDatePicker v-model="date"
-                        :time-config="{ enableTimePicker: false }"
-                        :min-date="minDate"
-                        :max-date="new Date()"
-                        prevent-min-max-navigation
-                        inline auto-apply
-                    />
+                    <ClientOnly>
+                        <VueDatePicker v-model="date"
+                            :time-config="{ enableTimePicker: false }"
+                            :min-date="minDate"
+                            :max-date="new Date()"
+                            prevent-min-max-navigation
+                            inline auto-apply
+                        />
+                    </ClientOnly>
                 </div>
             </div>
             <p class="text-red-500 p-4">* Select a date to view sales data of selected date</p>

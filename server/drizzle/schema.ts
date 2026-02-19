@@ -1,5 +1,6 @@
 import { primaryKey } from "drizzle-orm/gel-core";
-import { integer, pgTable, varchar, boolean, timestamp, uuid, numeric, pgEnum } from "drizzle-orm/pg-core";
+import { integer, pgTable, varchar, boolean, timestamp, uuid, numeric, pgEnum} from "drizzle-orm/pg-core";
+import {sql} from 'drizzle-orm';
 
 export const usersTable = pgTable("users", {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
@@ -10,6 +11,18 @@ export const usersTable = pgTable("users", {
   address: varchar({ length: 255 }).notNull(),
   role: varchar({length:50}).notNull()
 });
+
+export const signupTable = pgTable('signup',{
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
+  email: varchar({length: 255}).notNull().unique(),
+  password: varchar({length: 255}).notNull(),
+  name: varchar({ length: 255 }).notNull(),
+  phoneNo:varchar('phone_no',{length: 10}).notNull(),
+  address: varchar({ length: 255 }).notNull(),
+  role: varchar({length:50}).notNull(),
+  expiresAt: timestamp('expires_at', {withTimezone: true}).notNull(),
+  otp: varchar({length:6}).notNull()
+})
 
 export const menuTable = pgTable('menu', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
@@ -23,7 +36,7 @@ export const menuTable = pgTable('menu', {
 
 export const ordersTable = pgTable('orders',{
   orderId: integer('order_id').primaryKey().generatedByDefaultAsIdentity().notNull(),
-  userId: integer('user_id').references(()=>usersTable.id).notNull(),
+  userId: integer('user_id').references(()=>usersTable.id, {onDelete: 'set null'}),
   customerName:varchar('customer_name',{length: 255}).notNull(),
   createdAt: timestamp('created_at', {withTimezone: true}).defaultNow().notNull(),
   address: varchar({length: 255}).notNull(),
@@ -64,6 +77,16 @@ export const paymentTable = pgTable('payment', {
   status: paymentStatusEnum(),
   paidAt: timestamp("paid_at", { withTimezone: true }).notNull(),
   remarks: varchar({length: 255})
+})
+
+export const otpTypeEnum = pgEnum('otpType', ['RESET']);
+export const otpAuthTable = pgTable('otp_auth', {
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
+  userId: integer('user_id').references(()=>usersTable.id, {onDelete: 'cascade'}).notNull(),
+  otp: varchar({length: 255}).notNull(),
+  email: varchar({length: 255}).notNull(),
+  otpType: otpTypeEnum('otp_type'),
+  expiresAt: timestamp('expires_at', {withTimezone: true}).notNull()
 })
 
 export const receiveOrders = pgTable('receive_orders', {

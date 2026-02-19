@@ -10,6 +10,7 @@ export function usePayment(){
         try{
             const config = useRuntimeConfig();
             const baseUrl = config.public.baseUrl as string;
+            const esewaUrl = config.public.esewaUrl as string;
 
             const response = await $fetch<apiResponse>('/api/user/esewa/sign', {
                 method: 'GET',
@@ -44,7 +45,7 @@ export function usePayment(){
 
             const form = document.createElement('form');
             form.method  = 'POST'
-            form.action = 'https://rc-epay.esewa.com.np/api/epay/main/v2/form'
+            form.action = esewaUrl
 
             for(const [key,value] of Object.entries(data)){
                 const input = document.createElement('input');

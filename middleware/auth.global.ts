@@ -7,7 +7,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   })
   const authUser = authUserCookie.value
 
-  const publicRoutes = ['/login', '/signup']
+  const publicRoutes = ['/login', '/signup', '/reset-password']
   const isPublic = publicRoutes.includes(to.path)
 
   if (!authUser && !isPublic && to.path !== '/login') {

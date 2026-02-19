@@ -2,6 +2,7 @@
     import {ref} from 'vue'
     import { useToast } from '#imports';
     const toast = useToast();
+    const {parseAddress} = useLocation();
 
     type orderProgressType = 'notStarted' | 'inProgress' | 'completed';
     const props = defineProps<{
@@ -24,7 +25,8 @@
     }>()
 
     const emits = defineEmits<{
-        (e: 'updateProgress', newProgress: orderProgressType):void
+        (e: 'updateProgress', newProgress: orderProgressType):void,
+        (e:'displayMap', location:[number, number]): void
     }>()
 
     //-------------------API call for progress change----------------------//
@@ -59,8 +61,10 @@
     //-------------------------------------------//
     }
 
-    //--------------------------------------------------------------------//
-
+    const showAddressClick = () =>{
+        const location = parseAddress(props.order.location);
+        if (location) emits('displayMap', location)
+    }
 
     const isOpen = ref(false)
 
@@ -80,19 +84,31 @@
                     <span class="font-semibold text-blue-800 text-sm">{{ order.createdAt.replaceAll('/','-')}}</span>
                 </div>
                 <span class="text-gray-600 text-sm mt-2 sm:mt-0">
-                    {{ order.totalItems }} items • <span class="text-green-800 font-semibold">Rs. {{order.totalAmount}}</span> •  {{ order.location }}
+                    {{ order.totalItems }} items • <span class="text-green-800 font-semibold">Rs. {{order.totalAmount}}</span>
                 </span>
             </div>
 
             <div class="flex items-center gap-2 sm:gap-4 self-start sm:self-auto w-full sm:w-auto">
+
+                <button 
+                     @click.stop="()=>showAddressClick()"
+                    class="rounded-md font-semibold flex-1 flex justify-center gap-2 border px-3 py-3 text-xs
+                    sm:px-4 sm:py-2 sm:text-sm md:px-6 md:text-base
+                    hover:bg-gray-200 hover:shadow-sm hover:text-blue-800"
+                >
+                    <span class="material-symbols-outlined">location_on</span>
+                    Location
+                </button>
+
                 <button
                     @click.stop="()=>handleButtonClick()"
                     class="rounded-md font-semibold flex-1 transition-colors duration-300 px-3 py-3 text-xs 
-                        sm:px-4 sm:py-2 sm:text-sm md:px-6 md:text-base"
+                        sm:px-4 sm:py-2 sm:text-sm md:px-6 md:text-base
+                        hover:shadow-md"
                     :class="{
-                        'bg-red-500 text-white': order.orderProgress === 'notStarted',
-                        'bg-blue-500 text-white': order.orderProgress === 'inProgress',
-                        'bg-green-500 text-white': order.orderProgress === 'completed'
+                        'bg-red-500 text-white hover:bg-red-700': order.orderProgress === 'notStarted',
+                        'bg-blue-500 text-white hover:bg-blue-700': order.orderProgress === 'inProgress',
+                        'bg-green-500 text-white hover:bg-green-700': order.orderProgress === 'completed'
                     }">
                     {{ order.orderProgress === 'notStarted' ? 'Start Order' :
                         order.orderProgress === 'inProgress' ? 'In Progress' :
