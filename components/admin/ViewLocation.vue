@@ -39,31 +39,32 @@
             <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md aspect-square">
         
                 <p class="mt-2 text-center text-sm lg:text-lg">Order Location Details</p>
-                <LMap
-                    ref="map"
-                    :zoom="12"
-                    :center="[storeLat, storeLng]"
-                    :use-global-leaflet="false"
-                >
-                <LTileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution="&amp;copy; <a href=&quot;https://www.openstreetmap.org/&quot;>OpenStreetMap</a> contributors"
-                    layer-type="base"
-                    name="OpenStreetMap"
-                />
-
-                <LMarker
-                    v-if="orderLocation"
-                    :lat-lng="orderLocation"
-                    :draggable="false"
-                />
-
-                <LCircle
-                    :lat-lng="[storeLat, storeLng]"
-                    :radius="deliveryRadius"
-                    :color="'green'"
-                />
-                </LMap>
+                
+                <ClientOnly>
+                    <LMap
+                        ref="map"
+                        :zoom="12"
+                        :center="[storeLat, storeLng]"
+                        :use-global-leaflet="false"
+                    >
+                    <LTileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution="&amp;copy; <a href=&quot;https://www.openstreetmap.org/&quot;>OpenStreetMap</a> contributors"
+                        layer-type="base"
+                        name="OpenStreetMap"
+                    />
+                    <LMarker
+                        v-if="orderLocation"
+                        :lat-lng="orderLocation"
+                        :draggable="false"
+                    />
+                    <LCircle
+                        :lat-lng="[storeLat, storeLng]"
+                        :radius="deliveryRadius"
+                        :color="'green'"
+                    />
+                    </LMap>
+                </ClientOnly>
 
                 <!-- Action Button -->
                 <div class="flex justify-end mt-4 space-x-3">

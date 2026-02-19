@@ -108,80 +108,81 @@
                     lg:block">
         </div>
 
-        <div class="w-[100%] h-full bg-gray-100 p-8 
+        <div class="w-[100%] h-full bg-gray-100 p-4 sm:p-6 md:p-8
                     lg:w-[40%]">
             <!--Top Logo in signup-->
             <div class="flex flex-row gap-2">
-                <span class="material-symbols-outlined text-6xl text-blue-600 flex-shrink-0">storefront</span>
-                <p class="text-lg font-semibold text-gray-800">
+                <span class="material-symbols-outlined text-5xl sm:text-6xl text-blue-600 flex-shrink-0">storefront</span>
+                <p class="text-base sm:text-lg font-semibold text-gray-800">
                     THE <br> RESTAURANT
                 </p>
             </div>
 
             <!--Create Account Message-->
-            <div class="my-4 space-y-1">
-                <h1 class="font-bold text-4xl">Create Account</h1>
-                <p class="text-gray-500">Create a New Account</p>
+            <div class="my-3 sm:my-4 space-y-1">
+                <h1 class="font-bold text-2xl sm:text-3xl md:text-4xl">Create Account</h1>
+                <p class="text-sm sm:text-base text-gray-500">Create a New Account</p>
             </div>
 
             <!--Input Form-->
-            <form class="pt-2 px-4 max-h-[60%] overflow-y-auto" @submit.prevent="handleSignup">
+            <form class="pt-2 px-2 sm:px-4 max-h-[60%] overflow-y-auto" @submit.prevent="handleSignup">
 
                 <div v-if="displaySection==='firstPart'">
                     
                     <!-- OTP notice -->
-                    <div class="bg-red-50 border border-red-200 rounded-md px-4 py-3 space-y-1 mb-6">
-                        <p class="text-red-700 text-sm font-medium">All fields are compulsary.</p>
+                    <div class="bg-red-50 border border-red-200 rounded-md px-3 py-2 sm:px-4 sm:py-3 space-y-1 mb-4 sm:mb-6">
+                        <p class="text-red-700 text-xs sm:text-sm font-medium">All fields are compulsary.</p>
                     </div>
 
                     <!--Email-->
                     <div class="mb-1">
-                        <label for="username" class="text-gray-500">Email Address</label>
+                        <label for="username" class="text-sm sm:text-base text-gray-500">Email Address</label>
                         <input type="mail" placeholder="example@gmail.com" id="username" v-model="signUpFormData.email" required
-                            class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
+                            class="w-full px-3 py-2 sm:px-4 rounded-md border-gray-300 bg-white text-gray-800 border my-2 text-sm sm:text-base
                                     focus:outline-none focus:border-blue-500
                                     transition"
                         />
-                        <p class="text-red-500 text-sm h-5" :class="{ 'invisible': !emailError }">
+                        <p class="text-red-500 text-xs sm:text-sm h-5" :class="{ 'invisible': !emailError }">
                             Email must be in the correct format
                         </p>
                     </div>
                     <!--password-->
                     <div class="mb-1">
-                        <label for="password" class="text-gray-500">Password</label>
-                            <input type="text" id="password" v-model="signUpFormData.password" required
-                                class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
-                                        focus:outline-none focus:border-blue-500
-                                        transition"
-                            />
-                        <p class="text-red-500" :class="{ 'invisible': !passwordError }">
+                        <label for="password" class="text-sm sm:text-base text-gray-500">Password</label>
+                        <input type="text" id="password" v-model="signUpFormData.password" required
+                            class="w-full px-3 py-2 sm:px-4 rounded-md border-gray-300 bg-white text-gray-800 border my-2 text-sm sm:text-base
+                                    focus:outline-none focus:border-blue-500
+                                    transition"
+                        />
+                        <p class="text-red-500 text-xs sm:text-sm" :class="{ 'invisible': !passwordError }">
                             Password must include a capital letter and a special character
                         </p>
                     </div>
                     <!--Verify Password-->
                     <div class="mb-1">
-                        <label for="confirmPassword" class="text-gray-500">Confirm Password</label>
+                        <label for="confirmPassword" class="text-sm sm:text-base text-gray-500">Confirm Password</label>
                             <input type="text" id="confirmPassword" v-model="signUpFormData.confirmPassword" required
-                                class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
+                                class="w-full px-3 py-2 sm:px-4 rounded-md border-gray-300 bg-white text-gray-800 border my-2 text-sm sm:text-base
                                         focus:outline-none focus:border-blue-500
                                         transition"
                             />
-                        <p class="text-red-500" :class="{ 'invisible': !confirmPasswordError}">Passwords Must Match</p>
+                        <p class="text-red-500 text-xs sm:text-sm" :class="{ 'invisible': !confirmPasswordError}">Passwords Must Match</p>
                     </div>
 
                     <!--Name-->
-                    <div class="mb-6">
-                        <label for="fullName" class="text-gray-500">Full Name</label>
+                    <div class="mb-4 sm:mb-6">
+                        <label for="fullName" class="text-sm sm:text-base text-gray-500">Full Name</label>
                         <input type="mail" id="fullName" placeholder="Enter Full Name" v-model="signUpFormData.name" required
-                            class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
+                            class="w-full px-3 py-2 sm:px-4 rounded-md border-gray-300 bg-white text-gray-800 border my-2 text-sm sm:text-base
                                     focus:outline-none focus:border-blue-500
                                     transition"
                         />
+                        <Placeholder></Placeholder>
                     </div>
 
                     <!--address-->
-                    <div class="mb-6">
-                        <label for="address" class="text-gray-500">Location</label>
+                    <div class="mb-4 sm:mb-6">
+                        <label for="address" class="text-sm sm:text-base text-gray-500">Location</label>
                         <input 
                             type="text" 
                             id="address" 
@@ -190,27 +191,27 @@
                             required
                             readonly
                             @click="displayMap=true"
-                            class="w-full px-4 py-2 pr-10 rounded-md border-gray-300 bg-white text-gray-800 border my-2
-                                    focus:outline-none focus:border-blue-500 cursor-pointer
+                            class="w-full px-3 py-2 sm:px-4 pr-10 rounded-md border-gray-300 bg-white text-gray-800 border my-2 text-sm sm:text-base cursor-pointer
+                                    focus:outline-none focus:border-blue-500
                                     transition"
                         />
                     </div>
 
                     <!--Phone No-->
-                    <div class="mb-6">
-                        <label for="confirmPassword" class="text-gray-500">Phone Number</label>
+                    <div class="mb-4 sm:mb-6">
+                        <label for="confirmPassword" class="text-sm sm:text-base text-gray-500">Phone Number</label>
                             <input type="text" id="confirmPassword" placeholder="98XXXXXXXX" v-model="signUpFormData.phoneNo" required
-                                class="w-full px-4 py-2 rounded-md border-gray-300 bg-white text-gray-800 border my-2
+                                class="w-full px-3 py-2 sm:px-4 rounded-md border-gray-300 bg-white text-gray-800 border my-2 text-sm sm:text-base
                                         focus:outline-none focus:border-blue-500
                                         transition"
                             />
-                            <p class="text-red-500" v-show="phoneNoError">Number must be of ten digits</p>
+                            <p class="text-red-500 text-xs sm:text-sm" v-show="phoneNoError">Number must be of ten digits</p>
                     </div>
                     
                     <!--T&C-->
-                    <div class="flex flex-row space-x-2 items-center text-gray-500 mb-4">
+                    <div class="flex flex-row space-x-2 items-center text-gray-500 mb-3 sm:mb-4">
                         <input type="checkbox" class="w-4 h-4" v-model="signUpFormData.termsAndCond">
-                        <span class="ml-2">Agree To Our Terms and Conditions</span>
+                        <span class="ml-2 text-xs sm:text-sm">Agree To Our Terms and Conditions</span>
                     </div>
 
                 </div>
@@ -218,35 +219,35 @@
                 <div v-if="displaySection==='secondPart'">
                 
                     <!-- OTP notice -->
-                    <div class="bg-red-50 border border-red-200 rounded-md px-4 py-3 space-y-1 mb-8">
-                        <p class="text-red-700 text-sm font-medium">An OTP has been sent to your email. It is valid for 30 minutes.</p>
+                    <div class="bg-red-50 border border-red-200 rounded-md px-3 py-2 sm:px-4 sm:py-3 space-y-1 mb-6 sm:mb-8">
+                        <p class="text-red-700 text-xs sm:text-sm font-medium">An OTP has been sent to your email. It is valid for 30 minutes.</p>
                         <p class="text-gray-500 text-xs">Remember to check your spam folder.</p>
                     </div>
 
-                    <label class="text-gray-500">Enter 6 Digit OTP Code</label>
-                    <div class="flex flex-row justify-between items-center align-middle mb-4 mt-4 gap-4">
+                    <label class="text-sm sm:text-base text-gray-500">Enter 6 Digit OTP Code</label>
+                    <div class="flex flex-row justify-between items-center align-middle mb-3 sm:mb-4 mt-3 sm:mt-4 gap-2 sm:gap-4">
                         <input
                             type="text"
                             maxlength="6"
                             v-model="otp"
                             placeholder=". . . . . ."
                             inputmode="numeric"
-                            class="w-full px-4 py-2 text-center tracking-widest text-lg
+                            class="w-full px-3 py-2 sm:px-4 text-center tracking-widest text-base sm:text-lg
                                 rounded-md border border-gray-300 bg-white my-2
                                 focus:outline-none focus:border-blue-500"
                         />
-                        <button type="button" class="bg-blue-600 px-4 py-2 rounded-md text-white flex flex-row gap-2
+                        <button type="button" class="bg-blue-600 px-3 py-2 sm:px-4 rounded-md text-white flex flex-row gap-2 text-sm sm:text-base
                             disabled:bg-blue-400 disabled:cursor-not-allowed
                             hover:bg-blue-700 hover:shadow-sm"
                             @click="handleResend"    
                             :disabled="totalSeconds>0"
                         >
-                            <span class="material-symbols-outlined">cached</span>
+                            <span class="material-symbols-outlined text-lg sm:text-xl">cached</span>
                             Resend
                         </button>
                     </div>
-                    <div class="mb-16">
-                        <p>You can resend OTP again in <span class="text-red-700">{{formattedTime}}</span> seconds</p>
+                    <div class="mb-12 sm:mb-16">
+                        <p class="text-xs sm:text-sm">You can resend OTP again in <span class="text-red-700">{{formattedTime}}</span> seconds</p>
                     </div>
                 </div>
 
@@ -255,7 +256,7 @@
                     <button type="submit" v-if="displaySection==='firstPart'"
                     :disabled="signUpFormData.email===''||signUpFormData.password===''||signUpFormData.confirmPassword===''
                     ||passwordError||emailError||confirmPasswordError||phoneNoError||!signUpFormData.termsAndCond"
-                    class="border bg-blue-600 text-white px-12 py-2 block rounded-md
+                    class="border bg-blue-600 text-white px-8 py-2 sm:px-12 block rounded-md text-sm sm:text-base
                     hover:bg-blue-700 hover:shadow-sm
                     disabled:bg-blue-400 disabled:cursor-not-allowed
                     ">Next</button>
@@ -264,7 +265,7 @@
                     :disabled="otp.length!==6" 
                     v-if="displaySection==='secondPart'"
                     @click="handleSignupVerification"
-                    class="border bg-blue-600 text-white px-12 py-2 block rounded-md
+                    class="border bg-blue-600 text-white px-8 py-2 sm:px-12 block rounded-md text-sm sm:text-base
                     hover:bg-blue-700 hover:shadow-sm
                     disabled:bg-blue-400 disabled:cursor-not-allowed
                     ">Sign Up</button>
@@ -273,7 +274,7 @@
             </form>
 
             <!--Sign Up info-->
-            <div class="mt-9 space-x-2 w-full flex flex-row justify-center">
+            <div class="mt-6 sm:mt-9 space-x-2 w-full flex flex-row justify-center text-sm sm:text-base">
                 <span>Already have an account?</span>
                 <button class="text-blue-600">
                     <NuxtLink to="/login">Log In</NuxtLink>

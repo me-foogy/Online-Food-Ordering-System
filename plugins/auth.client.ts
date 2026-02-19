@@ -6,7 +6,6 @@ const COOKIE_AGE = parseInt(process.env.COOKIE_AGE || '86400') //one day fallbac
 
 export default defineNuxtPlugin(async()=>{
 
-    console.log('USER FETCHED');
     const authUser = useCookie<loginReturnMessageType|null>('auth_user', {
         sameSite: 'lax',
         secure: process.env.NODE_ENV === 'production',

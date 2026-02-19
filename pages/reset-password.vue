@@ -89,44 +89,44 @@
         </div>
 
         <!-- Right form -->
-        <div class="w-full h-full bg-gray-100 p-8 lg:w-[40%] flex flex-col">
+        <div class="w-full h-full bg-gray-100 p-4 sm:p-6 md:p-8 lg:w-[40%] flex flex-col">
 
             <!-- Logo -->
             <div class="flex flex-row items-center gap-2">
-                <span class="material-symbols-outlined text-6xl text-blue-600 flex-shrink-0">storefront</span>
-                <p class="text-lg font-semibold text-gray-800">
+                <span class="material-symbols-outlined text-5xl sm:text-6xl text-blue-600 flex-shrink-0">storefront</span>
+                <p class="text-base sm:text-lg font-semibold text-gray-800">
                     THE <br> RESTAURANT
                 </p>
             </div>
 
             <!-- Page heading -->
-            <div class="my-4">
-                <h1 class="font-bold text-4xl">Reset Password</h1>
-                <p class="text-gray-500 mt-1">
+            <div class="my-3 sm:my-4">
+                <h1 class="font-bold text-2xl sm:text-3xl md:text-4xl">Reset Password</h1>
+                <p class="text-gray-500 mt-1 text-sm sm:text-base">
                     {{ displaySection === 'firstPart' ? 'Enter your email to receive a reset code.' : 'Check your email for the OTP and set a new password.' }}
                 </p>
             </div>
 
-            <form class="pt-2 flex-1 min-h-0 overflow-y-auto px-4 flex flex-col gap-2">
+            <form class="pt-2 flex-1 min-h-0 overflow-y-auto px-2 lg:px-4  flex flex-col gap-2">
 
                 <!-- Email -->
-                <div v-if="displaySection === 'firstPart'" class="space-y-4 px-2">
+                <div v-if="displaySection === 'firstPart'" class="space-y-4 px-1 sm:px-2">
 
-                    <div class="bg-red-50 border border-red-200 rounded-md px-4 py-3 mb-8">
-                        <p class="text-red-700 text-sm font-medium">The Email address must be registered in the system</p>
+                    <div class="bg-red-50 border border-red-200 rounded-md px-3 py-2 sm:px-4 sm:py-3 mb-6 sm:mb-8">
+                        <p class="text-red-700 text-xs sm:text-sm font-medium">The Email address must be registered in the system</p>
                     </div>
 
-                    <label for="username" class="text-gray-500">Email Address</label>
+                    <label for="username" class="text-sm sm:text-base text-gray-500">Email Address</label>
                     <input
                         type="mail"
                         id="username"
                         placeholder="example@gmail.com"
                         v-model="resetPasswordData.email"
                         required
-                        class="w-full px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-800 my-1
+                        class="w-full px-3 py-2 sm:px-4 rounded-md border border-gray-300 bg-white text-gray-800 my-1 text-sm sm:text-base
                                focus:outline-none focus:border-blue-500 transition"
                     />
-                    <p class="text-red-500 text-sm h-5" :class="{ 'invisible': !emailError }">
+                    <p class="text-red-500 text-xs sm:text-sm h-5" :class="{ 'invisible': !emailError }">
                         Email must be in the correct format
                     </p>
                 </div>
@@ -135,14 +135,14 @@
                 <div v-if="displaySection === 'secondPart'" class="space-y-3">
 
                     <!-- OTP notice -->
-                    <div class="bg-red-50 border border-red-200 rounded-md px-4 py-3 space-y-1">
-                        <p class="text-red-700 text-sm font-medium">An OTP has been sent to your email. It is valid for 30 minutes.</p>
+                    <div class="bg-red-50 border border-red-200 rounded-md px-3 py-2 sm:px-4 sm:py-3 space-y-1">
+                        <p class="text-red-700 text-xs sm:text-sm font-medium">An OTP has been sent to your email. It is valid for 30 minutes.</p>
                         <p class="text-gray-500 text-xs">Remember to check your spam folder.</p>
                     </div>
 
                     <!-- OTP input -->
                     <div>
-                        <label class="text-gray-500">Enter 6-Digit OTP Code</label>
+                        <label class="text-sm sm:text-base text-gray-500">Enter 6-Digit OTP Code</label>
                         <div class="flex flex-row items-center gap-2 mt-1">
                             <input
                                 type="text"
@@ -150,7 +150,7 @@
                                 v-model="otp"
                                 inputmode="numeric"
                                 placeholder=". . . . . ."
-                                class="w-full px-4 py-2 text-center tracking-widest text-lg
+                                class="w-full px-3 py-2 sm:px-4 text-center tracking-widest text-base sm:text-lg
                                        rounded-md border border-gray-300 bg-white
                                        focus:outline-none focus:border-blue-500"
                             />
@@ -158,15 +158,15 @@
                                 type="button"
                                 @click="handleResend"
                                 :disabled="totalSeconds > 0"
-                                class="bg-blue-600 px-4 py-2 rounded-md text-white flex flex-row items-center gap-2
+                                class="bg-blue-600 px-3 py-2 sm:px-4 rounded-md text-white flex flex-row items-center gap-2 text-sm sm:text-base
                                        hover:bg-blue-700 hover:shadow-sm
                                        disabled:bg-blue-400 disabled:cursor-not-allowed"
                             >
-                                <span class="material-symbols-outlined">cached</span>
+                                <span class="material-symbols-outlined text-lg sm:text-xl">cached</span>
                                 Resend
                             </button>
                         </div>
-                        <p class="text-sm text-gray-500 mt-1">
+                        <p class="text-xs sm:text-sm text-gray-500 mt-1">
                             Resend available in <span class="text-red-700 font-medium">
                                 {{formattedTime}}
                             </span>
@@ -175,32 +175,32 @@
 
                     <!-- New password -->
                     <div>
-                        <label for="password" class="text-gray-500">New Password</label>
+                        <label for="password" class="text-sm sm:text-base text-gray-500">New Password</label>
                         <input
                             type="text"
                             id="password"
                             v-model="resetPasswordData.password"
                             required
-                            class="w-full px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-800 my-1
+                            class="w-full px-3 py-2 sm:px-4 rounded-md border border-gray-300 bg-white text-gray-800 my-1 text-sm sm:text-base
                                    focus:outline-none focus:border-blue-500 transition"
                         />
-                        <p class="text-red-500 text-sm h-5" :class="{ 'invisible': !passwordError }">
+                        <p class="text-red-500 text-xs sm:text-sm h-5" :class="{ 'invisible': !passwordError }">
                             Password must include a capital letter and a special character
                         </p>
                     </div>
 
                     <!-- Confirm password -->
                     <div>
-                        <label for="confirmPassword" class="text-gray-500">Confirm Password</label>
+                        <label for="confirmPassword" class="text-sm sm:text-base text-gray-500">Confirm Password</label>
                         <input
                             type="text"
                             id="confirmPassword"
                             v-model="resetPasswordData.confirmPassword"
                             required
-                            class="w-full px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-800 my-1
+                            class="w-full px-3 py-2 sm:px-4 rounded-md border border-gray-300 bg-white text-gray-800 my-1 text-sm sm:text-base
                                    focus:outline-none focus:border-blue-500 transition"
                         />
-                        <p class="text-red-500 text-sm h-5" :class="{ 'invisible': !confirmPasswordError }">
+                        <p class="text-red-500 text-xs sm:text-sm h-5" :class="{ 'invisible': !confirmPasswordError }">
                             Passwords must match
                         </p>
                     </div>
@@ -213,7 +213,7 @@
                         type="button"
                         @click="sendResetOTP"
                         :disabled="resetPasswordData.email === ''"
-                        class="bg-blue-600 text-white px-12 py-2 rounded-md
+                        class="bg-blue-600 text-white px-8 py-2 sm:px-12 rounded-md text-sm sm:text-base
                                hover:bg-blue-700 hover:shadow-sm
                                disabled:bg-blue-400 disabled:cursor-not-allowed"
                     >
@@ -226,7 +226,7 @@
                         type="button"
                         :disabled="otp.length !== 6 || resetPasswordData.password === '' || resetPasswordData.confirmPassword === ''
                                    || passwordError || emailError || confirmPasswordError"
-                        class="bg-blue-600 text-white px-12 py-2 rounded-md
+                        class="bg-blue-600 text-white px-8 py-2 sm:px-12 rounded-md text-sm sm:text-base
                                hover:bg-blue-700 hover:shadow-sm
                                disabled:bg-blue-400 disabled:cursor-not-allowed"
                     >
@@ -237,7 +237,7 @@
             </form>
 
             <!-- Log in link -->
-            <div class="mt-9 w-full flex flex-row justify-center gap-2">
+            <div class="mt-6 sm:mt-9 w-full flex flex-row justify-center gap-2 text-sm sm:text-base">
                 <span>Already have an account?</span>
                 <NuxtLink to="/login" class="text-blue-600 hover:text-blue-700">Log In</NuxtLink>
             </div>

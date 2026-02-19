@@ -64,26 +64,26 @@
         
             <span class="material-symbols-outlined text-green-600 text-6xl mb-4 block">verified</span>
 
-            <h2 class="text-2xl font-semibold text-gray-800 mb-1">Payment Successful</h2>
-            <p class="text-gray-500 mb-6">Thank you for your purchase</p>
+            <h2 class="text-base lg:text-2xl font-semibold text-gray-800 mb-1">Payment Successful</h2>
+            <p class="text-xs lg:text-base text-gray-500 mb-6">Thank you for your purchase</p>
 
             <div class="border rounded-xl divide-y text-sm mb-6">
                     <div class="flex justify-between px-4 py-3">
-                        <span class="text-gray-600">Amount Paid</span>
-                        <span class="font-medium text-gray-800">Rs. {{Amount}}</span>
+                        <span class="text-xs lg:text-base text-gray-600">Amount Paid</span>
+                        <span class="text-xs lg:text-base font-medium text-gray-800">Rs. {{Amount}}</span>
                     </div>
                     <div class="flex justify-between px-4 py-3">
-                        <span class="text-gray-600">Date & Time</span>
-                        <span class="font-medium text-gray-800">{{PaidAt}}</span>
+                        <span class="text-xs lg:text-base text-gray-600">Date & Time</span>
+                        <span class="text-xs lg:text-base font-medium text-gray-800">{{PaidAt}}</span>
                     </div>
                     <div class="flex justify-between px-4 py-3">
-                        <span class="text-gray-600">Reference Number</span>
-                        <span class="font-medium text-gray-800">{{ProductCode}}</span>
+                        <span class="text-xs lg:text-base text-gray-600">Reference No </span>
+                        <span class="text-xs lg:text-base font-medium text-gray-800">{{ProductCode}}</span>
                     </div>
             </div>
 
             <NuxtLink to="/user/home" class="nav-link">
-                <button class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-medium transition duration-200">
+                <button class="w-full bg-green-600 hover:bg-green-700 text-white text-xs lg:text-base py-3 rounded-xl font-medium transition duration-200">
                     Return to Homepage
                 </button>
             </NuxtLink> 

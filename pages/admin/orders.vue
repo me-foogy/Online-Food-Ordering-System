@@ -81,9 +81,7 @@ const {receivingOrders, fetchReceivingOrders} = useReceivingOrders();
     }, {immediate: true})
     //--------------------------------------------------------------------------------------//
     //Fetch the state of the restaurant
-    onMounted(()=>{
-        fetchReceivingOrders();
-    })
+    fetchReceivingOrders();
 
     const handleClose = () =>{
         openConfirmDialog.value=false;

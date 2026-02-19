@@ -69,32 +69,33 @@
                         </p>
                     </div>
                 </div>
-                <LMap
-                    ref="map"
-                    :zoom="12"
-                    :center="[storeLat, storeLng]"
-                    :use-global-leaflet="false"
-                    @click="handleMapClick"
-                >
-                <LTileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution="&amp;copy; <a href=&quot;https://www.openstreetmap.org/&quot;>OpenStreetMap</a> contributors"
-                    layer-type="base"
-                    name="OpenStreetMap"
-                />
-
-                <LMarker
-                    v-if="selectedLocation"
-                    :lat-lng="selectedLocation"
-                    :draggable="true"
-                />
-
-                <LCircle
-                    :lat-lng="[storeLat, storeLng]"
-                    :radius="deliveryRadius"
-                    :color="'green'"
-                />
-                </LMap>
+                
+                <ClientOnly>
+                    <LMap
+                        ref="map"
+                        :zoom="12"
+                        :center="[storeLat, storeLng]"
+                        :use-global-leaflet="false"
+                        @click="handleMapClick"
+                    >
+                    <LTileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution="&amp;copy; <a href=&quot;https://www.openstreetmap.org/&quot;>OpenStreetMap</a> contributors"
+                        layer-type="base"
+                        name="OpenStreetMap"
+                    />
+                    <LMarker
+                        v-if="selectedLocation"
+                        :lat-lng="selectedLocation"
+                        :draggable="true"
+                    />
+                    <LCircle
+                        :lat-lng="[storeLat, storeLng]"
+                        :radius="deliveryRadius"
+                        :color="'green'"
+                    />
+                    </LMap>
+                </ClientOnly>
 
                 <!-- Action Buttons -->
                 <div class="flex justify-between mt-4 space-x-3">

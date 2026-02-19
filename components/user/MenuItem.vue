@@ -28,25 +28,25 @@
             class="w-full h-44 object-cover"
         />
 
-        <div class="p-6 flex flex-col h-full flex-1">
+        <div class="p-3 lg:p-6 flex flex-col h-full flex-1">
             <!--Name and Price-->
-            <div>
+            <div class="space-y-1">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-semibold text-gray-800">{{item.name}}</h3>
-                    <span class="text-blue-600 font-semibold">Rs. {{item.price}}</span>
+                    <h3 class="text-base lg:text-lg font-semibold text-gray-800">{{item.name}}</h3>
+                    <span class="text-sm lg:text-base text-blue-600 font-semibold">Rs. {{item.price}}</span>
                 </div>
                 <!--Description-->
-                <p class="text-sm text-gray-600 line-clamp-2">{{item.description}}</p>
+                <p class="text-xs md:text-sm text-gray-600 line-clamp-2">{{item.description}}</p>
             </div>
 
             <div class="flex items-center justify-end pt-3 mt-auto">
                 <!-- <button class="material-symbols-outlined">favorite</button> -->
 
-                <button class="flex items-center gap-1 px-3 py-1.5 border rounded-md text-sm text-gray-700 "
-                :class="item.inStock?'hover:bg-gray-100 transition':'bg-red-500 text-white'"
-                :disabled="!item.inStock"
-                @click="addToCart(item.id, 1)"> 
-                <!-- 1 sent as initial quantity -->
+                <button class="flex items-center gap-1 px-3 py-1 lg:py-1.5 border rounded-md text-xs lg:text-sm text-gray-700 "
+                    :class="item.inStock?'hover:bg-gray-100 transition':'bg-red-500 text-white'"
+                    :disabled="!item.inStock"
+                    @click="addToCart(item.id, 1)"> 
+                    <!-- 1 sent as initial quantity -->
 
                     <span class="material-symbols-outlined text-base">{{item.inStock?'add':'block'}}</span>
                     {{item.inStock?'Add to Cart':'Out of Stock'}}

@@ -122,9 +122,9 @@
 
                 <div class="flex gap-3 flex-wrap">
                     <button v-for="type in foodOptions":key="type" @click="activeType = type"
-                    class="px-2 py-2 min-w-[5rem] rounded-xl text-sm font-normal border transition
-                    hover:border-blue-500 hover:translate-y-[1px]
-                    sm:px-4 sm:min-w-[10rem] sm:font-medium"
+                    class="px-1 py-2 min-w-[4rem] rounded-xl text-xs font-normal border transition
+                    hover:border-blue-500 hover:translate-y-[1px] 
+                    sm:px-4 sm:min-w-[10rem] sm:text-sm sm:font-medium"
                     :class="
                         activeType === type
                         ? 'bg-blue-600 text-white border-blue-600'

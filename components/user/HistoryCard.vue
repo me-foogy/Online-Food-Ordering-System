@@ -15,7 +15,6 @@
 
   const orderAgainHandler = ()=> {
     props.order.order.forEach(item=>{
-        console.log(item.menuId, item.itemQuantity);
         addToCart(item.menuId, item.itemQuantity)
     })
   }
@@ -23,25 +22,24 @@
 </script>
 
 <template>
-  <div class="mb-4">
     <div class="border rounded-xl bg-white p-4 w-full">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 cursor-pointer" @click="toggle">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 cursor-pointer" @click="toggle">
         <div class="flex flex-col gap-1">
-          <div class="flex flex-col sm:flex-row gap-2 sm:gap-6 sm:items-center">
-            <span class="font-semibold text-blue-800 break-all">
+          <div class="flex flex-col sm:flex-row gap-1 sm:gap-6 sm:items-center">
+            <span class="font-semibold text-blue-800 break-all text-sm md:text-base">
               Order Id: #{{order.orderId}}
             </span>
-            <span class="font-semibold text-gray-800 text-sm">
+            <span class="font-semibold text-gray-800 text-xs md:text-sm">
               {{order.createdAt.substring(0,8).replaceAll('/', '-')}}
             </span>
           </div>
-          <span class="text-gray-600 text-sm">
+          <span class="text-gray-600 text-xs md:text-sm">
             {{ order.totalItems }} items • Rs. {{order.totalAmount}}
           </span>
         </div>
 
         <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0 w-full sm:w-auto justify-between sm:justify-end">
-          <button class="bg-blue-600 text-white font-medium px-4 py-2 rounded-md
+          <button class="bg-blue-600 text-white font-medium px-4 py-2 rounded-md text-xs sm:text-sm lg:text-base
           hover:bg-blue-700 w-full sm:w-auto"
             @click.stop="orderAgainHandler">
             Order Again
@@ -79,6 +77,5 @@
         </p>
       </div>
     </div>
-  </div>
 </template>
 

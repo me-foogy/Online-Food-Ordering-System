@@ -39,17 +39,17 @@
 
 <template>
     <button
-        :class="['fixed right-4 top-4  text-white px-4 py-2 rounded-full shadow-lg z-50 xl:hidden flex flex-row justify-center',
+        :class="['fixed right-4 top-4 text-sm md:text-base text-white px-4 py-2 rounded-full shadow-lg z-50 xl:hidden flex flex-row justify-center',
             showCart? 'bg-red-600':'bg-blue-600'
         ]"
         @click="toggleCart">
-        <span class="material-symbols-outlined text-white mr-2">{{showCart?'close':'shopping_cart'}}</span>
+        <span class="text-sm md:text-base material-symbols-outlined text-white mr-2">{{showCart?'close':'shopping_cart'}}</span>
         {{ cart.length }}
     </button>
     
     <!--Each Cart Item-->
     <aside :class="[
-        'w-96 lg:w-96 bg-white border-l border-gray-200 p-4 fixed top-0 right-0 h-[100dvh] transition-transform duration-300',
+        'w-[20rem] lg:w-96 bg-white border-l border-gray-200 p-4 fixed top-0 right-0 h-[100dvh] transition-transform duration-300',
         showCart? 'translate-x-0' : 'translate-x-full',
         'xl:translate-x-0 flex flex-col justify-between'
         ]">

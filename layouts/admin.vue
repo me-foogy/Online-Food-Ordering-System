@@ -5,7 +5,7 @@
 <template>
     <div class="min-h-[100dvh] flex bg-gray-100">
       <!-- Sidebar -->
-      <aside class="bg-white border-r border-gray-200 w-14 lg:w-64 fixed top-0 left-0 h-[100dvh] flex flex-col">
+      <aside class="bg-white border-r border-gray-200 w-12 lg:w-64 fixed top-0 left-0 h-[100dvh] flex flex-col">
         <div class="h-full flex flex-col">
             <div class="border-b py-4 flex justify-center lg:justify-start lg:px-6">
                   <span class="hidden lg:block font-semibold text-lg">Admin Panel</span>
@@ -41,7 +41,7 @@
                   </NuxtLink>
               </nav>
               <!-- Logout -->
-              <div class="p-4 border-t">
+              <div class="p-2 border-t">
                 <button class="logout-btn" @click="logout">
                   <span class="material-symbols-outlined icon">logout</span>
                   <span class="label">Logout</span>
@@ -50,7 +50,7 @@
         </div>
       </aside>
       <!-- Main Content -->
-      <main class="flex-1 p-2 ml-14 lg:ml-64 lg:p-6">
+      <main class="flex-1 min-w-auto xl:mr-96 ml-12 lg:ml-64 p-2 lg:p-4">
         <slot />
       </main>
     </div>
