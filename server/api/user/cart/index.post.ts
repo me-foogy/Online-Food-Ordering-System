@@ -15,11 +15,11 @@ export default defineEventHandler(async(event)=>{
     const user = event.context.user;
 
     if(typeof(body.menuId)!=='number' && typeof(body.quantity)!=='number'){
-        setResponseStatus(event, 400);
-        return{
-            success: false,
-            message: 'body is not a number'
-        }
+        throw createError({
+            status: 400,
+            statusMessage: 'Invalid Body',
+            message: 'The body is not valid'
+        })
     }
 
     const addedItem = await db.insert(cartTable).values({
@@ -33,7 +33,7 @@ export default defineEventHandler(async(event)=>{
         quantity: cartTable.quantity
     })
 
-    setResponseStatus(event, 200);
+    setResponseStatus(event, 201);
     return{
         success: true,
         message: addedItem

@@ -16,49 +16,29 @@ import { eq } from "drizzle-orm";
 export default defineEventHandler(async(event)=>{
 
     const id = getRouterParam(event, 'id')
-
-    if(!id){
-        setResponseStatus(event, 400);
-        return{
-            success: false,
-            message: 'Category Id is required'
-        }
-    }
-
     const categoryId = Number(id);
 
     if(isNaN(categoryId)){
-        setResponseStatus(event, 400);
-        return{
-            success: false,
-            message: 'Invalid Category Id'
-        }
+        throw createError({
+            status: 400,
+            statusMessage: 'Invalid Body',
+            message: 'The bosy must contain valid id'
+        })
     }
 
+    const response = await db.delete(categoryTable).where(eq(categoryTable.id, categoryId)).returning();
 
-    try{
-        const response = await db.delete(categoryTable).where(eq(categoryTable.id, categoryId)).returning();
+    if(response.length===0){
+        throw createError({
+            status: 404,
+            statusMessage: 'Not Found',
+            message: 'The category is missing'
+        })
+    }
 
-        if(response.length===0){
-            setResponseStatus(event, 404);
-            return{
-                success: false, 
-                message: 'No category Found'
-            }
-        }
-
-        setResponseStatus(event, 200)
-        return{
-            success: true,
-            message: response
-        }
-
-    } catch(err)
-    {
-        setResponseStatus(event, 400);
-        return{
-            success: false,
-            message: 'Unexpected Error Occured'
-        }
+    setResponseStatus(event, 200)
+    return{
+        success: true,
+        message: response
     }
 })

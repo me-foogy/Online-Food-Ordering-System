@@ -2,6 +2,7 @@
     import { useToast } from '#imports';
     import LocationSelector from '~/components/user/LocationSelector.vue';
     const {signup, verifySignup} = useAuth();
+    const{formatLocation} = useLocation();
 
     const signUpFormData=ref<signUpData>({
         email: '',
@@ -47,9 +48,8 @@
         }
     })
 
-    //handlers for location selector
     const handleLocationConfirm = (location: [number, number]) => {
-        signUpFormData.value.address = `${location[0].toFixed(6)}, ${location[1].toFixed(6)}`
+        signUpFormData.value.address = formatLocation(location);
         displayMap.value = false
     }
 
@@ -75,27 +75,21 @@
     }
 
     const handleSignup = async()=>{
-        //api call for signup
-        const isSignedUp = await signup(signUpFormData.value);
+        const isSignedUp = await signup(signUpFormData.value);//api call for signup
         if(isSignedUp) displaySection.value='secondPart';
-        //start timer after OTP sent to user
-        startClock();
+        startClock(); //start timer after OTP sent to user
     }
 
     const handleSignupVerification = () =>{
-        //api call to verify otp
-        verifySignup(signUpFormData.value, otp.value);
+        verifySignup(signUpFormData.value, otp.value); //api call to verify otp
     }
 
     const handleResend = () =>{
-        //send signup details to the api endpoint for otp resend and otp reassign
-        handleSignup();
-        //reset Timer
-        startClock();
+        handleSignup(); //send signup details to the api endpoint for otp resend and otp reassign
+        startClock(); //reset Timer
     }
 
     onUnmounted(()=>{
-        //cleanup on unmounted
         if(timer) clearInterval(timer);
     })
 

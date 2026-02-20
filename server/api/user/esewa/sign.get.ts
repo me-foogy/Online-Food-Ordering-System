@@ -5,8 +5,6 @@
     Dependencies: cart, menu, orders, each_order
 */
 
-import { db } from "~/server/drizzle";
-import { eachOrderTable, ordersTable, paymentTable } from "~/server/drizzle/schema";
 import { getCartByUserId } from "~/server/services/cartService";
 import CryptoJS from 'crypto-js'
 
@@ -22,21 +20,37 @@ export default defineEventHandler(async(event)=>{
     const productCode = `EPAYTEST` //for dev testing
 
     if(!id){
-        throw new Error('Id Parameter Missing');
+        throw createError({
+            status: 400,
+            statusMessage: 'Invalid Body',
+            message: 'Id Parameter Missing'
+        })
     }
 
     const userCart = await getCartByUserId(id);
     if(userCart.length===0){
-        throw new Error('User Cart is Empty');
+        throw createError({
+            status: 404,
+            statusMessage: 'Empty Cart',
+            message: 'The cart is empty'
+        })
     }
 
     let totalAmount = 0;
     userCart.forEach((item) => {
         if (!item.name) {
-            throw new Error('Cart item has no name');
+            throw createError({
+                status: 400,
+                statusMessage: 'Cart Error',
+                message: 'Cart item has no name'
+            })
         }
         if (!item.price) {
-            throw new Error(`Price missing for ${item.name}`);
+            throw createError({
+                status: 400,
+                statusMessage: 'Cart Error',
+                message: `Price missing for ${item.name}`
+            })
         }
         totalAmount += item.quantity * item.price;
     });
@@ -46,11 +60,11 @@ export default defineEventHandler(async(event)=>{
     const message = `total_amount=${amountWithDecimal},transaction_uuid=${uuid},product_code=${productCode}`
     
     if(!ESEWA_SECRET){
-        setResponseStatus(event, 400);
-        return {
-            success: false,
+        throw createError({
+            status: 400,
+            statusMessage: 'Esewa Error',
             message: 'Esewa Secret Key is missing'
-        }
+        })
     }
     
     const hash = CryptoJS.HmacSHA256(message, ESEWA_SECRET);

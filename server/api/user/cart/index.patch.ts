@@ -18,11 +18,11 @@ export default defineEventHandler (async(event): Promise<apiResponse<cartSchema[
     const {cartId, quantity} = body;
 
     if(!cartId && !quantity){
-        setResponseStatus(event, 400);
-        return{
-            success: false,
-            message: 'cartId Bad Request'
-        }
+        throw createError({
+            status: 400,
+            statusMessage: 'Invalid Body',
+            message: 'The cart Id does not match' 
+        })
     }
 
     const updatedItem = await db.update(cartTable).set({
@@ -31,10 +31,11 @@ export default defineEventHandler (async(event): Promise<apiResponse<cartSchema[
 
     if(updatedItem.length===0){
         setResponseStatus(event, 204);
-        return{
-            success: false,
-            message: 'Cart Item not found'
-        }
+        throw createError({
+            status: 404,
+            statusMessage: 'Item not found',
+            message: 'The item does not exist in cart' 
+        })
     }
 
     setResponseStatus(event, 200);

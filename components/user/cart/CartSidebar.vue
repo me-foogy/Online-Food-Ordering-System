@@ -15,9 +15,9 @@
         showCart.value = !showCart.value;
     }
 
-    const handleCheckout = ()=>{
+    const handleCheckout = async()=>{
         //check if restaurant is receiving orders
-        fetchReceivingOrders();
+        await fetchReceivingOrders();
         if(receivingOrders.value===false){
             toast.error({message: 'Restaurant is Closed at the moment'});
             return

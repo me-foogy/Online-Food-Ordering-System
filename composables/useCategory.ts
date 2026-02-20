@@ -12,7 +12,7 @@ export function useCategory(){
         message: {
             id: number,
             name: string
-        }[] | string
+        }[]
     }
 
     interface deleteApiResponse{
@@ -20,13 +20,14 @@ export function useCategory(){
         message: {
             id: number,
             name: string
-        } | string
+        }
     }
 
     async function fetchCategory(){
 
         const {data, error} = await useFetch<apiResponse>('/api/shared/categories', {
             method: 'GET',
+            cache: 'no-cache',
             onRequest(){
                 loading.value = true
             },
@@ -40,15 +41,13 @@ export function useCategory(){
 
         if(error.value){
             category.value=[];
-            console.error('SERVER ERROR');
-            toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+            toast.error({title: 'SERVER ERROR', message:'Unexpexted Error Occured'});
+            return
         }
 
-        if(data.value?.success && typeof(data.value.message) !== 'string'){
+        if(data.value?.success){
             category.value=data.value.message;
             toast.success({title: 'Success', message:`Categories fetched successfully`});
-        }else{
-            toast.error({title: 'ERROR', message:data.value?.message as string});
         }
     }
 
@@ -78,15 +77,13 @@ export function useCategory(){
         })
 
         if(error.value){
-            console.error('SERVER ERROR');
-            toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+            toast.error({title: 'SERVER ERROR', message:'Unexpected Error Occured'});
+            return
         }
 
-        if(data.value?.success && typeof(data.value.message) !== 'string'){
-            category.value.push(data.value.message[0]!);
+        if(data.value?.success){
+            fetchCategory();
             toast.success({title: 'Success', message:`Category Added Successfully`});
-        }else{
-            toast.error({title: 'ERROR', message:data.value?.message as string});
         }
     }
 
@@ -107,15 +104,20 @@ export function useCategory(){
         })
 
         if(error.value){
-            console.error('SERVER ERROR');
-            toast.error({title: 'SERVER ERROR', message:error.value.data.message});
+            const status = error.value.statusCode;
+
+            if(status===404){
+                toast.error({title: 'SERVER ERROR', message:'The category is already deleted'});  
+            }else{
+                toast.error({title: 'SERVER ERROR', message:'Unexpected Error Occured'});  
+            }
+
+            return
         }
 
-        if(data.value?.success && typeof(data.value.message) !== 'string'){
-            category.value = category.value.filter(eachCategory => eachCategory.id != key)
+        if(data.value?.success){
+            fetchCategory();
             toast.success({title: 'Success', message:`Category Deleted Successfully`});
-        }else{
-            toast.error({title: 'ERROR', message:data.value?.message as string});
         }
     }
 
