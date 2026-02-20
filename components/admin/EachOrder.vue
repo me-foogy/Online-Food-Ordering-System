@@ -74,36 +74,36 @@
 </script>
 
 <template>
-    <div class="border rounded-xl bg-white p-4 w-full">
+    <div class="border rounded-xl bg-white p-2 md:p-4 w-full">
 
-      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 cursor-pointer" @click="toggle">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 md:gap-3 cursor-pointer" @click="toggle">
 
             <div class="flex flex-col">
                 <div class="flex flex-col items-start sm:flex-row sm:gap-5">
-                    <span class="font-semibold text-gray-800">{{ order.customerName }}</span>
-                    <span class="font-semibold text-blue-800 text-sm">{{ order.createdAt.replaceAll('/','-')}}</span>
+                    <span class="text-sm md:text-base font-semibold text-gray-800">{{ order.customerName }}</span>
+                    <span class="text-xs md:text-base font-semibold text-blue-800">{{ order.createdAt.replaceAll('/','-')}}</span>
                 </div>
-                <span class="text-gray-600 text-sm mt-2 sm:mt-0">
+                <span class="text-gray-600 mt-1 sm:mt-0 text-sm md:text-base">
                     {{ order.totalItems }} items • <span class="text-green-800 font-semibold">Rs. {{order.totalAmount}}</span>
                 </span>
             </div>
 
-            <div class="flex items-center gap-2 sm:gap-4 self-start sm:self-auto w-full sm:w-auto">
+            <div class="flex items-center justify-center gap-2 sm:gap-4 self-start sm:self-auto w-full sm:w-auto">
 
                 <button 
                      @click.stop="()=>showAddressClick()"
-                    class="rounded-md font-semibold flex-1 flex justify-center gap-2 border px-3 py-3 text-xs
-                    sm:px-4 sm:py-2 sm:text-sm md:px-6 md:text-base
+                    class="rounded-md font-semibold flex-1 flex justify-center gap-2 border p-2 md:p-3 text-[clamp(0.8rem,1.5vw,1rem)]
+                    sm:px-4 sm:py-2 md:px-6
                     hover:bg-gray-200 hover:shadow-sm hover:text-blue-800"
                 >
-                    <span class="material-symbols-outlined">location_on</span>
+                    <span class="text-[clamp(0.8rem,1.5vw,1rem)] material-symbols-outlined self-center">location_on</span>
                     Location
                 </button>
 
                 <button
                     @click.stop="()=>handleButtonClick()"
-                    class="rounded-md font-semibold flex-1 transition-colors duration-300 px-3 py-3 text-xs 
-                        sm:px-4 sm:py-2 sm:text-sm md:px-6 md:text-base
+                    class="rounded-md font-semibold flex-1 transition-colors duration-300 p-2 md:p-3 text-[clamp(0.8rem,1.5vw,1rem)]
+                        sm:px-4 sm:py-2 md:px-6
                         hover:shadow-md"
                     :class="{
                         'bg-red-500 text-white hover:bg-red-700': order.orderProgress === 'notStarted',
@@ -128,13 +128,13 @@
                     class="py-2 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
 
                     <div class="sm:pl-4">
-                        <span class="font-medium">{{ item.itemName }}</span>
-                        <span class="text-gray-500 text-sm ml-6">{{ item.itemCategory }}</span>
+                        <span class="text-xs md:text-base font-medium">{{ item.itemName }}</span>
+                        <span class="text-gray-500 text-sm md:text-base ml-6">{{ item.itemCategory }}</span>
                     </div>
 
-                    <div class="text-left sm:text-right sm:pr-4">
+                    <div class="text-xs md:text-base text-left sm:text-right sm:pr-4">
                         <span class="font-medium">{{ item.itemQuantity }} x Rs. {{ item.eachItemPrice }}</span>
-                        <p class="text-gray-500 text-sm">
+                        <p class="text-gray-500 text-sm md:text-base">
                             Total: Rs. {{ item.itemQuantity * item.eachItemPrice }}
                         </p>
                     </div>
@@ -142,7 +142,7 @@
             </ul>
 
         <!-- Customer Notes -->
-        <p class="mt-2 text-gray-500 text-sm italic">
+        <p class="text-xs md:text-base mt-2 text-gray-500 italic">
           Notes: {{ order.customerNotes }}
         </p>
       </div>

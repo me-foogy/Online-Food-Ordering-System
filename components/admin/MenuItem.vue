@@ -77,11 +77,11 @@
             <!--Name and Price-->
             <div>
                 <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-semibold text-gray-800">{{item.name}}</h3>
-                    <span class="text-blue-600 font-semibold">Rs. {{item.price}}</span>
+                    <h3 class="text-base md:text-xl font-semibold text-gray-800">{{item.name}}</h3>
+                    <span class="text-base md:text-xl text-blue-600 font-semibold">Rs. {{item.price}}</span>
                 </div>
                 <!--Description-->
-                <p class="text-sm text-gray-600 line-clamp-2">{{item.description}}</p>
+                <p class="text-xs md:text-sm text-gray-600 line-clamp-2">{{item.description}}</p>
             </div>
 
             <!--Toggle + edit btn -->

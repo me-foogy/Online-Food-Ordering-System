@@ -58,6 +58,11 @@ export default defineEventHandler(async(event)=>{
             const name=result[0].name || 'Error: call to confirm';
             const address = result[0].address || 'Error: Call to confirm';
 
+            //Check if items was added during transaction
+            if(cartAmount.toFixed(2) !== amountNumber.toFixed(2)){
+                throw new Error(`Items Added or Removed From cart during Transaction`);
+            }
+
             //Store the payment as the payment has already been made
             await db.insert(paymentTable).values({
                     paymentId: uuid,
@@ -76,11 +81,6 @@ export default defineEventHandler(async(event)=>{
                     address: address,
                     customerNotes: notes
                 }).returning({orderId: ordersTable.orderId})
-
-                //Check if items was added during transaction
-                if(cartAmount.toFixed(2) !== amountNumber.toFixed(2)){
-                    throw new Error(`Items Added or Removed From cart during Transaction`);
-                }
 
                 //get each item from the user cart
                 const orderItems = userCart.map((item)=>{

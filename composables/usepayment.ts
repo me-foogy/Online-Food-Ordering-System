@@ -1,13 +1,17 @@
 import type { UUID } from "crypto";
 import { createEsewaSchema } from "~/shared/schemas/esewa";
 
-type apiResponse = defaultApiType<{orderId: number, transactionUuid: UUID, signature: string, amountWithDecimal: number, productCode: string}>
+type baseApiResponse = {orderId: number, transactionUuid: UUID, signature: string, amountWithDecimal: number, productCode: string}
+type apiResponse = {success: true, message:baseApiResponse}
 
 export function usePayment(){
+    const loading = useLoadingScreen(); //using global loader
+    const toast = useToast();
 
     async function confirmAndSignPayment(){
 
         try{
+            loading.value=true;
             const config = useRuntimeConfig();
             const baseUrl = config.public.baseUrl as string;
             const esewaUrl = config.public.esewaUrl as string;
@@ -15,15 +19,8 @@ export function usePayment(){
             const response = await $fetch<apiResponse>('/api/user/esewa/sign', {
                 method: 'GET',
             })
-
-            if(!response.success){
-                throw new Error(response.message || 'Signing Failed')
-            }
-
             const {transactionUuid, signature, amountWithDecimal, productCode}= response.message;
-
             const esewaSchema = createEsewaSchema(baseUrl)
-
             const validated = esewaSchema.safeParse({
                 //undefined fields are replaced with zod default defined values
                 amount: amountWithDecimal,
@@ -39,8 +36,12 @@ export function usePayment(){
             });
 
             if (!validated.success) {
-                throw new Error("Esewa Data Validation failed");
+                throw createError({
+                    status: 404,
+                    message: "Esewa Data Validation failed"
+                })
             }
+
             const data = validated.data;
 
             const form = document.createElement('form');
@@ -58,9 +59,17 @@ export function usePayment(){
             document.body.appendChild(form);
             form.submit();
             
-        }catch(err){
-            console.error('ERROR:', err);
-            throw err;
+        }catch(err: any){
+            const status = err?.statusCode;
+            
+            if(status === 404){
+                toast.error({message: 'The cart is empty'});
+            }else{
+                toast.error({message: 'Unexpected Error Occured'});
+            }
+            
+        }finally{
+            loading.value=false;
         }
     }
     return {

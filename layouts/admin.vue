@@ -50,38 +50,38 @@
         </div>
       </aside>
       <!-- Main Content -->
-      <main class="flex-1 min-w-auto xl:mr-96 ml-12 lg:ml-64 p-2 lg:p-4">
+      <main class="flex-1 min-w-auto ml-12 lg:ml-64 p-2 lg:p-4">
         <slot />
       </main>
     </div>
 </template>
 
 <style scoped>
-.nav-link {
-  @apply flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900
-        justify-center lg:justify-start;
-}
+  .nav-link {
+    @apply flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900
+          justify-center lg:justify-start;
+  }
 
-.logout-btn {
-  @apply w-full flex items-center gap-3 px-3 rounded-md py-2 text-red-600 hover:bg-red-50 hover:text-red-700
-         justify-center lg:justify-start font-medium;
-}
+  .logout-btn {
+    @apply w-full flex items-center gap-3 px-3 rounded-md py-2 text-red-600 hover:bg-red-50 hover:text-red-700
+          justify-center lg:justify-start font-medium;
+  }
 
-.icon {
-  font-size: 24px;
-  color: rgb(100, 100, 100);
-}
+  .icon {
+    font-size: 24px;
+    color: rgb(100, 100, 100);
+  }
 
-.label {
-  @apply hidden lg:inline;
-}
+  .label {
+    @apply hidden lg:inline;
+  }
 
-.router-link-active {
-  @apply bg-gray-200 font-semibold text-gray-900;
-}
+  .router-link-active {
+    @apply bg-gray-200 font-semibold text-gray-900;
+  }
 
-.router-link-active > .icon{
-  @apply text-blue-500
-}
+  .router-link-active > .icon{
+    @apply text-blue-500
+  }
 </style>
 

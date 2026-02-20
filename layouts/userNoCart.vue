@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   const {logout} = useAuth();
+  const cookieUser = useCookie<Omit<loginReturnMessageType, 'id'>|null>('auth_user');
 </script>
 
 <template>
@@ -7,35 +8,38 @@
       <!-- Sidebar -->
       <aside class="bg-white border-r border-gray-200 w-12 lg:w-64 fixed top-0 left-0 h-[100dvh] flex flex-col">
         <div class="h-full flex flex-col">
-
-              <!-- Navigation -->
-              <nav class="flex-1 px-2 py-4 space-y-1">
-                  <NuxtLink to="/user/home" class="nav-link">
-                      <span class="material-symbols-outlined icon">
-                      home
-                      </span>
-                      <span class="label">Home</span>
-                  </NuxtLink>
-                  <NuxtLink to="/user/history" class="nav-link">
-                      <span class="material-symbols-outlined icon">
-                      history
-                      </span>
-                      <span class="label">Order History</span>
-                  </NuxtLink>
-              </nav>
-              <!-- Logout -->
-              <div class="p-2 border-t">
-                <NuxtLink to="/user/account" class="nav-link">
-                      <span class="material-symbols-outlined icon">
-                      account_circle
-                      </span>
-                      <span class="label">My Account</span>
-                  </NuxtLink>
-                  <button class="logout-btn" @click="logout">
-                    <span class="material-symbols-outlined icon">logout</span>
-                    <span class="label">Logout</span>
-                  </button>
-              </div>
+        <div class="p-2 m-2 mt-2 rounded-md border border-blue-500 bg-blue-50 break-words label">
+          <h1 class="font-bold text-xl text-blue-800">HELLO</h1>
+          <p class="font-medium text-base text-gray-700">{{cookieUser?.name}}</p>
+        </div>
+        <!-- Navigation -->
+        <nav class="flex-1 px-2 py-2 space-y-1">
+            <NuxtLink to="/user/home" class="nav-link">
+                <span class="material-symbols-outlined icon">
+                home
+                </span>
+                <span class="label">Home</span>
+            </NuxtLink>
+            <NuxtLink to="/user/history" class="nav-link">
+                <span class="material-symbols-outlined icon">
+                history
+                </span>
+                <span class="label">Order History</span>
+            </NuxtLink>
+        </nav>
+        <!-- Logout -->
+        <div class="p-2 border-t">
+          <NuxtLink to="/user/account" class="nav-link">
+                <span class="material-symbols-outlined icon">
+                account_circle
+                </span>
+                <span class="label">My Account</span>
+            </NuxtLink>
+            <button class="logout-btn" @click="logout">
+              <span class="material-symbols-outlined icon">logout</span>
+              <span class="label">Logout</span>
+            </button>
+        </div>
         </div>
       </aside>
 

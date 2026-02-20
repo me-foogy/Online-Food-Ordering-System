@@ -17,20 +17,19 @@ export default defineEventHandler (async(event): Promise<apiResponse<cartSchema[
     const {cartId} = body;
 
     if(!cartId){
-        setResponseStatus(event, 400);
-        return{
-            success: false,
-            message: 'cartId Bad Request'
-        }
+        throw createError({
+            status: 400,
+            statusMessage:'Bad Request',
+            message: 'The cart id is null'
+        })
     }
 
     const deletedItem = await db.delete(cartTable).where(eq(cartTable.id, cartId)).returning();
     if(deletedItem.length===0){
-        setResponseStatus(event, 204);
-        return{
-            success: false,
-            message: 'Cart Item not found'
-        }
+        throw createError({
+            status: 404,
+            message: 'Item does not exist in cart'
+        })
     }
 
     setResponseStatus(event, 200);

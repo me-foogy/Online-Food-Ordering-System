@@ -17,34 +17,16 @@ export default defineEventHandler(async(event)=>{
     const body = await readBody(event);
     const {category} = body;
 
-    try{
-        const response = await db.insert(categoryTable).values({
-            name: category
-        }).returning({
-            id: categoryTable.id,
-            name: categoryTable.name
-        });
+    const response = await db.insert(categoryTable).values({
+        name: category
+    }).returning({
+        id: categoryTable.id,
+        name: categoryTable.name
+    });
 
-        if(response.length===0){
-            setResponseStatus(event, 204);
-            return{
-                success: true, 
-                message: []
-            }
-        }
-
-        setResponseStatus(event, 200)
-        return{
-            success: true,
-            message: response
-        }
-
-    } catch(err)
-    {
-        setResponseStatus(event, 400);
-        return{
-            success: false,
-            message: 'Unexpected Error Occured'
-        }
+    setResponseStatus(event, 200)
+    return{
+        success: true,
+        message: response
     }
 })

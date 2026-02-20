@@ -110,7 +110,7 @@
                     </form>
             </div>
 
-            <div v-if="!receivingOrders" class="w-full border rounded-lg py-2 px-4 bg-white flex flex-row justify-center gap-4 mt-4 border-red-800">
+            <div v-if="!receivingOrders" class="text-[clamp(0.8rem,1.5vw,1rem)] w-full border rounded-lg py-2 px-4 bg-white flex flex-row justify-center items-center gap-4 mt-4 border-red-800">
                 <span class="material-symbols-outlined text-base text-red-800">cancel</span>
                 <span class="text-red-800">The Restaurant Closed At The Moment</span>
             </div>

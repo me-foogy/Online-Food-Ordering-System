@@ -89,12 +89,12 @@
         <main class="flex-1 xl:mr-80">
 
             <!--Title and date picker(phone)-->
-            <div class="flex flex-row justify-between items-center mb-4">
+            <div class="flex flex-row justify-between items-center mb-4 gap-2">
                 <div class="flex flex-col md:flex-row md:space-x-6">
-                    <span class="text-lg sm:text-xl lg:text-2xl font-bold shrink-0">{{displayDate}}</span>
-                    <span class="text-lg sm:text-xl lg:text-2xl font-bold shrink-0">Sales Overview </span>
+                    <span class="text-sm sm:text-lg lg:text-2xl font-bold shrink-0">{{displayDate}}</span>
+                    <span class="text-sm sm:text-lg lg:text-2xl font-bold shrink-0">Sales Overview </span>
                 </div>
-                <div class="flex-1 max-w-52 xl:hidden">
+                <div class="flex-1 max-w-44 xl:hidden">
                     <ClientOnly>
                         <VueDatePicker v-model="date"
                                 :time-config="{ enableTimePicker: false }"
@@ -107,9 +107,9 @@
             </div>
 
             <div>
-                <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
+                <div class="grid grid-cols-1 gap-2 md:gap-5 sm:grid-cols-3">
                     <!--each card-->
-                    <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
+                    <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-1 md:gap-4">
                         <div class="flex flex-row justify-between items-center">
                             <span class="text-sm sm:text-base font-medium text-gray-600">Total Revenue</span>
                             <span class="material-symbols-outlined text-3xl sm:text-4xl">Attach_money</span>
@@ -117,7 +117,7 @@
                         <p class="text-3xl sm:text-4xl lg:text-5xl font-bold">{{totalRevenue}}</p>
                     </div>
                     <!--each card-->
-                    <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
+                    <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-1 md:gap-4">
                         <div class="flex flex-row justify-between items-center">
                             <span class="text-sm sm:text-base font-medium text-gray-600">Total Items</span>
                             <span class="material-symbols-outlined text-3xl sm:text-4xl">Fastfood</span>
@@ -125,7 +125,7 @@
                         <p class="text-3xl sm:text-4xl lg:text-5xl font-bold">{{totalItems}}</p>
                     </div>
                     <!--each card-->
-                    <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
+                    <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-1 md:gap-4">
                         <div class="flex flex-row justify-between items-center">
                             <span class="ctext-sm sm:text-base font-medium text-gray-600">Total Customers</span>
                             <span class="material-symbols-outlined text-3xl sm:text-4xl">Person</span>

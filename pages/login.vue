@@ -59,13 +59,13 @@
             </div>
 
             <!--Welcome Message-->
-            <div class="mb-4 sm:mb-6 space-y-1">
-                <h1 class="font-bold text-xl md:text-4xl">Welcome Back</h1>
+            <div class="mb-8 sm:mb-6 space-y-1">
+                <h1 class="font-bold text-xl lg:text-2xl xl:text-4xl">Welcome Back</h1>
                 <p class="text-gray-500 text-sm md:text-base">Sign in with your email and password</p>
             </div>
 
             <!--Input Form-->
-            <form class="space-y-3 sm:space-y-4" @submit.prevent="handleLoginSubmit">
+            <form class="space-y-1 sm:space-y-2" @submit.prevent="handleLoginSubmit">
 
                 <!--Email-->
                 <div>

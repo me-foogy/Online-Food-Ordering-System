@@ -13,30 +13,19 @@ import { categoryTable } from "~/server/drizzle/schema";
 import { db } from "~/server/drizzle";
 
 export default defineEventHandler(async(event)=>{
-
-    try{
         const category = await db.select().from(categoryTable);
 
-        if(category.length===0){
-            setResponseStatus(event, 204);
-            return{
-                success: true,
-                message: []
-            }
-        }
-
-        setResponseStatus(event, 200);
+    if(category.length===0){
+        setResponseStatus(event, 204);
         return{
             success: true,
-            message: category
+            message: []
         }
+    }
 
-    } catch(err)
-    {
-        setResponseStatus(event, 400);
-        return{
-            success: false,
-            message: 'Unexpected Error Occured'
-        }
+    setResponseStatus(event, 200);
+    return{
+        success: true,
+        message: category
     }
 })
