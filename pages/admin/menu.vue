@@ -98,7 +98,7 @@
             <span class="material-symbols-outlined text-4xl sm:text-5xl md:text-6xl text-blue-600 flex-shrink-0">storefront</span>
             <div class="leading-tight min-w-0">
                 <p class="text-xs sm:text-sm md:text-sm text-gray-500">{{formatedDate}}</p>
-                <p class="text-lg sm:text-xl md:text-lg font-semibold text-gray-800">
+                <p class="text-sm sm:text-base md:text-lg font-semibold text-gray-800">
                     THE RESTAURANT
                 </p>
             </div>
@@ -108,7 +108,7 @@
         <div class="flex md:justify-center flex-1 min-w-0">
             <form class="flex w-full max-w-md gap-2 flex-1 min-w-0">
                 <input type="text" placeholder="Search food" v-model="searchBarInput"
-                class="flex-1 h-11 w-full px-4 border border-gray-300 rounded-md text-sm sm:text-sm md:text-base text-gray-800 placeholder-gray-400
+                class="flex-1 h-8 md:h-11 w-full px-4 border border-gray-300 rounded-md text-xs sm:text-sm text-gray-800 placeholder-gray-400
                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                 hover:border-blue-400 transition min-w-0"/>
                 <!-- <button type="submit"
@@ -123,11 +123,11 @@
         <div class="flex-shrink-0 flex flex-row space-x-2">
 
             <button
-            class="flex items-center gap-2 h-11 px-5 bg-blue-600 text-white rounded-md font-medium whitespace-nowrap
+            class="flex items-center gap-2 h-8 md:h-11 px-5 bg-blue-600 text-white rounded-md  whitespace-nowrap
             hover:bg-blue-700 transition"
              @click="dialogAction='Add'; showDialog = true">
-                <span class="material-symbols-outlined text-base sm:text-md md:text-md">add</span>
-                <span class="text-sm sm:text-base md:text-sm truncate">Add Item</span>
+                <span class="material-symbols-outlined text-xs sm:text-sm md:text-base">add</span>
+                <span class="text-xs sm:text-sm md:text-base truncate">Add Item</span>
             </button>
         </div>
     </div>
@@ -140,22 +140,22 @@
     <!--The Filter By Category Section-->
     <div class="space-y-4 mt-6">
 
-        <div class="flex flex-row justify-between items-center my-6">
-            <h2 class="text-xl font-semibold text-gray-800">Manage Your Menu Items</h2>
+        <div class="flex flex-row justify-between items-center my-6 gap-2">
+            <h2 class="text-sm  sm:text-xl md:text-2xl font-semibold text-gray-800">Manage Your Menu Items</h2>
             <button
             class="flex items-center gap-2 h-9 px-3 rounded-md font-medium whitespace-nowrap border bg-white
             text-blue-600 hover:bg-gray-100  hover:border-blue-600 transition sm:px-4 md:px-5 md:h-11"
             @click="showCategoryDialog = true">
-                <span class="material-symbols-outlined text-sm sm:text-md md:text-md">edit</span>
-                <span class="text-sm sm:text-base md:text-sm truncate">Edit Categories</span>
+                <span class="material-symbols-outlined text-xs sm:text-sm md:text-base">edit</span>
+                <span class="text-xs sm:text-sm md:text-base">Edit Categories</span>
             </button>
         </div>
 
         <div class="flex gap-3 flex-wrap">
             <button v-for="type in foodOptions":key="type" @click="activeType = type"
-            class="px-2 py-2 min-w-[5rem] rounded-xl text-sm font-normal border transition
+            class="px-2 py-2 min-w-[3rem] rounded-xl text-xs sm:text-sm md:text-base font-normal border transition
             hover:border-blue-500 hover:translate-y-[1px]
-            sm:px-4 sm:min-w-[10rem] sm:font-medium"
+            sm:px-4 sm:min-w-[8rem] sm:font-medium"
             :class="
                 activeType === type
                 ? 'bg-blue-600 text-white border-blue-600'

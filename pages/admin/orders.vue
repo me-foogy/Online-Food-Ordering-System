@@ -58,7 +58,7 @@ const {receivingOrders, fetchReceivingOrders} = useReceivingOrders();
         onResponseError(){
             loading.value=false;
         }
-})
+    })
 
     watch([data, error], ()=>{
         if(error.value){
@@ -104,16 +104,16 @@ const {receivingOrders, fetchReceivingOrders} = useReceivingOrders();
 
 <template>
     <ReceivingOrdersDialog :isOpen="openConfirmDialog" :onClose="handleClose" :state="receivingOrders"/>
-    <div class="w-full h-[93dvh] flex flex-col gap-4">
-        <div class="flex flex-col gap-4">
+    <div class="w-full h-[93dvh] flex flex-col gap-1 md:gap-4">
+        <div class="flex flex-col gap-1 lg:gap-6">
             <div class="w-full border rounded-lg py-2 px-4 bg-white flex flex-row justify-between"
                 :class="{'border-blue-800':receivingOrders, 'border-red-800': !receivingOrders}"
             >
-                <span> Currently Receiving Orders : 
+                <p class="text-xs lg:text-base"> Currently Receiving Orders : 
                     <span :class="{'text-blue-800':receivingOrders, 'text-red-800': !receivingOrders}">
                         {{receivingOrders?'YES':'NO'}}                        
                     </span>
-                </span>
+                </p>
                 <label class="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" v-model="receivingOrders" class="sr-only" @click="openConfirmDialog=true">
                     <!-- Toggle Track -->
@@ -123,33 +123,33 @@ const {receivingOrders, fetchReceivingOrders} = useReceivingOrders();
                     ></div>
                     <!-- Toggle Thumb -->
                     <div
-                        class="absolute w-4 h-4 bg-white rounded-full top-1 transition-transform duration-300"
+                        class="absolute w-3 h-3 lg:w-4 lg:h-4 bg-white rounded-full top-1 transition-transform duration-300"
                         :class="{'translate-x-5': receivingOrders, 'translate-x-1': !receivingOrders}"
                     ></div>
                 </label>
             </div>
-            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div class="grid grid-cols-1 gap-2 lg:gap-5 sm:grid-cols-2">
                 <!--each card-->
-                <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
+                <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col">
                     <div class="flex flex-row justify-between items-center">
                         <span class="text-sm sm:text-base font-medium text-gray-600">Remaining Orders</span>
-                        <span class="material-symbols-outlined text-5xl sm:text-7xl">Fastfood</span>
+                        <span class="material-symbols-outlined text-3xl sm:text-7xl">Fastfood</span>
                     </div>
-                    <p class="text-5xl sm:text-6xl lg:text-7xl font-bold text-red-500">{{notStartedCount}}</p>
+                    <p class="text-4xl sm:text-6xl lg:text-7xl font-bold text-red-500">{{notStartedCount}}</p>
                 </div>
                 <!--each card-->
-                <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col gap-4">
+                <div class="h-full w-full border rounded-xl p-4 bg-white sm:p-6 flex flex-col">
                     <div class="flex flex-row justify-between items-center">
                         <span class="text-sm sm:text-base font-medium text-gray-600">Orders In Progress</span>
-                        <span class="material-symbols-outlined text-5xl sm:text-7xl">Cached</span>
+                        <span class="material-symbols-outlined text-3xl sm:text-7xl">Cached</span>
                     </div>
-                    <p class="text-5xl sm:text-6xl lg:text-7xl font-bold text-blue-500">{{inProgressCount}}</p>
+                    <p class="text-4xl sm:text-6xl lg:text-7xl font-bold text-blue-500">{{inProgressCount}}</p>
                 </div>
             </div>
         </div>
 
-        <div class="flex justify-end mt-4">
-            <div class="bg-white rounded-lg p-2">
+        <div class="flex justify-end mt-1 lg:mt-4">
+            <div class="bg-white rounded-lg p-1">
                 <VPagination
                     v-model="page"
                     :pages="totalPages"
