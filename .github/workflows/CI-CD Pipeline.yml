@@ -14,7 +14,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
       # similar to npm install but npm ci does not update the lock file
       - run: pnpm install --frozen-lockfile
       # check code quality using lint
