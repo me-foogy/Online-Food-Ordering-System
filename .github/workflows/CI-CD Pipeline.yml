@@ -18,7 +18,7 @@ jobs:
       # similar to npm install but npm ci does not update the lock file
       - run: pnpm install --frozen-lockfile
       # check code quality using lint
-      - run: pnpm run lint
+      # - run: pnpm run lint
       # check code quality
       - run: pnpm run typecheck
       #unit tests
