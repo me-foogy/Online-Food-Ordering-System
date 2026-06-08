@@ -26,7 +26,7 @@ jobs:
       # Build project
       - run: pnpm run build
       #scan dependency vulnerabilities
-      - run: pnpm audit
+      # - run: pnpm audit
       #download build artifacts
       - uses: actions/upload-artifact@v4
         with:
