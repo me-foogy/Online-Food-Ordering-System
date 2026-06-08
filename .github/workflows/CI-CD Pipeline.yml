@@ -1,0 +1,35 @@
+name: CI/CD Pipeline
+run-name: ${{ github.actor }} CI/CD pipeline
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  test-before-main:
+    runs-on: ubuntu-latest
+    steps:
+      #checkout so that the repo is cloned to the newly created vm
+      - uses: actions/checkout@v4 
+      #set node version to the vm to run node packages
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      # similar to npm install but npm ci does not update the lock file
+      - run: npm ci
+      # check code quality using lint
+      - run: npm run lint
+      # check code quality
+      - run: npm run typecheck
+      #unit tests
+      - run: echo "No unit tests yet"
+      # Build project
+      - run: npm run build
+      #scan dependency vulnerabilities
+      - run: npm audit
+      #download build artifacts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nuxt-build
+          path: .output
+      
+      
